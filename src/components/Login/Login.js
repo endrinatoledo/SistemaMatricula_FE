@@ -9,8 +9,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-// import theme from '../../temaConfig'
-import Footer from '../Layout/Footer.js'
+
 
 
 
@@ -88,9 +87,7 @@ function Login() {
             </Button>
           </Box>
         </Box>
-        
       </Container>
-      <Footer sx={{ mt: 8, mb: 4 }} />
     </ThemeProvider>
   );
 
