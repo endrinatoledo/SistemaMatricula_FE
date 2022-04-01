@@ -1,18 +1,10 @@
 import React,{useState} from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
+import {Avatar, Button, CssBaseline, TextField, FormControlLabel,Checkbox,
+  Link, Box, Typography, Container} from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Axios from 'axios'
+import ErrorAlert from '../AlertMessages/ErrorAlert';
 
 function Copyright(props) {
   return (
@@ -26,6 +18,11 @@ function Copyright(props) {
     </Typography>
   );
 }
+const validateEmail = async (email) =>{
+  const re=/^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/
+  if(!re.exec(email)){ return false }
+  else { return true }
+}
 
 const theme = createTheme();
 
@@ -34,16 +31,45 @@ export default function Login() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [data, setData] = useState({email :'', password:''})
+  const [message, setMessage] = useState('')
 
-  // const handleSubmit = (event) => {
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    let data = {email, password}
-    Axios.post('http://localhost:8080/api/access/', {email, password})
-    .then( response  =>{
-      console.log(response)
-    })
+
+    if(email === '' || email === null || email === undefined ||  password === '' || password === null || password === undefined ){
+      
+      setMessage('Campos requeridos')  
+
+    }else{
+      const validate_Email = await validateEmail(email)
+      if (!validate_Email){
+
+        setMessage('Formato de correo incorrecto') 
+
+      }else{
+        Axios.post('http://localhost:8080/api/access/', {email, password})
+        .then( response  =>{
+          if(response.data.ok === false){
+            setMessage(response.data.message)
+          }
+          else if(response.data.ok === true){
+  
+            console.log('permitido')
+  
+          }else{
+            setMessage('Error de conexión')
+
+          }
+
+        })
+
+        
+      }
+    }
+    
+
+
+    
     
     // const data = new FormData(event.currentTarget);
     // console.log({
@@ -105,18 +131,8 @@ export default function Login() {
             >
               Sign In
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
+            <ErrorAlert message={message}/>
+            
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
