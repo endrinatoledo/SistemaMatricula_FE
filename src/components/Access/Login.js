@@ -1,10 +1,9 @@
 import React,{useState} from 'react';
-import {Avatar, Button, CssBaseline, TextField, FormControlLabel,Checkbox,
-  Link, Box, Typography, Container} from '@mui/material';
+import {Avatar, Button, CssBaseline, TextField, Link, Box, Typography, Container} from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Axios from 'axios'
 import ErrorAlert from '../AlertMessages/ErrorAlert';
+const AxiosInstance = require("../utils/request").default;
 
 function Copyright(props) {
   return (
@@ -23,59 +22,61 @@ const validateEmail = async (email) =>{
   if(!re.exec(email)){ return false }
   else { return true }
 }
-
 const theme = createTheme();
 
 export default function Login() {
 
-
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
+  const [messageFlash, setMessageFlash] = useState(false)
+
+  const MessageFlash  = () => {
+    
+    setMessageFlash(true)
+    setTimeout(() => {
+      setMessageFlash(false);
+    }, 3000);
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if(email === '' || email === null || email === undefined ||  password === '' || password === null || password === undefined ){
-      
       setMessage('Campos requeridos')  
+      MessageFlash()
 
     }else{
       const validate_Email = await validateEmail(email)
       if (!validate_Email){
 
         setMessage('Formato de correo incorrecto') 
+        MessageFlash()
 
       }else{
-        Axios.post('http://localhost:8080/api/access/', {email, password})
+
+        AxiosInstance.post('/access/', {email, password})
         .then( response  =>{
           if(response.data.ok === false){
             setMessage(response.data.message)
+            MessageFlash()
           }
           else if(response.data.ok === true){
-  
-            console.log('permitido')
-  
+              localStorage.setItem("token", response.data.user.token);
+              localStorage.setItem("usuId", response.data.user.usuId);
+              localStorage.setItem("usuEmail", response.data.user.usuEmail);
+              localStorage.setItem("usuName", response.data.user.usrName);
+              localStorage.setItem("usuLastName", response.data.user.usuLastName);
+              localStorage.setItem("usuStatus", response.data.user.usrStatus);  
+              localStorage.setItem("rolId", response.data.user.rolId);
+              window.location.reload();  
           }else{
             setMessage('Error de conexión')
-
+            MessageFlash()
           }
-
         })
-
-        
       }
-    }
-    
-
-
-    
-    
-    // const data = new FormData(event.currentTarget);
-    // console.log({
-    //   email: data.get('email'),
-    //   password: data.get('password'),
-    // });
+    }  
   };
 
   return (
@@ -102,7 +103,7 @@ export default function Login() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Correo"
               name="email"
               autoComplete="email"
               autoFocus
@@ -113,15 +114,11 @@ export default function Login() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Contraseña"
               type="password"
               id="password"
               autoComplete="current-password"
               onChange={e => setPassword(e.target.value ? e.target.value : '')}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
             />
             <Button
               type="submit"
@@ -131,7 +128,7 @@ export default function Login() {
             >
               Sign In
             </Button>
-            <ErrorAlert message={message}/>
+            { (messageFlash) ? <ErrorAlert message={message}/> : null}
             
           </Box>
         </Box>

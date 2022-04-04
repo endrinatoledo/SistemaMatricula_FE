@@ -2,19 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import {Provider} from "react-redux"
-import {BrowserRouter} from "react-router-dom"
+import DashboardContent from './components/Layout/Dashboard'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      {/* <Provider > */}
-        <App />
-      {/* </Provider> */}
-    </BrowserRouter>
-    
-    
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+if(localStorage.getItem("token") === null &&
+  localStorage.getItem("usuId") === null &&
+  localStorage.getItem("usuEmail") === null &&
+  localStorage.getItem("usuName") === null &&
+  localStorage.getItem("usuStatus") === null &&
+  localStorage.getItem("rolId") === null){
+    ReactDOM.render(<App />, document.getElementById('root'));
+}else{
+  ReactDOM.render(<DashboardContent />, document.getElementById('root'));
+}
+
 
