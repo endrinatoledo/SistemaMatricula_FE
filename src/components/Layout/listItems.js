@@ -53,7 +53,7 @@ export const EnrollmentListItems = () => {
 
 
 
-export const PeopleListItems = () => {
+export const PeopleListItems = ({selected, setSelected}) => {
 
     return (     
       <Fragment>
@@ -63,7 +63,7 @@ export const PeopleListItems = () => {
           </ListSubheader>
         </List>
         <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 2 }}>
+            <ListItemButton sx={{ pl: 2 }} onClick={() => setSelected('representative')}>
               <ListItemIcon>
                 <EscalatorWarningRoundedIcon />
               </ListItemIcon>
@@ -72,7 +72,7 @@ export const PeopleListItems = () => {
           </List>
 
         <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 2 }}>
+            <ListItemButton sx={{ pl: 2 }} onClick={() => setSelected('students')}>
               <ListItemIcon>
                 <LocalLibraryRoundedIcon />
               </ListItemIcon>
@@ -80,7 +80,7 @@ export const PeopleListItems = () => {
             </ListItemButton>
           </List>
           <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 2 }}>
+            <ListItemButton sx={{ pl: 2 }} onClick={() => setSelected('families')}>
               <ListItemIcon>
                 <FamilyRestroomRoundedIcon />
               </ListItemIcon>
@@ -88,7 +88,7 @@ export const PeopleListItems = () => {
             </ListItemButton>
           </List>
           <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 2 }}>
+            <ListItemButton sx={{ pl: 2 }} onClick={() => setSelected('users')}>
               <ListItemIcon>
                 <PersonRoundedIcon />
               </ListItemIcon>
@@ -100,7 +100,7 @@ export const PeopleListItems = () => {
   }
   
 
-  export const ConfigListItems = () => {
+  export const ConfigListItems = ({selected, setSelected}) => {
 
     return (     
       <Fragment>
@@ -109,16 +109,16 @@ export const PeopleListItems = () => {
           Configuración
           </ListSubheader>
         </List> 
-        <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 2 }}>
-              <ListItemIcon>
+        <List component="div" disablePadding >
+            <ListItemButton sx={{ pl: 2 }} onClick={() => setSelected('valuation')} >
+              <ListItemIcon >
                 <AttachMoneyRoundedIcon />
               </ListItemIcon>
               <ListItemText primary="Tasas" />
             </ListItemButton>
           </List>
         <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 2 }}>
+            <ListItemButton sx={{ pl: 2 }} onClick={() => setSelected('period')}>
               <ListItemIcon>
                 <CalendarMonthRoundedIcon />
               </ListItemIcon>
@@ -131,7 +131,7 @@ export const PeopleListItems = () => {
               <ListItemIcon>
                 <GridOnRoundedIcon />
               </ListItemIcon>
-              <ListItemText primary="Secciones" />
+              <ListItemText primary="Secciones" onClick={() => setSelected('sections')}/>
             </ListItemButton>
           </List>
           <List component="div" disablePadding>
@@ -139,7 +139,7 @@ export const PeopleListItems = () => {
               <ListItemIcon>
                 <PersonOutlineRoundedIcon />
               </ListItemIcon>
-              <ListItemText primary="Roles" />
+              <ListItemText primary="Roles" onClick={() => setSelected('roles')}/>
             </ListItemButton>
           </List>
           <List component="div" disablePadding>
@@ -147,7 +147,7 @@ export const PeopleListItems = () => {
               <ListItemIcon>
                 <StairsRoundedIcon />
               </ListItemIcon>
-              <ListItemText primary="Niveles" />
+              <ListItemText primary="Niveles" onClick={() => setSelected('levels')}/>
             </ListItemButton>
           </List>
           <List component="div" disablePadding>
@@ -155,11 +155,11 @@ export const PeopleListItems = () => {
               <ListItemIcon>
                 <SchoolRoundedIcon />
               </ListItemIcon>
-              <ListItemText primary="Escolaridad" />
+              <ListItemText primary="Escolaridad" onClick={() => setSelected('scholarship')}/>
             </ListItemButton>
           </List>
           <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 2 }}>
+            <ListItemButton sx={{ pl: 2 }} onClick={() => setSelected('school')}>
               <ListItemIcon>
                 <AccountBalanceRoundedIcon />
               </ListItemIcon>
