@@ -19,22 +19,11 @@ import {PeopleListItems, ConfigListItems,CollectionListItems, EnrollmentListItem
 import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
-import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded';
+import Copyright from './Copyright';
+import Logout from './Logout';
+import UserList from '../Users/UserList';
+import RepresentativeList from '../Representative/RepresentativeList';
 
-
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const drawerWidth = 240;
 
@@ -86,6 +75,20 @@ const mdTheme = createTheme();
 
 const Dashboard= () => {
   const [open, setOpen] = React.useState(true);
+  const [selected, setSelected] = React.useState('users')
+
+
+  const getComponent = (select) =>{
+    switch (String(select)) {
+      
+      case 'users':
+        return <UserList />;  
+        case 'representative':
+        return <RepresentativeList />;  
+      default:
+        return <UserList  />;
+      }
+  }  
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -121,9 +124,7 @@ const Dashboard= () => {
             >
               Sistema de Matrícula y Cobranza
             </Typography>
-            <IconButton color="inherit">
-                <ExitToAppRoundedIcon />
-            </IconButton>
+            <Logout/>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -151,9 +152,9 @@ const Dashboard= () => {
               <Divider sx={{ my: 1 }} />
               <EnrollmentListItems />
               <Divider sx={{ my: 1 }} />
-              <PeopleListItems />
+              <PeopleListItems selected={selected} setSelected={setSelected} />
               <Divider sx={{ my: 1 }} />
-              <ConfigListItems />
+              <ConfigListItems selected={selected} setSelected={setSelected}/>
           </List>
         </Drawer>
         <Box
@@ -171,36 +172,11 @@ const Dashboard= () => {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* Chart */}
-              {/* <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  <Chart />
-                </Paper>
-              </Grid> */}
-              {/* Recent Deposits */}
-              {/* <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  <Deposits />
-                </Paper>
-              </Grid> */}
-              {/* Recent Orders */}
+              
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
+                {getComponent(selected)}
+                  {/* <Orders /> */}
                 </Paper>
               </Grid>
             </Grid>
