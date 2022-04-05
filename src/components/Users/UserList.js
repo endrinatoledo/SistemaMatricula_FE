@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Link from '@mui/material/Link';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,14 +6,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Title from '../Layout/Title';
 const AxiosInstance = require("../utils/request").default;
+const StatusInTable = require('../commonComponents/StatusInTable').default
+const Pagination = require('../commonComponents/Pagination').default
 
-function createData(usuId, usuName, usuLastName, usuEmail, usuStatus, rolId) {
-  return { usuId, usuName, usuLastName, usuEmail, usuStatus, rolId };
-}
-
-function preventDefault(event) {
-  event.preventDefault();
-}
+// function preventDefault(event) {
+//   event.preventDefault();
+// }
 
 export default function UserList() {
   const [dataSource, setDataSource] = React.useState([])
@@ -40,15 +37,16 @@ React.useEffect(() => {
 
   return (
     <React.Fragment>
-      <Title>UserList</Title>
-      <Table size="small">
+      <Title>Listado de Usuarios</Title>
+      <Table >
         <TableHead>
           <TableRow>
-            <TableCell>Nombre</TableCell>
-            <TableCell>Apelido</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Estatus</TableCell>
-            <TableCell align="right">Rol</TableCell>
+            <TableCell align="left">Nombre</TableCell>
+            <TableCell align="left">Apellido</TableCell>
+            <TableCell align="left">Email</TableCell>
+            <TableCell align="left">Rol</TableCell>
+            <TableCell align="left">Estatus</TableCell>
+            <TableCell align="left">Acciones</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -57,15 +55,14 @@ React.useEffect(() => {
               <TableCell>{item.usuName}</TableCell>
               <TableCell>{item.usuLastName}</TableCell>
               <TableCell>{item.usuEmail}</TableCell>
-              <TableCell>{item.usuStatus}</TableCell>
-              <TableCell align="right">{item.roles.rolName}</TableCell>
-            </TableRow>
+              <TableCell >{item.roles.rolName}</TableCell>
+              <TableCell> <StatusInTable status={item.usuStatus}/> </TableCell>
+              <TableCell >ACCIONES</TableCell>
+            </TableRow> 
           ))}
         </TableBody>
       </Table>
-      <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
-        See more UserList
-      </Link>
+      <Pagination  dataSource={dataSource}/>
     </React.Fragment>
   );
 }
