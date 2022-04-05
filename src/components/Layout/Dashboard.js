@@ -12,17 +12,14 @@ import IconButton from '@mui/material/IconButton';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import {PeopleListItems, ConfigListItems,CollectionListItems, EnrollmentListItems}  from './listItems';
-import Chart from './Chart';
-import Deposits from './Deposits';
-import Orders from './Orders';
 import Copyright from './Copyright';
 import Logout from './Logout';
 import UserList from '../Users/UserList';
 import RepresentativeList from '../Representative/RepresentativeList';
+import RolesList from '../Roles/RolesList';
 
 
 const drawerWidth = 240;
@@ -84,6 +81,24 @@ const Dashboard= () => {
       case 'users':
         return <UserList />;  
         case 'representative':
+        return <RepresentativeList />; 
+        case 'students':
+        return <RepresentativeList />;  
+        case 'families':
+        return <RepresentativeList />;  
+        case 'valuation':
+        return <RepresentativeList />;  
+        case 'period':
+        return <RepresentativeList />;  
+        case 'sections':
+        return <RepresentativeList />;  
+        case 'roles':
+        return <RolesList />;  
+        case 'levels':
+        return <RepresentativeList />;  
+        case 'scholarship':
+        return <RepresentativeList />;  
+        case 'school':
         return <RepresentativeList />;  
       default:
         return <UserList  />;
