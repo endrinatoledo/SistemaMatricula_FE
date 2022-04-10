@@ -4,18 +4,32 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Stack from '@mui/material/Stack';
 import Title from '../Layout/Title';
+import { makeStyles } from '@mui/styles';
+import UserModal from './UserModal';
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
 const Pagination = require('../commonComponents/Pagination').default
+const AddButton = require('../commonComponents/AddButton').default
 
 // function preventDefault(event) {
 //   event.preventDefault();
 // }
 
+const useStyles = makeStyles({
+  moduleHeader:{
+    marginBottom:20,
+    marginTop:10
+  }
+});
+
 export default function UserList() {
   const [dataSource, setDataSource] = React.useState([])
   const [Reload, SetReload] = React.useState(0);
+  const [openModal, setOpenModal] = React.useState(false);
+  const name = 'Usuario'
+  const classes = useStyles();
 
   const fillTable = async () => {
     try{
@@ -37,7 +51,11 @@ React.useEffect(() => {
 
   return (
     <React.Fragment>
-      <Title>Listado de Usuarios</Title>
+      <Stack direction="row"  justifyContent="space-between" className={classes.moduleHeader}>
+        <Title>Listado de Usuarios</Title>
+        <AddButton name={name} setOpenModal={setOpenModal} />
+      </Stack>
+      
       <Table >
         <TableHead>
           <TableRow>
@@ -63,6 +81,8 @@ React.useEffect(() => {
         </TableBody>
       </Table>
       <Pagination  dataSource={dataSource}/>
+      {(openModal) ? <UserModal name={name} openModal={openModal} setOpenModal={setOpenModal}/> : null}
+      
     </React.Fragment>
   );
 }
