@@ -1,9 +1,6 @@
 // import * as React from 'react';
 import React, {Fragment} from 'react';
 import {List, ListItemButton,ListItemIcon,ListItemText, Collapse } from '@mui/material';
-// import ListItemButton from '@mui/material/ListItemButton';
-// import ListItemIcon from '@mui/material/ListItemIcon';
-// import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -43,7 +40,7 @@ export const EnrollmentListItems = () => {
     <Fragment>
       <List component="div" disablePadding>
         <ListSubheader  inset>
-          Cobranza
+          Matrícula
         </ListSubheader>
       </List>
 
