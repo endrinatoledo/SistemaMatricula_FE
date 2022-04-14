@@ -81,7 +81,7 @@ React.useEffect(() => {
         </TableBody>
       </Table>
       <Pagination  dataSource={dataSource}/>
-      {(openModal) ? <UserModal name={name} openModal={openModal} setOpenModal={setOpenModal}/> : null}
+      {(openModal) ? <UserModal name={name} openModal={openModal} setOpenModal={setOpenModal} fillTable={fillTable}/> : null}
       
     </React.Fragment>
   );

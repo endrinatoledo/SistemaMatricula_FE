@@ -9,5 +9,11 @@ const ErrorAlert = ({message}) => {
     </Stack>
   )
 }
+const MessageFlash  = ({setMessageFlash}) => {
+  setMessageFlash(true)
+  setTimeout(() => {
+    setMessageFlash(false);
+  }, 3000);
+}
 
-export default ErrorAlert
+export {ErrorAlert, MessageFlash} 

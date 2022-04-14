@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 import {Avatar, Button, CssBaseline, TextField, Link, Box, Typography, Container} from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import ErrorAlert from '../AlertMessages/ErrorAlert';
+import {ErrorAlert} from '../AlertMessages/ErrorAlert';
 const AxiosInstance = require("../utils/request").default;
 
 function Copyright(props) {
