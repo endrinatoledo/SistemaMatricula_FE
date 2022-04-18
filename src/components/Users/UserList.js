@@ -10,10 +10,12 @@ import Title from '../Layout/Title';
 import { makeStyles } from '@mui/styles';
 import UserModal from './UserModal';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
+import UserOptions from './UserOptions';
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
 const Pagination = require('../commonComponents/Pagination').default
 const AddButton = require('../commonComponents/AddButton').default
+
 
 
 // function preventDefault(event) {
@@ -36,10 +38,12 @@ export default function UserList() {
   const [alertModal, setAlertModal] = React.useState(false);
   const [alertType, setAlertType] = React.useState('');
   const [message, setMessage] = React.useState('');
+  const [userObject, setUserObject] = React.useState({name:'', lastName:'',email:'', password:'',status: 1, rol: ''});
+
 
 
   const name = 'Usuario'
-  const defaultMessages = {success : 'Usuario Guardado', connectionError: 'Error de Conexión' }
+  const defaultMessages = {success : 'Usuario Guardado', connectionError: 'Error de Conexión', mailError: 'Formato de correo erróneo' }
   const classes = useStyles();
 
   const fillTable = async () => {
@@ -91,7 +95,7 @@ React.useEffect(() => {
               <TableCell>{item.usuEmail}</TableCell>
               <TableCell >{item.roles.rolName}</TableCell>
               <TableCell> <StatusInTable status={item.usuStatus}/> </TableCell>
-              <TableCell >ACCIONES</TableCell>
+              <TableCell > <UserOptions userObject={userObject} setUserObject={setUserObject} value={item} openModal={openModal} setOpenModal={setOpenModal} /> </TableCell>
             </TableRow> 
           ))}
         </TableBody>
@@ -100,7 +104,8 @@ React.useEffect(() => {
       <Pagination  dataSource={dataSource} page={page} setPage={setPage} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage}/>
       {(openModal) ? 
       <UserModal 
-        defaultMessages={defaultMessages}
+        userObject={userObject} setUserObject={setUserObject}
+        defaultMessages={defaultMessages} 
         message={message} setMessage={setMessage}
         setAlertType={setAlertType} name={name} 
         openModal={openModal} setOpenModal={setOpenModal} 

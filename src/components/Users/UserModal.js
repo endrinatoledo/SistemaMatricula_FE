@@ -12,7 +12,9 @@ import Stack from '@mui/material/Stack';
 import MenuItem from '@mui/material/MenuItem';
 import StandardAlert from '../AlertMessages/StandardAlert';
 import ActivateFlashMessage from '../AlertMessages/ActivateFlashMessage';
+import ValidateEmail from '../commonComponents/ValidateEmail';
 const AxiosInstance = require("../utils/request").default;
+
 
   const useStyles = makeStyles({
     stack: {
@@ -46,12 +48,12 @@ const AxiosInstance = require("../utils/request").default;
     }  
   });
 
-const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openModal,setOpenModal,fillTable, setAlertModal}) => {
+const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessage, setAlertType,name,openModal,setOpenModal,fillTable, setAlertModal}) => {
 
   const [activeRoles, setActiveRoles] = React.useState([])
   const [Reload, SetReload] = React.useState(0);
-  const [userObject, setUserObject] = React.useState({name:'', lastName:'',email:'', password:'',status: 1, rol: ''});
   const [messageFlash, setMessageFlash] = React.useState(false)
+
 
   const requiredField = 'Campo requerido'
 
@@ -62,6 +64,7 @@ const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openM
         const data = (await AxiosInstance.get("/roles/allRoles/active")).data
         if(data.ok === true){
           setActiveRoles(data.data)
+          return;
         }
       }catch{
         console.log('no')
@@ -74,7 +77,14 @@ const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openM
     const saveNewUser = async () => {
       try{
         if(userObject.name !== '' && userObject.lastName !== '' && userObject.email !== '' && userObject.password !== '' && userObject.rol !== ''){
-          const data = (await AxiosInstance.post("/users/",userObject)).data
+          let email = userObject.email
+          const validatedEmail = await ValidateEmail({email})
+
+          if(!validatedEmail){
+            setMessage(defaultMessages.mailError)
+            setMessageFlash(true)
+          }else{
+            const data = (await AxiosInstance.post("/users/",userObject)).data
           if(data.ok === false){
               setMessage(data.message)
               setMessageFlash(true)
@@ -89,6 +99,8 @@ const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openM
               setAlertModal(false);
           }, 3000)
           }
+          }
+ 
         }
       }catch{
         setMessage(defaultMessages.connectionError)
@@ -103,7 +115,7 @@ const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openM
   return (
     <Modal
         open={openModal}
-        onClose={() => setOpenModal(false)}
+        onClose={() => {setOpenModal(false); }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -115,6 +127,7 @@ const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openM
                 required
                 id="name"
                 label="Nombre"
+                defaultValue={(userObject.name)?userObject.name : ''}
                 onChange={(e) => {
                   setUserObject({...userObject, name : e.target.value ? e.target.value : ''})}}
                 helperText={(userObject.name === '')? requiredField : ''}
@@ -126,6 +139,7 @@ const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openM
                 id="lastName"
                 label="Apellido"
                 variant="standard"
+                defaultValue={(userObject.lastName)?userObject.lastName : ''}
                 onChange={(e) => {
                 setUserObject({...userObject, lastName : e.target.value ? e.target.value : ''})}}
                 helperText={(userObject.lastName === '')? requiredField : ''}
@@ -138,6 +152,7 @@ const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openM
                 id="email"
                 label="Correo"
                 variant="standard"
+                defaultValue={(userObject.email)?userObject.email : ''}
                 onChange={(e) => {
                   setUserObject({...userObject, email : e.target.value ? e.target.value : ''}) }}
                 helperText={(userObject.email === '')? requiredField : ''}
@@ -158,8 +173,9 @@ const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openM
           id="status"
           select
           label="Estatus"
+          defaultValue={(userObject.status)?userObject.status : 1}
           onChange={e => setUserObject({...userObject, status : e.target.value ? e.target.value : null})}
-          defaultValue={1}
+          // defaultValue={1}
           variant="standard"
         >
             <MenuItem key={1} value={1}>Activo</MenuItem>
@@ -169,6 +185,7 @@ const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openM
           id="rol"
           select
           label="Rol"
+          defaultValue={(userObject.rol)?userObject.rol : ''}
           onChange={(e) => { setUserObject({...userObject, rol : e.target.value })}}
           helperText={(userObject.rol === '')? requiredField : ''}
           error={(userObject.rol === '')? true : false}  
@@ -189,7 +206,7 @@ const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openM
 
         <Stack spacing={2} direction="row" className={classes.stack} 
                justifyContent="center" alignItems="center">
-          <Button variant="contained" onClick={() => console.log('nooooo')} color='inherit'>Cancelar</Button>
+          <Button variant="contained" onClick={() => console.log('cancelar')} color='inherit'>Cancelar</Button>
           <Button variant="contained" onClick={() => saveNewUser()} >Agregar</Button>
         </Stack>
         <Stack className={classes.errorMessage} >

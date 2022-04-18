@@ -3,6 +3,7 @@ import {Avatar, Button, CssBaseline, TextField, Link, Box, Typography, Container
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import StandardAlert from '../AlertMessages/StandardAlert';
+import ValidateEmail from '../commonComponents/ValidateEmail';
 const AxiosInstance = require("../utils/request").default;
 
 function Copyright(props) {
@@ -17,11 +18,7 @@ function Copyright(props) {
     </Typography>
   );
 }
-const validateEmail = async (email) =>{
-  const re=/^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/
-  if(!re.exec(email)){ return false }
-  else { return true }
-}
+
 const theme = createTheme();
 
 export default function Login() {
@@ -47,8 +44,8 @@ export default function Login() {
       MessageFlash()
 
     }else{
-      const validate_Email = await validateEmail(email)
-      if (!validate_Email){
+      const validatedEmail = await ValidateEmail({email})
+      if (!validatedEmail){
 
         setMessage('Formato de correo incorrecto') 
         MessageFlash()
