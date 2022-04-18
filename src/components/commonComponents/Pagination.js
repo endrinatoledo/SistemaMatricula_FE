@@ -13,20 +13,18 @@ const useStyles = makeStyles({
   },
 });
 
-const Pagination = ({dataSource}) => {
-
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+const Pagination = ({dataSource,page, setPage,rowsPerPage, setRowsPerPage}) => {
+  
     const classes = useStyles();
 
     const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-      };
-    
+      setPage(newPage);
+    };
+  
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-      };
+      setRowsPerPage(+event.target.value);
+      setPage(0);
+    };
 
 
   return (

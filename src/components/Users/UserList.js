@@ -4,14 +4,17 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import TableContainer from '@mui/material/TableContainer';
 import Stack from '@mui/material/Stack';
 import Title from '../Layout/Title';
 import { makeStyles } from '@mui/styles';
 import UserModal from './UserModal';
+import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
 const Pagination = require('../commonComponents/Pagination').default
 const AddButton = require('../commonComponents/AddButton').default
+
 
 // function preventDefault(event) {
 //   event.preventDefault();
@@ -28,7 +31,15 @@ export default function UserList() {
   const [dataSource, setDataSource] = React.useState([])
   const [Reload, SetReload] = React.useState(0);
   const [openModal, setOpenModal] = React.useState(false);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [alertModal, setAlertModal] = React.useState(false);
+  const [alertType, setAlertType] = React.useState('');
+  const [message, setMessage] = React.useState('');
+
+
   const name = 'Usuario'
+  const defaultMessages = {success : 'Usuario Guardado', connectionError: 'Error de Conexión' }
   const classes = useStyles();
 
   const fillTable = async () => {
@@ -37,12 +48,15 @@ export default function UserList() {
       if(resultUsers.ok === true){
         setDataSource(resultUsers.data)
       }
-      console.log('si',resultUsers)
       // if( resultUsers){ setDataSource(resultReports) }else{ setConnErr(true) }
 
     }catch{
-      console.log('no')
-      // setConnErr(true)
+      setMessage(defaultMessages.connectionError)
+      setAlertType('error')
+      setAlertModal(true)
+      setTimeout(() => {
+        setAlertModal(false);
+    }, 3000)
   }
 }
 React.useEffect(() => {  
@@ -55,7 +69,7 @@ React.useEffect(() => {
         <Title>Listado de Usuarios</Title>
         <AddButton name={name} setOpenModal={setOpenModal} />
       </Stack>
-      
+      <TableContainer >
       <Table >
         <TableHead>
           <TableRow>
@@ -68,7 +82,9 @@ React.useEffect(() => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {dataSource.map((item) => (
+          {dataSource
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          .map((item) => (
             <TableRow key={item.usuId}>
               <TableCell>{item.usuName}</TableCell>
               <TableCell>{item.usuLastName}</TableCell>
@@ -80,9 +96,19 @@ React.useEffect(() => {
           ))}
         </TableBody>
       </Table>
-      <Pagination  dataSource={dataSource}/>
-      {(openModal) ? <UserModal name={name} openModal={openModal} setOpenModal={setOpenModal} fillTable={fillTable}/> : null}
-      
+      </TableContainer>
+      <Pagination  dataSource={dataSource} page={page} setPage={setPage} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage}/>
+      {(openModal) ? 
+      <UserModal 
+        defaultMessages={defaultMessages}
+        message={message} setMessage={setMessage}
+        setAlertType={setAlertType} name={name} 
+        openModal={openModal} setOpenModal={setOpenModal} 
+        fillTable={fillTable} setAlertModal={setAlertModal} 
+      /> : null}
+      {(alertModal) ? 
+      <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
+      : null}
     </React.Fragment>
   );
 }

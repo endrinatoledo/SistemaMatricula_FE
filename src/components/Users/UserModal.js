@@ -10,7 +10,8 @@ import Stack from '@mui/material/Stack';
 // import Visibility from '@mui/icons-material/Visibility';
 // import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import MenuItem from '@mui/material/MenuItem';
-import { ErrorAlert } from '../AlertMessages/ErrorAlert';
+import StandardAlert from '../AlertMessages/StandardAlert';
+import ActivateFlashMessage from '../AlertMessages/ActivateFlashMessage';
 const AxiosInstance = require("../utils/request").default;
 
   const useStyles = makeStyles({
@@ -45,24 +46,16 @@ const AxiosInstance = require("../utils/request").default;
     }  
   });
 
-const UserModal = ({name,openModal,setOpenModal,fillTable}) => {
+const UserModal = ({defaultMessages,message, setMessage, setAlertType,name,openModal,setOpenModal,fillTable, setAlertModal}) => {
 
   const [activeRoles, setActiveRoles] = React.useState([])
   const [Reload, SetReload] = React.useState(0);
   const [userObject, setUserObject] = React.useState({name:'', lastName:'',email:'', password:'',status: 1, rol: ''});
-  const [message, setMessage] = React.useState('')
   const [messageFlash, setMessageFlash] = React.useState(false)
+
   const requiredField = 'Campo requerido'
 
   const classes = useStyles();
-  
-  const MessageFlash  = () => {
-    
-    setMessageFlash(true)
-    setTimeout(() => {
-      setMessageFlash(false);
-    }, 5000);
-  }
 
     const getActiveRoles = async () => {
       try{
@@ -72,8 +65,9 @@ const UserModal = ({name,openModal,setOpenModal,fillTable}) => {
         }
       }catch{
         console.log('no')
+        setMessageFlash(true)
         setMessage('Error de Conexion')
-        MessageFlash()
+
       }
     }
 
@@ -83,15 +77,22 @@ const UserModal = ({name,openModal,setOpenModal,fillTable}) => {
           const data = (await AxiosInstance.post("/users/",userObject)).data
           if(data.ok === false){
               setMessage(data.message)
-              MessageFlash()
+              setMessageFlash(true)
           }else{
             fillTable()
             setOpenModal(false)
+            setMessage(defaultMessages.success)
+            setAlertType("success")
+            setAlertModal(true)
+
+            setTimeout(() => {
+              setAlertModal(false);
+          }, 3000)
           }
         }
       }catch{
-        setMessage('Error de conexión')
-        MessageFlash()
+        setMessage(defaultMessages.connectionError)
+        setMessageFlash(true)
       }
     }
     React.useEffect(() => {  
@@ -192,7 +193,10 @@ const UserModal = ({name,openModal,setOpenModal,fillTable}) => {
           <Button variant="contained" onClick={() => saveNewUser()} >Agregar</Button>
         </Stack>
         <Stack className={classes.errorMessage} >
-            { (messageFlash) ? <ErrorAlert message={message}/> : <></>}
+            { (messageFlash) ?<>
+              <ActivateFlashMessage setMessageFlash={setMessageFlash}/>
+              <StandardAlert message={message} alertType={"error"}/>
+            </>  : <></>}
           </Stack>
         </Box> 
       </Modal>
