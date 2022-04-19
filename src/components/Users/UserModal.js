@@ -112,7 +112,7 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
 
     const saveNewUser = async () => {
       try{
-        if(userObject.name !== '' && userObject.lastName !== '' && userObject.email !== '' && userObject.password !== '' && userObject.rol !== ''){
+        if(userObject.name !== '' && userObject.lastName !== '' && userObject.status !== 0 && userObject.email !== '' && userObject.password !== '' && userObject.rol !== ''){
           let email = userObject.email
           const validatedEmail = await ValidateEmail({email})
 
@@ -130,7 +130,7 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
             setMessage(defaultMessages.success)
             setAlertType("success")
             setAlertModal(true)
-
+            setUserObject({idUser:'',name:'', lastName:'',email:'', password:'',status: 0, rol: '', rolName:'',modalUserDelete:false, editUser:false, newUser:true,seePassword:false})
             setTimeout(() => {
               setAlertModal(false);
           }, 3000)
@@ -151,13 +151,12 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
 
     React.useEffect(() => {  
       getActiveRoles()
-
       }, [Reload]);
 
   return (
     <Modal
         open={openModal}
-        onClose={() => {setOpenModal(false);setUserObject({name:'', lastName:'',email:'', password:'',status: 1, rol: '',editUser:false, newUser:true,seePassword:false}); }}
+        onClose={() => {setOpenModal(false);setUserObject({name:'', lastName:'',email:'', password:'',status: 0, rol: '',editUser:false, newUser:true,seePassword:false}); }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -229,13 +228,18 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
           id="status"
           select
           label="Estatus"
-          defaultValue={(userObject.status)?userObject.status : 1}
-          onChange={e => setUserObject({...userObject, status : e.target.value ? e.target.value : null})}
-          // defaultValue={1}
+          helperText={(userObject.status === 0)? requiredField : ''}
+          error={(userObject.status === 0)? true : false}  
+          defaultValue={(userObject.status)?userObject.status : 0}
+          onChange={e => {setUserObject({...userObject, status : e.target.value ? e.target.value : 0})}}
           variant="standard"
         >
+          {(userObject.status !==0)?
+            <MenuItem key={userObject.status} value={userObject.status}>
+            {(userObject.status === 1)? 'Activo' : 'Inactivo'}
+            </MenuItem> : null}
             <MenuItem key={1} value={1}>Activo</MenuItem>
-            <MenuItem key={0} value={0}>Inactivo</MenuItem>
+            <MenuItem key={2} value={2}>Inactivo</MenuItem>
         </TextField> 
         <TextField
           id="rol"
@@ -265,7 +269,7 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
          </Stack>
 
         <Stack spacing={2} direction="row" className={classes.stack} justifyContent="center" alignItems="center">
-          <Button variant="contained" onClick={ () => {setOpenModal(false);setUserObject({name:'', lastName:'',email:'', password:'',status: 1, rol: '',editUser:false, newUser:true,seePassword:false}); }} color='inherit'>Cancelar</Button>
+          <Button variant="contained" onClick={ () => {setOpenModal(false);setUserObject({name:'', lastName:'',email:'', password:'',status: 0, rol: '',editUser:false, newUser:true,seePassword:false}); }} color='inherit'>Cancelar</Button>
           <Button variant="contained" onClick={() => (!userObject.editUser)? saveNewUser() : updateUser()} >{(!userObject.editUser)? 'Agregar' : 'Actualizar'}</Button>
         </Stack>
         <Stack className={classes.errorMessage} >

@@ -55,7 +55,7 @@ const DeleteUser = ({fillTable,setMessage,setAlertType,userObject,setUserObject,
                 setMessageFlash(true)
               }else{
                 fillTable()
-                setUserObject({...userObject,name:'', lastName:'',email:'', password:'',status: 1, rol: '',editUser:false, newUser:true,seePassword:false,modalUserDelete:false});
+                setUserObject({...userObject,name:'', lastName:'',email:'', password:'',status: 0, rol: '',editUser:false, newUser:true,seePassword:false,modalUserDelete:false});
                 setMessage(defaultMessages.userDelete)
                 setAlertType("success")
                 setAlertModal(true)
@@ -83,7 +83,7 @@ const DeleteUser = ({fillTable,setMessage,setAlertType,userObject,setUserObject,
             </Typography>
 
             <Stack spacing={2} direction="row" className={classes.stack} justifyContent="center" alignItems="center">
-                <Button variant="contained" onClick={ () => {setUserObject({...userObject,name:'', lastName:'',email:'', password:'',status: 1, rol: '',editUser:false, newUser:true,seePassword:false,modalUserDelete:false}); }} color='inherit'>Cancelar</Button>
+                <Button variant="contained" onClick={ () => {setUserObject({...userObject,name:'', lastName:'',email:'', password:'',status: 0, rol: '',editUser:false, newUser:true,seePassword:false,modalUserDelete:false}); }} color='inherit'>Cancelar</Button>
                 <Button variant="contained" onClick={ () => deleteUser()}>Eliminar</Button>
             </Stack>
             </Box>
