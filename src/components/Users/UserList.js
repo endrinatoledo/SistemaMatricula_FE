@@ -10,6 +10,7 @@ import Title from '../Layout/Title';
 import { makeStyles } from '@mui/styles';
 import UserModal from './UserModal';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
+import DeleteUser from './DeleteUser';
 import UserOptions from './UserOptions';
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
@@ -38,12 +39,12 @@ export default function UserList() {
   const [alertModal, setAlertModal] = React.useState(false);
   const [alertType, setAlertType] = React.useState('');
   const [message, setMessage] = React.useState('');
-  const [userObject, setUserObject] = React.useState({idUser:'',name:'', lastName:'',email:'', password:'',status: 1, rol: '', rolName:'', editUser:false, newUser:false,seePassword:false});
+  const [userObject, setUserObject] = React.useState({idUser:'',name:'', lastName:'',email:'', password:'',status: 1, rol: '', rolName:'',modalUserDelete:false, editUser:false, newUser:false,seePassword:false});
 
 
 
   const name = 'Usuario'
-  const defaultMessages = {update:'Usuario Actualizado',success : 'Usuario Guardado', connectionError: 'Error de Conexión', mailError: 'Formato de correo erróneo' }
+  const defaultMessages = {update:'Usuario Actualizado',success : 'Usuario Guardado', connectionError: 'Error de Conexión', mailError: 'Formato de correo erróneo', removeUser:'¿Desea eliminar usuario ',userDelete:'El usuario ha sido Eliminado' }
   const classes = useStyles();
 
   const fillTable = async () => {
@@ -95,7 +96,7 @@ React.useEffect(() => {
               <TableCell>{item.usuEmail}</TableCell>
               <TableCell >{item.roles.rolName}</TableCell>
               <TableCell> <StatusInTable status={item.usuStatus}/> </TableCell>
-              <TableCell > <UserOptions userObject={userObject} setUserObject={setUserObject} value={item} openModal={openModal} setOpenModal={setOpenModal} /> </TableCell>
+              <TableCell > <UserOptions userObject={userObject} setUserObject={setUserObject} value={item} setOpenModal={setOpenModal} /> </TableCell>
             </TableRow> 
           ))}
         </TableBody>
@@ -114,6 +115,11 @@ React.useEffect(() => {
       {(alertModal) ? 
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null}
-    </React.Fragment>
+      {(userObject.modalUserDelete)?
+        <DeleteUser 
+        fillTable={fillTable} setMessage={setMessage} setAlertType={setAlertType}
+        userObject={userObject} setUserObject={setUserObject} defaultMessages={defaultMessages} alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/>
+        : null}
+      </React.Fragment>
   );
 }

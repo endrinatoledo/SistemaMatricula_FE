@@ -35,7 +35,7 @@ const ModalAlertMessage = ({alertModal,setAlertModal, message, alertType}) => {
   
   return (
     <div>
-      <Button onClick={handleOpen}>Open modal</Button>
+      {/* <Button onClick={handleOpen}>Open modal</Button> */}
       <Modal
         open={alertModal}
         onClose={handleClose}

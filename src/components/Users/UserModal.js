@@ -12,7 +12,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import StandardAlert from '../AlertMessages/StandardAlert';
 import ActivateFlashMessage from '../AlertMessages/ActivateFlashMessage';
 import ValidateEmail from '../commonComponents/ValidateEmail';
@@ -56,7 +55,6 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
   const [activeRoles, setActiveRoles] = React.useState([])
   const [Reload, SetReload] = React.useState(0);
   const [messageFlash, setMessageFlash] = React.useState(false)
-  const [openSelect, setOpenSelect] = React.useState(false)
 
   const requiredField = 'Campo requerido'
 
@@ -150,13 +148,6 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
       
       setUserObject({...userObject,seePassword:!userObject.seePassword})
     };
-  
-    const handleClose = () => {
-      setOpenSelect(false);
-    };
-    const handleOpen = () => {
-      setOpenSelect(true);
-    };
 
     React.useEffect(() => {  
       getActiveRoles()
@@ -245,7 +236,7 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
         >
             <MenuItem key={1} value={1}>Activo</MenuItem>
             <MenuItem key={0} value={0}>Inactivo</MenuItem>
-        </TextField>
+        </TextField> 
         <TextField
           id="rol"
           select
