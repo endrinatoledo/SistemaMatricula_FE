@@ -6,10 +6,13 @@ import Modal from '@mui/material/Modal';
 import Title from '../Layout/Title';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
-//import {Visibility,VisibilityOff} from '@mui/icons-material';
-// import Visibility from '@mui/icons-material/Visibility';
-// import VisibilityOff from '@mui/icons-material/VisibilityOff';
+// import {Visibility,VisibilityOff} from '@mui/icons-material';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import StandardAlert from '../AlertMessages/StandardAlert';
 import ActivateFlashMessage from '../AlertMessages/ActivateFlashMessage';
 import ValidateEmail from '../commonComponents/ValidateEmail';
@@ -53,7 +56,7 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
   const [activeRoles, setActiveRoles] = React.useState([])
   const [Reload, SetReload] = React.useState(0);
   const [messageFlash, setMessageFlash] = React.useState(false)
-
+  const [openSelect, setOpenSelect] = React.useState(false)
 
   const requiredField = 'Campo requerido'
 
@@ -61,16 +64,51 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
 
     const getActiveRoles = async () => {
       try{
+
         const data = (await AxiosInstance.get("/roles/allRoles/active")).data
         if(data.ok === true){
           setActiveRoles(data.data)
           return;
         }
       }catch{
-        console.log('no')
         setMessageFlash(true)
         setMessage('Error de Conexion')
 
+      }
+    }
+    const updateUser = async () => {
+      try{
+        if(userObject.name !== '' && userObject.lastName !== '' && userObject.email !== '' && userObject.rol !== ''){
+        
+          let email = userObject.email
+          const validatedEmail = await ValidateEmail({email})
+
+          if(!validatedEmail){
+            setMessage(defaultMessages.mailError)
+            setMessageFlash(true)
+          }else{
+            const data = (await AxiosInstance.put("/users/"+userObject.idUser,userObject)).data
+            if(data.ok === false){
+              setMessage(data.message)
+              setMessageFlash(true)
+            }else{
+              fillTable()
+              setOpenModal(false)
+              setMessage(defaultMessages.update)
+              setAlertType("success")
+              setAlertModal(true)
+  
+              setTimeout(() => {
+                setAlertModal(false);
+            }, 3000)
+            }
+          
+          }
+
+        }
+      }catch{
+        setMessage(defaultMessages.connectionError)
+        setMessageFlash(true)
       }
     }
 
@@ -107,6 +145,19 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
         setMessageFlash(true)
       }
     }
+
+    const handleSeePassword = () => {
+      
+      setUserObject({...userObject,seePassword:!userObject.seePassword})
+    };
+  
+    const handleClose = () => {
+      setOpenSelect(false);
+    };
+    const handleOpen = () => {
+      setOpenSelect(true);
+    };
+
     React.useEffect(() => {  
       getActiveRoles()
 
@@ -115,7 +166,7 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
   return (
     <Modal
         open={openModal}
-        onClose={() => {setOpenModal(false); }}
+        onClose={() => {setOpenModal(false);setUserObject({name:'', lastName:'',email:'', password:'',status: 1, rol: '',editUser:false, newUser:true,seePassword:false}); }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -158,14 +209,28 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
                 helperText={(userObject.email === '')? requiredField : ''}
                 error={(userObject.email === '')? true : false}
                 />
+                
                 <TextField
-                required
+                type={(userObject.seePassword)?'text' : 'password'}
+                disabled={userObject.editUser}
+                required={(userObject.editUser)?false:true}
                 id="password"
                 label="Contraseña"
                 variant="standard"
                 onChange={(e) => { setUserObject({...userObject, password : e.target.value ? e.target.value : ''})}}
-                helperText={(userObject.password === '')? requiredField : ''}
-                error={(userObject.password === '')? true : false}  
+                helperText={(userObject.password === '' && !userObject.editUser)? requiredField : ''}
+                error={(userObject.password === '' && !userObject.editUser)? true : false}  
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleSeePassword}
+                      >
+                        {(!userObject.seePassword) ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
                 />
          </Stack>
          <Stack direction="row"  justifyContent="space-around" className={classes.TextField}>
@@ -189,14 +254,18 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
           onChange={(e) => { setUserObject({...userObject, rol : e.target.value })}}
           helperText={(userObject.rol === '')? requiredField : ''}
           error={(userObject.rol === '')? true : false}  
-          //   value={currency}
+          // value={(userObject.rol)?userObject.rol : ''}
           variant="standard"
         >
+          {(userObject.rol)?
+            <MenuItem key={userObject.rol} value={userObject.rol}>
+            {userObject.rolName}
+            </MenuItem> : null}
           {(activeRoles.length>0)?
             activeRoles.map((option) => (
-            <MenuItem key={option.rolId} value={option.rolId}>
-              {option.rolName}
-            </MenuItem>
+                <MenuItem key={option.rolId} value={option.rolId}>
+                  {option.rolName}
+                </MenuItem>
            ))
            :
            null
@@ -204,10 +273,9 @@ const UserModal = ({userObject, setUserObject,defaultMessages,message, setMessag
         </TextField>
          </Stack>
 
-        <Stack spacing={2} direction="row" className={classes.stack} 
-               justifyContent="center" alignItems="center">
-          <Button variant="contained" onClick={() => console.log('cancelar')} color='inherit'>Cancelar</Button>
-          <Button variant="contained" onClick={() => saveNewUser()} >Agregar</Button>
+        <Stack spacing={2} direction="row" className={classes.stack} justifyContent="center" alignItems="center">
+          <Button variant="contained" onClick={ () => {setOpenModal(false);setUserObject({name:'', lastName:'',email:'', password:'',status: 1, rol: '',editUser:false, newUser:true,seePassword:false}); }} color='inherit'>Cancelar</Button>
+          <Button variant="contained" onClick={() => (!userObject.editUser)? saveNewUser() : updateUser()} >{(!userObject.editUser)? 'Agregar' : 'Actualizar'}</Button>
         </Stack>
         <Stack className={classes.errorMessage} >
             { (messageFlash) ?<>

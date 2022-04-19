@@ -38,12 +38,12 @@ export default function UserList() {
   const [alertModal, setAlertModal] = React.useState(false);
   const [alertType, setAlertType] = React.useState('');
   const [message, setMessage] = React.useState('');
-  const [userObject, setUserObject] = React.useState({name:'', lastName:'',email:'', password:'',status: 1, rol: ''});
+  const [userObject, setUserObject] = React.useState({idUser:'',name:'', lastName:'',email:'', password:'',status: 1, rol: '', rolName:'', editUser:false, newUser:false,seePassword:false});
 
 
 
   const name = 'Usuario'
-  const defaultMessages = {success : 'Usuario Guardado', connectionError: 'Error de Conexión', mailError: 'Formato de correo erróneo' }
+  const defaultMessages = {update:'Usuario Actualizado',success : 'Usuario Guardado', connectionError: 'Error de Conexión', mailError: 'Formato de correo erróneo' }
   const classes = useStyles();
 
   const fillTable = async () => {

@@ -9,21 +9,26 @@ const UserOptions = ({userObject, setUserObject,editUser, setEditUser, value,ope
     const editUserProcess = (value) =>{
 
         setUserObject({...userObject,
+            idUser:value.usuId,
             name:value.usuName,
             lastName:value.usuLastName,
             email:value.usuEmail,
             status: value.usuStatus,
-            rol: value.rolId })
+            rol: value.rolId,
+            rolName:value.roles.rolName,
+            editUser:true,
+            newUser:false,
+            seePassword:false })
         setOpenModal(true)
     }
 
 
-// console.log('value usuariooo: ',editUser)
+// console.log('value usuariooo: ',value)
 
   return (
         <Stack direction="row" spacing={2}>
-        <IconButton color="primary" aria-label="Editar Usuario" component="span">
-          <ModeEditRoundedIcon onClick={() => editUserProcess(value) }  ></ModeEditRoundedIcon>
+        <IconButton color="primary" aria-label="Editar Usuario" component="span"onClick={() => editUserProcess(value) }>
+          <ModeEditRoundedIcon ></ModeEditRoundedIcon>
         </IconButton>
         <IconButton color="primary" aria-label="Eliminar Usuario" component="span">
           <DeleteRoundedIcon  ></DeleteRoundedIcon>
