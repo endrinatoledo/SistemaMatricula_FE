@@ -36,9 +36,6 @@ const UserOptions = ({userObject, setUserObject, value,setOpenModal}) => {
     }
     
 
-
-// console.log('value usuariooo: ',value)
-
   return (
         <Stack direction="row" spacing={2}>
         <IconButton color="primary" aria-label="Editar Usuario" component="span"onClick={() => editUserProcess(value) }>

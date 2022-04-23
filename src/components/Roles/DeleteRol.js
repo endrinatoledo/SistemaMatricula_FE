@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 const AxiosInstance = require("../utils/request").default;
 
-
 const useStyles = makeStyles({
     modal:{
     background:'white',
@@ -24,26 +23,26 @@ const useStyles = makeStyles({
     stack: {
         marginTop : 40,
      },
-  
   });
 
-const DeleteUser = ({fillTable,setMessage,setAlertType,userObject,setUserObject, defaultMessages,setAlertModal}) => {
+const DeleteRol = ({fillTable,setMessage,setAlertType,rolObject,setRolObject, defaultMessages,setAlertModal}) => {
   
     const [messageFlash, setMessageFlash] = React.useState(false)
     const classes = useStyles();
-    const handleClose = () => setUserObject({...userObject, modalUserDelete:false, newUser:true});
+    const handleClose = () => setRolObject({...rolObject, modalRolDelete:false, newRol:true});
 
-    const deleteUser = async () => {
+
+    const deleteRol = async () => {
         try{
-            const data = (await AxiosInstance.delete("/users/"+userObject.idUser)).data
+            const data = (await AxiosInstance.delete("/roles/"+rolObject.idRol)).data
 
             if(data.ok === false){
                 setMessage(data.message)
                 setMessageFlash(true)
               }else{
                 fillTable()
-                setUserObject({...userObject,name:'', lastName:'',email:'', password:'',status: 0, rol: '',editUser:false, newUser:true,seePassword:false,modalUserDelete:false});
-                setMessage(defaultMessages.userDelete)
+                setRolObject({...rolObject,name:'',status: 0, editRol:false, newRol:true,modalRolDelete:false});
+                setMessage(defaultMessages.rolDelete)
                 setAlertType("success")
                 setAlertModal(true)
     
@@ -56,22 +55,23 @@ const DeleteUser = ({fillTable,setMessage,setAlertType,userObject,setUserObject,
             setMessageFlash(true)
           }
     }
+
     return (
     <div>
       <Modal
-        open={userObject.modalUserDelete}
+        open={rolObject.modalRolDelete}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
           <Box className={classes.modal}>
             <Typography id="modal-modal-title" variant="h6" component="h2" align="center">
-            {`${defaultMessages.removeUser} ${userObject.name} ?`}
+            {`${defaultMessages.removeRol} ${rolObject.name} ?`}
             </Typography>
 
             <Stack spacing={2} direction="row" className={classes.stack} justifyContent="center" alignItems="center">
-                <Button variant="contained" onClick={ () => {setUserObject({...userObject,name:'', lastName:'',email:'', password:'',status: 0, rol: '',editUser:false, newUser:true,seePassword:false,modalUserDelete:false}); }} color='inherit'>Cancelar</Button>
-                <Button variant="contained" onClick={ () => deleteUser()}>Eliminar</Button>
+                <Button variant="contained" onClick={ () => {setRolObject({...rolObject,name:'',status: 0,editRol:false, newRol:true,modalRolDelete:false}); }} color='inherit'>Cancelar</Button>
+                <Button variant="contained" onClick={ () => deleteRol()}>Eliminar</Button>
             </Stack>
             </Box>
       </Modal>
@@ -79,4 +79,4 @@ const DeleteUser = ({fillTable,setMessage,setAlertType,userObject,setUserObject,
   )
 }
 
-export default DeleteUser
+export default DeleteRol

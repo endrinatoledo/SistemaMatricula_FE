@@ -15,34 +15,35 @@ import ActivateFlashMessage from '../AlertMessages/ActivateFlashMessage';
 const AxiosInstance = require("../utils/request").default;
 
 const useStyles = makeStyles({
-    stack: {
-       marginTop : 40,
-    },
-    errorMessage:{
-      marginTop : '3%'
-    },
-    TextField:{
-      marginBottom : '3%'
-    },
-    box:{
-      flexGrow: 1,
-      overflow: 'scroll',
-      overflowX: 'hidden',
-      position : 'absolute',
-      top: '40%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      background:'white',
-      border: '2px solid #000',
-      boxShadow: 24,
-      paddingTop : '2%',
-      paddingLeft : '2%',
-      paddingRight : '2%',
-      paddingBottom : '2%',
-      '& .MuiTextField-root': { m: 1, width: '25ch' }
-      
-    }  
-  });
+  stack: {
+     marginTop : 40,
+  },
+  errorMessage:{
+    marginTop : '3%'
+  },
+  TextField:{
+    marginBottom : '3%'
+  },
+  box:{
+    flexGrow: 1,
+    overflow: 'scroll',
+    overflowX: 'hidden',
+    position : 'absolute',
+    top: '40%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '40%',
+    background:'white',
+    border: '2px solid #000',
+    boxShadow: 24,
+    paddingTop : '2%',
+    paddingLeft : '2%',
+    paddingRight : '2%',
+    paddingBottom : '2%',
+    '& .MuiTextField-root': { m: 1, width: '25ch' }
+    
+  }  
+});
 
 const RolModal = ({message,setAlertModal,setAlertType,fillTable,defaultMessages,setMessage,rolObject,openModal,setOpenModal,setRolObject,name }) => {
 
@@ -75,7 +76,29 @@ const RolModal = ({message,setAlertModal,setAlertType,fillTable,defaultMessages,
           }
     }
     const updateRol = async () => {
-
+      try{
+        if(rolObject.name !== '' ){
+  
+            const data = (await AxiosInstance.put("/roles/"+rolObject.idRol,rolObject)).data
+            if(data.ok === false){
+              setMessage(data.message)
+              setMessageFlash(true)
+            }else{
+              fillTable()
+              setOpenModal(false)
+              setMessage(defaultMessages.update)
+              setAlertType("success")
+              setAlertModal(true)
+  
+              setTimeout(() => {
+                setAlertModal(false);
+            }, 3000)
+            }
+        }
+      }catch{
+        setMessage(defaultMessages.connectionError)
+        setMessageFlash(true)
+      }
     }
 
 

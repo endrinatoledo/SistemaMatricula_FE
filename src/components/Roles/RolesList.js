@@ -8,7 +8,9 @@ import Title from '../Layout/Title';
 import Stack from '@mui/material/Stack';
 import { makeStyles } from '@mui/styles';
 import RolModal from './RolModal';
+import RolOptions from './RolOptions';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
+import DeleteRol from './DeleteRol';
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
 const Pagination = require('../commonComponents/Pagination').default
@@ -74,7 +76,7 @@ React.useEffect(() => {
             <TableRow key={item.rolId}>
               <TableCell>{item.rolName}</TableCell>
               <TableCell> <StatusInTable status={item.rolStatus}/> </TableCell>
-              <TableCell >ACCIONES</TableCell>
+              <TableCell ><RolOptions rolObject={rolObject} setRolObject={setRolObject} value={item} setOpenModal={setOpenModal}/>  </TableCell>
             </TableRow> 
           ))}
         </TableBody>
@@ -86,6 +88,11 @@ React.useEffect(() => {
       {(alertModal) ? 
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null}
+      {(rolObject.modalRolDelete)?
+        <DeleteRol 
+        fillTable={fillTable} setMessage={setMessage} setAlertType={setAlertType}
+        rolObject={rolObject} setRolObject={setRolObject} defaultMessages={defaultMessages} setAlertModal={setAlertModal} />
+        : null}
     </React.Fragment>
   );
 }

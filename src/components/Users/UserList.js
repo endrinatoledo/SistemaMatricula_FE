@@ -53,7 +53,7 @@ export default function UserList() {
       if(resultUsers.ok === true){
         setDataSource(resultUsers.data)
       }
-      // if( resultUsers){ setDataSource(resultReports) }else{ setConnErr(true) }
+
 
     }catch{
       setMessage(defaultMessages.connectionError)
@@ -118,7 +118,7 @@ React.useEffect(() => {
       {(userObject.modalUserDelete)?
         <DeleteUser 
         fillTable={fillTable} setMessage={setMessage} setAlertType={setAlertType}
-        userObject={userObject} setUserObject={setUserObject} defaultMessages={defaultMessages} alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/>
+        userObject={userObject} setUserObject={setUserObject} defaultMessages={defaultMessages} setAlertModal={setAlertModal} />
         : null}
       </React.Fragment>
   );
