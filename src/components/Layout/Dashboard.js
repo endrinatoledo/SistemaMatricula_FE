@@ -21,6 +21,7 @@ import Logout from './Logout';
 import UserList from '../Users/UserList';
 import RepresentativeList from '../Representative/RepresentativeList';
 import RolesList from '../Roles/RolesList';
+import PeriodsList from '../Periods/PeriodsList';
 
 
 const drawerWidth = 240;
@@ -154,7 +155,7 @@ const Dashboard= () => {
                       <Route path="/representantes"element={<RepresentativeList />} ></Route>
                       <Route path="/roles"element={<RolesList />} ></Route>
                       <Route path="/secciones"element={<RepresentativeList />} ></Route>
-                      <Route path="/periodos"element={<RepresentativeList />} ></Route>
+                      <Route path="/periodos"element={<PeriodsList />} ></Route>
                       <Route path="/tasas"element={<RepresentativeList />} ></Route>
                     </Routes>
                   }
