@@ -36,6 +36,7 @@ export default function PeriodsList() {
   const defaultMessages = {update:'Período Actualizado',success : 'Período Guardado', connectionError: 'Error de Conexión', removePeriod:'¿Desea eliminar Período ',periodDelete:'El Período ha sido Eliminado' }
   const [alertType, setAlertType] = React.useState('');
   const [alertModal, setAlertModal] = React.useState(false);
+  const [order, setOrder] = React.useState('asc');
 
   const name = 'Período'
   const classes = useStyles();
@@ -58,7 +59,10 @@ React.useEffect(() => {
     <React.Fragment>
       <Stack direction="row"  justifyContent="space-between" className={classes.moduleHeader}>
         <Title>Listado de Períodos</Title>
-        <AddButton name={name} setOpenModal={setOpenModal} />
+        <Stack  direction="row" justifyContent="flex-end" alignItems="center" spacing={2}> 
+            <AddButton name={name} setOpenModal={setOpenModal} />
+        </Stack>
+        
       </Stack>
       <Table >
         <TableHead>

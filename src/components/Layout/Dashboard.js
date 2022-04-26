@@ -22,6 +22,7 @@ import UserList from '../Users/UserList';
 import RepresentativeList from '../Representative/RepresentativeList';
 import RolesList from '../Roles/RolesList';
 import PeriodsList from '../Periods/PeriodsList';
+import FamiliesList from '../Families/FamiliesList'
 
 
 const drawerWidth = 240;
@@ -148,7 +149,7 @@ const Dashboard= () => {
                       <Route path="/"element={<UserList />} ></Route>
                       <Route path="/usuarios"element={<UserList />} ></Route>
                       <Route path="/estudiantes"element={<RepresentativeList />} ></Route>
-                      <Route path="/familias"element={<RepresentativeList />} ></Route>
+                      <Route path="/familias"element={<FamiliesList />} ></Route>
                       <Route path="/colegio"element={<RepresentativeList />} ></Route>
                       <Route path="/escolaridad"element={<RepresentativeList />} ></Route>
                       <Route path="/niveles"element={<RepresentativeList />} ></Route>
