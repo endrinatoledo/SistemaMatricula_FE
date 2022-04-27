@@ -54,15 +54,20 @@ React.useEffect(() => {
 
           AxiosInstance.post(`/families/`,newRow)
           .then(resp=>{
-            fillTable()
-            resolve()
+            setTimeout(() => {
+              fillTable()
+              resolve()
+            }, 2000);
+            
           })
           }),
          onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
           AxiosInstance.delete(`/families/${selectRow.famId}`)
           .then(resp=>{
-            fillTable()
-            resolve()
+            setTimeout(() => {
+              fillTable()
+              resolve()
+            }, 2000);
           })
 
         }),
@@ -70,8 +75,10 @@ React.useEffect(() => {
          onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
             AxiosInstance.put(`/families/${newRow.famId}`,newRow)
             .then(resp=>{
-              fillTable()
-              resolve()
+              setTimeout(() => {
+                fillTable()
+                resolve()
+              }, 2000);
             })
          })
      }}
