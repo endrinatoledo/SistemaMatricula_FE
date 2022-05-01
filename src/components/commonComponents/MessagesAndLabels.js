@@ -6,5 +6,9 @@ const StatusTag = [
         { id    : 2, title : "Inactivo" }, 
         { id    : 1, title : "Activo" }];
 
-export {StatusTag}
+const standardMessages = {
+        connectionError : "Error de conexión"
+
+}
+export {StatusTag, standardMessages}
 

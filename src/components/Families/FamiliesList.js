@@ -1,11 +1,11 @@
 import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
 import { ExportPdf } from '@material-table/exporters';
-import * as Xlsx from 'xlsx'
-const {StatusTag} = require('../commonComponents/MessagesAndLabels')
+import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
+const {StatusTag, standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
-const DownloadExcel = require('../commonComponents/DownloadExcel').default
+const DownloadExcel = require('../commonComponents/DownloadExcel').default 
 
 const FamiliesList = () => {
   
@@ -16,6 +16,9 @@ const FamiliesList = () => {
       columns:[["Códigos", "Familias", "Estatus"]],
       sheetName: "Familias"
     }
+    const [alertModal, setAlertModal] = React.useState(false)
+    const [message, setMessage] = React.useState()
+    const [alertType, setAlertType] = React.useState('');
 
   const columns = [
     { title: 'Código', field: 'famCode', editable:false},
@@ -33,8 +36,9 @@ const FamiliesList = () => {
         setDataSource(resultFamilies.data)
       }
     }catch{
-    //   console.log('no Period')
-      // setConnErr(true)
+      setMessage('Error de Conexion')
+      setAlertModal(true)
+      
   }
 }
 
@@ -47,6 +51,7 @@ React.useEffect(() => {
     }, [Reload]);
 
   return (
+    <>
     <MaterialTable title={'Familias'}
      data={dataSource} 
      columns={columns}
@@ -70,11 +75,25 @@ React.useEffect(() => {
           AxiosInstance.post(`/families/`,newRow)
           .then(resp=>{
             setTimeout(() => {
+              if(resp.data.ok === true){
+                setAlertType("success")
+              }else{
+                setAlertType("error")
+              }
+              setMessage(resp.data.message)
+              setAlertModal(true)
               fillTable()
               resolve()
-            }, 2000);
+            }, 1000);
             
           })
+          .catch((err) => {
+              setMessage(standardMessages.connectionError)
+              setAlertType("error")
+              setAlertModal(true)
+              fillTable()
+              reject()
+          });
           }),
          onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
           AxiosInstance.delete(`/families/${selectRow.famId}`)
@@ -98,6 +117,13 @@ React.useEffect(() => {
          })
      }}
     />
+    {(alertModal) ? 
+      <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
+      : null}
+
+      
+    </>
+    
 
   )
 }

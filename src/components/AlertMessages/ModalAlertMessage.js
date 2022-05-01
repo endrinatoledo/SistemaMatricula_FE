@@ -23,19 +23,15 @@ const useStyles = makeStyles({
 
 const ModalAlertMessage = ({alertModal,setAlertModal, message, alertType}) => {
 
-  const handleOpen = () => setAlertModal(true);
   const handleClose = () => setAlertModal(false);
   const classes = useStyles();
-
-  function closeAlert() {
-    setTimeout(() => {
-      setAlertModal(false);
-    }, 4000);
-  }
   
   return (
+    <>
+    {setTimeout(() => {
+      setAlertModal(false);
+  }, 2000)}
     <div>
-      {/* <Button onClick={handleOpen}>Open modal</Button> */}
       <Modal
         open={alertModal}
         onClose={handleClose}
@@ -47,6 +43,11 @@ const ModalAlertMessage = ({alertModal,setAlertModal, message, alertType}) => {
         </Alert>
       </Modal>
     </div>
+    
+    </>
+    
+
+    
   );
 }
 
