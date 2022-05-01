@@ -84,25 +84,43 @@ React.useEffect(() => {
               setAlertModal(true)
               fillTable()
               resolve()
-            }, 1000);
+            }, 2000);
             
           })
           .catch((err) => {
+            setTimeout(() => {
               setMessage(standardMessages.connectionError)
               setAlertType("error")
               setAlertModal(true)
               fillTable()
               reject()
+            }, 2000);
           });
           }),
          onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
           AxiosInstance.delete(`/families/${selectRow.famId}`)
           .then(resp=>{
             setTimeout(() => {
+              if(resp.data.ok === true){
+                setAlertType("success")
+              }else{
+                setAlertType("error")
+              }
+              setMessage(resp.data.message)
+              setAlertModal(true)
               fillTable()
               resolve()
             }, 2000);
-          })
+            
+          }).catch((err) => {
+            setTimeout(() => {
+              setMessage(standardMessages.connectionError)
+              setAlertType("error")
+              setAlertModal(true)
+              fillTable()
+              reject()
+            }, 2000);
+          });
 
         }),
 
@@ -110,10 +128,27 @@ React.useEffect(() => {
             AxiosInstance.put(`/families/${newRow.famId}`,newRow)
             .then(resp=>{
               setTimeout(() => {
+                if(resp.data.ok === true){
+                  setAlertType("success")
+                }else{
+                  setAlertType("error")
+                }
+                setMessage(resp.data.message)
+                setAlertModal(true)
                 fillTable()
                 resolve()
               }, 2000);
-            })
+              
+            }).catch((err) => {
+              setTimeout(() => {
+                setMessage(standardMessages.connectionError)
+                setAlertType("error")
+                setAlertModal(true)
+                fillTable()
+                reject()
+              }, 2000);
+            });
+
          })
      }}
     />
