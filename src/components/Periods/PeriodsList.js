@@ -14,10 +14,14 @@ const PeriodsList = () => {
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
 
+    let today = new Date();
+    let year = today.getFullYear();
+
   const columns = [
-    { title: 'Año Inicio', field: 'perStartYear',cellStyle:{paddingRight:'14%'},headerStyle:{paddingRight:'12%'}, validate:rowData=>(rowData.perStartYear === undefined ||rowData.perStartYear ==='')?"Required":true, type: "numeric"},
+    { title: 'Año Inicio', field: 'perStartYear',cellStyle:{paddingRight:'14%'},headerStyle:{paddingRight:'12%'}, 
+    validate:rowData=>(rowData.perStartYear > year ||rowData.perStartYear < year)?"Ingrese Año Actual":'', type: "numeric"},
     { title: 'Año Fin', field: 'perEndYear',cellStyle:{paddingRight:'14%'},headerStyle:{paddingRight:'12%'}, editable:false, type: "numeric"},
-    { title: 'Estatus', field: 'perStatus',cellStyle:{paddingLeft:'5%'},headerStyle:{paddingLeft:'5%'}, width: 200,  lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.perStatus === undefined)?"Required":true }
+    { title: 'Estatus', field: 'perStatus',cellStyle:{paddingLeft:'5%'},headerStyle:{paddingLeft:'5%'}, width: 200,  lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.perStatus === undefined)?"Requerido":true }
 
   ];
 

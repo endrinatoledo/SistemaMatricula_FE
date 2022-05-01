@@ -26,6 +26,7 @@ import FamiliesList from '../Families/FamiliesList';
 import LevelsList from '../Levels/LevelsList';
 import SectionsList from '../Sections/SectionsList';
 import PaymentMethodsList from '../PaymentMethods/PaymentMethodsList';
+import ExchangeRatesList from '../ExchangeRates/ExchangeRatesList';
 
 
 const drawerWidth = 240;
@@ -161,7 +162,7 @@ const Dashboard= () => {
                       <Route path="/roles"element={<RolesList />} ></Route>
                       <Route path="/secciones"element={<SectionsList />} ></Route>
                       <Route path="/periodos"element={<PeriodsList />} ></Route>
-                      <Route path="/tasas"element={<RepresentativeList />} ></Route>
+                      <Route path="/tasas"element={<ExchangeRatesList />} ></Route>
                     </Routes>
                   }
                   </Paper>

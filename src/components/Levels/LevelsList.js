@@ -17,11 +17,11 @@ const LevelsList = () => {
   const columns = [
     { title: 'Nombre', field: 'levName',
     headerStyle:{ paddingLeft:'30%'},
-    validate:rowData=>(rowData.levName === undefined || rowData.levName === '')?"Required":true },
+    validate:rowData=>(rowData.levName === undefined || rowData.levName === '')?"Requerido":true },
     { title: 'Estatus', field: 'levStatus', 
     cellStyle:{paddingLeft:'5%'},
     headerStyle:{paddingLeft:'5%'}, width: 200, 
-    lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.levStatus === undefined)?"Required":true }
+    lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.levStatus === undefined)?"Requerido":true }
 
   ];
 

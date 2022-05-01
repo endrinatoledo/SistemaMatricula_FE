@@ -17,11 +17,11 @@ const SectionsList = () => {
   const columns = [
     { title: 'Nombre', field: 'secName',
     headerStyle:{ paddingLeft:'27%'},cellStyle:{paddingLeft:'29%'},
-    validate:rowData=>(rowData.secName === undefined || rowData.secName === '')?"Required":true },
+    validate:rowData=>(rowData.secName === undefined || rowData.secName === '')?"Requerido":true },
     { title: 'Estatus', field: 'secStatus', 
     cellStyle:{paddingLeft:'5%'},
     headerStyle:{paddingLeft:'5%'}, width: 400, 
-    lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.secStatus === undefined)?"Required":true }
+    lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.secStatus === undefined)?"Requerido":true }
 
   ];
 

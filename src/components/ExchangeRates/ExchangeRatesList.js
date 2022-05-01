@@ -5,32 +5,29 @@ import FilterList from '@material-ui/icons/FilterList';
 const { standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 
-const PaymentMethodsList = () => {
+
+const ExchangeRatesList = () => {
   
     const [Reload, SetReload] = React.useState(0);
     const [dataSource, setDataSource] = React.useState([])
+    const [filtering, setFiltering] = React.useState(false)
     const [alertModal, setAlertModal] = React.useState(false)
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
-    const [filtering, setFiltering] = React.useState(false)
 
   const columns = [
-    { title: 'Nombre', field: 'payName',
-    headerStyle:{ paddingLeft:'30%'},
-    validate:rowData=>(rowData.payName === undefined || rowData.payName === '')?"Requerido":true },
-    { title: 'Estatus', field: 'payStatus', 
-    cellStyle:{paddingLeft:'5%'},
-    headerStyle:{paddingLeft:'5%'}, width: 200, 
-    lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.payStatus === undefined)?"Requerido":true }
+    { title: 'Fecha', field: 'excDate',type:'date', headerStyle:{paddingLeft:'15%'},cellStyle:{paddingLeft:'14%'}, validate:rowData=>(rowData.excDate === undefined || rowData.excDate === '')?"Requerido":true},
+    { title: 'Monto en Bolívares',type:'float', field: 'excAmount', width: 400,cellStyle:{paddingRight:0},validate:rowData=>(rowData.excAmount === undefined || rowData.excAmount === '')?"Requerido":true },
+    { title: 'Turno', field: 'excShift',cellStyle:{paddingLeft:'5%'},headerStyle:{paddingLeft:'5%',}, width: 200,  lookup: {'Mañana': 'Mañana', 'Tarde':'Tarde'}, validate:rowData=>(rowData.excShift === undefined)?"Requerido":true }
 
   ];
 
   const fillTable = async () => {
 
     try{
-      const resultPaymentM = (await AxiosInstance.get("/paymentmethod/")).data
-      if(resultPaymentM.ok === true){
-        setDataSource(resultPaymentM.data)
+      const resultExchangeR = (await AxiosInstance.get("/exchangeRate/")).data
+      if(resultExchangeR.ok === true){
+        setDataSource(resultExchangeR.data)
       }
     }catch{
       setMessage('Error de Conexion')
@@ -38,7 +35,6 @@ const PaymentMethodsList = () => {
       
   }
 }
-
 
 React.useEffect(() => {  
     fillTable()
@@ -50,51 +46,43 @@ React.useEffect(() => {
 
   return (
     <>
-    <MaterialTable title={'Métodos de Pago'}
-    data={dataSource} 
-    columns={columns}
-    actions={[
+    <MaterialTable title={'Tasas de Cambio'}
+     data={dataSource} 
+     columns={columns}
+     actions={[
       { icon: () => <FilterList />,
         tooltip: "Activar Filtros",
         onClick : ()=> setFiltering(!filtering),
         isFreeAction: true }
     ]}
-    options={{
+     options={{
         width:300,
         actionsCellStyle:{paddingLeft:50,paddingRight:50},
-         filtering:filtering,
-         actionsColumnIndex:-1,
-         addRowPosition:'first',
-         headerStyle: {
+        headerStyle: {
           backgroundColor: "#007bff",
           color: "#FFF",
           fontWeight:'normal',
           fontSize:18,
-          textAlign:"center",
         },
-        filterCellStyle:{
-
-        }
+         filtering:filtering,
+         actionsColumnIndex:-1,
+         addRowPosition:'first'
      }}
      editable={{
          onRowAdd: (newRow) => new Promise((resolve, reject)=>{
 
-          AxiosInstance.post(`/paymentmethod/`,newRow)
+          AxiosInstance.post(`/exchangeRate/`,newRow)
           .then(resp=>{
             setTimeout(() => {
               if(resp.data.ok === true){
                 setAlertType("success")
-                setMessage(resp.data.message)
-                setAlertModal(true)
-                fillTable()
-                resolve()
               }else{
-                setMessage(resp.data.message) 
                 setAlertType("error")
-                setAlertModal(true)
-                reject()
               }
-              
+              setMessage(resp.data.message)
+              setAlertModal(true)
+              fillTable()
+              resolve()
             }, 2000);
             
           })
@@ -109,8 +97,7 @@ React.useEffect(() => {
           });
           }),
          onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
-
-          AxiosInstance.delete(`/paymentmethod/${selectRow.payId}`)
+          AxiosInstance.delete(`/exchangeRate/${selectRow.excId}`)
           .then(resp=>{
             setTimeout(() => {
               if(resp.data.ok === true){
@@ -137,7 +124,7 @@ React.useEffect(() => {
         }),
 
          onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
-            AxiosInstance.put(`/paymentmethod/${newRow.payId}`,newRow)
+            AxiosInstance.put(`/exchangeRate/${newRow.excId}`,newRow)
             .then(resp=>{
               setTimeout(() => {
                 if(resp.data.ok === true){
@@ -175,4 +162,4 @@ React.useEffect(() => {
   )
 }
 
-export default PaymentMethodsList
+export default ExchangeRatesList
