@@ -13,6 +13,7 @@ import StairsRoundedIcon from '@mui/icons-material/StairsRounded';
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded';
 import GridOnRoundedIcon from '@mui/icons-material/GridOnRounded';
+import PaymentRoundedIcon from '@mui/icons-material/PaymentRounded';
 
 
 export const CollectionListItems = () => {
@@ -165,6 +166,16 @@ export const PeopleListItems = () => {
                 <SchoolRoundedIcon />
               </ListItemIcon>
               <ListItemText primary="Escolaridad" />
+            </ListItemButton>
+          </List>
+           </NavLink>
+           <NavLink to='/metodosdepago'>
+           <List component="div" disablePadding>
+            <ListItemButton sx={{ pl: 2 }} >
+              <ListItemIcon>
+                <PaymentRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Metodos de Pago" />
             </ListItemButton>
           </List>
            </NavLink>

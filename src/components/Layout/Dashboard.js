@@ -25,6 +25,7 @@ import PeriodsList from '../Periods/PeriodsList';
 import FamiliesList from '../Families/FamiliesList';
 import LevelsList from '../Levels/LevelsList';
 import SectionsList from '../Sections/SectionsList';
+import PaymentMethodsList from '../PaymentMethods/PaymentMethodsList';
 
 
 const drawerWidth = 240;
@@ -153,6 +154,7 @@ const Dashboard= () => {
                       <Route path="/estudiantes"element={<RepresentativeList />} ></Route>
                       <Route path="/familias"element={<FamiliesList />} ></Route>
                       <Route path="/colegio"element={<RepresentativeList />} ></Route>
+                      <Route path="/metodosdepago"element={<PaymentMethodsList />} ></Route>
                       <Route path="/escolaridad"element={<RepresentativeList />} ></Route>
                       <Route path="/niveles"element={<LevelsList />} ></Route>
                       <Route path="/representantes"element={<RepresentativeList />} ></Route>
