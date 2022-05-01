@@ -1,98 +1,165 @@
 import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Title from '../Layout/Title';
-import Stack from '@mui/material/Stack';
-import { makeStyles } from '@mui/styles';
-import RolModal from './RolModal';
-import RolOptions from './RolOptions';
+import MaterialTable from '@material-table/core'; 
+import { ExportPdf } from '@material-table/exporters';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
-import DeleteRol from './DeleteRol';
+const {StatusTag, standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
-const StatusInTable = require('../commonComponents/StatusInTable').default
-const Pagination = require('../commonComponents/Pagination').default
-const AddButton = require('../commonComponents/AddButton').default
+const DownloadExcel = require('../commonComponents/DownloadExcel').default 
 
-const useStyles = makeStyles({
-  moduleHeader:{
-    marginBottom:20,
-    marginTop:10
-  }
-});
+const RolesList = () => {
+  
+    const [Reload, SetReload] = React.useState(0);
+    const [dataSource, setDataSource] = React.useState([])
+    const excelStructure ={
+      fileName : 'ReporteDeFamilias.xlsx',
+      columns:[["Códigos", "Familias", "Estatus"]],
+      sheetName: "Familias"
+    }
+    const [alertModal, setAlertModal] = React.useState(false)
+    const [message, setMessage] = React.useState()
+    const [alertType, setAlertType] = React.useState('');
 
+  const columns = [
+    { title: 'Nombre', field: 'rolName', validate:rowData=>(rowData.rolName === undefined || rowData.rolName === '')?"Required":true },
+    // { title: 'Estatus', field: 'famStatus',filtering:false, render:(row)=> <StatusInTable status={row.famStatus} /> }
+    { title: 'Estatus', field: 'rolStatus', lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.rolStatus === undefined)?"Required":true }
 
+  ];
 
-export default function RolesList() {
-  const [dataSource, setDataSource] = React.useState([])
-  const [Reload, SetReload] = React.useState(0);
-  const [openModal, setOpenModal] = React.useState(false);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [rolObject, setRolObject] = React.useState({idRol:'',name:'',status: 0, modalRolDelete:false, editRol:false, newRol:false});
-  const [message, setMessage] = React.useState('');
-  const defaultMessages = {update:'Rol Actualizado',success : 'Rol Guardado', connectionError: 'Error de Conexión', removeRol:'¿Desea eliminar Rol ',rolDelete:'El rol ha sido Eliminado' }
-  const [alertType, setAlertType] = React.useState('');
-  const [alertModal, setAlertModal] = React.useState(false);
-
-  const name = 'Rol'
-  const classes = useStyles();
   const fillTable = async () => {
+
     try{
       const resultRoles = (await AxiosInstance.get("/roles/")).data
       if(resultRoles.ok === true){
         setDataSource(resultRoles.data)
       }
     }catch{
-      console.log('no rol')
-      // setConnErr(true)
+      setMessage('Error de Conexion')
+      setAlertModal(true)
+      
   }
 }
+
 React.useEffect(() => {  
-  fillTable()
-  }, [Reload]);
+    fillTable()
+        // const statusTag={}
+        // StatusTag.map(row=>statusTag[row.id]=row.title)
+        // setStatus(statusTag)
+    
+    }, [Reload]);
 
   return (
-    <React.Fragment>
-      <Stack direction="row"  justifyContent="space-between" className={classes.moduleHeader}>
-        <Title>Listado de Roles</Title>
-        <AddButton name={name} setOpenModal={setOpenModal} />
-      </Stack>
-      <Table >
-        <TableHead>
-          <TableRow>
-            <TableCell align="left">Nombre</TableCell>
-            <TableCell align="left">Estatus</TableCell>
-            <TableCell align="left">Acciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {dataSource
-          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          .map((item) => (
+    <>
+    <MaterialTable title={'Roles'}
+     data={dataSource} 
+     columns={columns}
+     options={{
+        exportMenu: [{
+          label: 'Export PDF',
+          exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte de Familias')
+        }, 
+        {
+          label: 'Export EXCEL',
+          exportFunc: (cols, datas) => DownloadExcel(cols, datas,excelStructure)
+        }
+      ],
+         filtering:true,
+         actionsColumnIndex:-1,
+         addRowPosition:'first'
+     }}
+     editable={{
+         onRowAdd: (newRow) => new Promise((resolve, reject)=>{
+
+          AxiosInstance.post(`/roles/`,newRow)
+          .then(resp=>{
+            setTimeout(() => {
+              if(resp.data.ok === true){
+                setAlertType("success")
+              }else{
+                setAlertType("error")
+              }
+              setMessage(resp.data.message)
+              setAlertModal(true)
+              fillTable()
+              resolve()
+            }, 2000);
             
-            <TableRow key={item.rolId}>
-              <TableCell>{item.rolName}</TableCell>
-              <TableCell> <StatusInTable status={item.rolStatus}/> </TableCell>
-              <TableCell ><RolOptions rolObject={rolObject} setRolObject={setRolObject} value={item} setOpenModal={setOpenModal}/>  </TableCell>
-            </TableRow> 
-          ))}
-        </TableBody>
-      </Table>
-      <Pagination  dataSource={dataSource} page={page} setPage={setPage} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage}/>
-      {(openModal)? 
-      <RolModal message={message} setAlertModal={setAlertModal} setAlertType={setAlertType} fillTable={fillTable}defaultMessages={defaultMessages} setMessage={setMessage} rolObject={rolObject} openModal={openModal} setOpenModal={setOpenModal} setRolObject={setRolObject}name={name} />
-      : null }
-      {(alertModal) ? 
+          })
+          .catch((err) => {
+            setTimeout(() => {
+              setMessage(standardMessages.connectionError)
+              setAlertType("error")
+              setAlertModal(true)
+              fillTable()
+              reject()
+            }, 2000);
+          });
+          }),
+         onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
+
+          AxiosInstance.delete(`/roles/${selectRow.rolId}`)
+          .then(resp=>{
+            setTimeout(() => {
+              if(resp.data.ok === true){
+                setAlertType("success")
+              }else{
+                setAlertType("error")
+              }
+              setMessage(resp.data.message)
+              setAlertModal(true)
+              fillTable()
+              resolve()
+            }, 2000);
+            
+          }).catch((err) => {
+            setTimeout(() => {
+              setMessage(standardMessages.connectionError)
+              setAlertType("error")
+              setAlertModal(true)
+              fillTable()
+              reject()
+            }, 2000);
+          });
+
+        }),
+
+         onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
+            AxiosInstance.put(`/roles/${newRow.rolId}`,newRow)
+            .then(resp=>{
+              setTimeout(() => {
+                if(resp.data.ok === true){
+                  setAlertType("success")
+                }else{
+                  setAlertType("error")
+                }
+                setMessage(resp.data.message)
+                setAlertModal(true)
+                fillTable()
+                resolve()
+              }, 2000);
+              
+            }).catch((err) => {
+              setTimeout(() => {
+                setMessage(standardMessages.connectionError)
+                setAlertType("error")
+                setAlertModal(true)
+                fillTable()
+                reject()
+              }, 2000);
+            });
+
+         })
+     }}
+    />
+    {(alertModal) ? 
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null}
-      {(rolObject.modalRolDelete)?
-        <DeleteRol 
-        fillTable={fillTable} setMessage={setMessage} setAlertType={setAlertType}
-        rolObject={rolObject} setRolObject={setRolObject} defaultMessages={defaultMessages} setAlertModal={setAlertModal} />
-        : null}
-    </React.Fragment>
-  );
+
+      
+    </>
+    
+
+  )
 }
+
+export default RolesList
