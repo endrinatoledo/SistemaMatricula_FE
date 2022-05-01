@@ -1,104 +1,171 @@
 import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Title from '../Layout/Title';
-import Stack from '@mui/material/Stack';
-import { makeStyles } from '@mui/styles';
-import PeriodModal from './PeriodModal';
-import PeriodOptions from './PeriodOptions';
+import MaterialTable from '@material-table/core'; 
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
-import DeletePeriod from './DeletePeriod';
+import FilterList from '@material-ui/icons/FilterList';
+const { standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
-const StatusInTable = require('../commonComponents/StatusInTable').default
-const Pagination = require('../commonComponents/Pagination').default
-const AddButton = require('../commonComponents/AddButton').default
 
-const useStyles = makeStyles({
-  moduleHeader:{
-    marginBottom:20,
-    marginTop:10
-  }
-});
+const PeriodsList = () => {
+  
+    const [Reload, SetReload] = React.useState(0);
+    const [dataSource, setDataSource] = React.useState([])
+    const [filtering, setFiltering] = React.useState(false)
+    const [alertModal, setAlertModal] = React.useState(false)
+    const [message, setMessage] = React.useState()
+    const [alertType, setAlertType] = React.useState('');
 
+  const columns = [
+    { title: 'Año Inicio', field: 'perStartYear',cellStyle:{paddingRight:'14%'},headerStyle:{paddingRight:'12%'}, validate:rowData=>(rowData.perStartYear === undefined ||rowData.perStartYear ==='')?"Required":true, type: "numeric"},
+    { title: 'Año Fin', field: 'perEndYear',cellStyle:{paddingRight:'14%'},headerStyle:{paddingRight:'12%'}, editable:false, type: "numeric"},
+    { title: 'Estatus', field: 'perStatus',cellStyle:{paddingLeft:'5%'},headerStyle:{paddingLeft:'5%'}, width: 200,  lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.perStatus === undefined)?"Required":true }
 
+  ];
 
-export default function PeriodsList() {
-  const [dataSource, setDataSource] = React.useState([])
-  const [Reload, SetReload] = React.useState(0);
-  const [openModal, setOpenModal] = React.useState(false);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [periodObject, setPeriodObject] = React.useState({idPeriod:'',startYear:'',endYear:'',status: 0, modalPeriodDelete:false, editPeriod:false, newPeriod:false});
-  const [message, setMessage] = React.useState('');
-  const defaultMessages = {update:'Período Actualizado',success : 'Período Guardado', connectionError: 'Error de Conexión', removePeriod:'¿Desea eliminar Período ',periodDelete:'El Período ha sido Eliminado' }
-  const [alertType, setAlertType] = React.useState('');
-  const [alertModal, setAlertModal] = React.useState(false);
-  const [order, setOrder] = React.useState('asc');
-
-  const name = 'Período'
-  const classes = useStyles();
   const fillTable = async () => {
+
     try{
       const resultPeriods = (await AxiosInstance.get("/periods/")).data
       if(resultPeriods.ok === true){
         setDataSource(resultPeriods.data)
       }
     }catch{
-      console.log('no Period')
-      // setConnErr(true)
+      setMessage('Error de Conexion')
+      setAlertModal(true)
+      
   }
 }
+
 React.useEffect(() => {  
-  fillTable()
-  }, [Reload]);
+    fillTable()
+    
+    }, [Reload]);
 
   return (
-    <React.Fragment>
-      <Stack direction="row"  justifyContent="space-between" className={classes.moduleHeader}>
-        <Title>Listado de Períodos</Title>
-        <Stack  direction="row" justifyContent="flex-end" alignItems="center" spacing={2}> 
-            <AddButton name={name} setOpenModal={setOpenModal} />
-        </Stack>
-        
-      </Stack>
-      <Table >
-        <TableHead>
-          <TableRow>
-            <TableCell align="left">Año Inicio</TableCell>
-            <TableCell align="left">Año Fin</TableCell>
-            <TableCell align="left">Estatus</TableCell>
-            <TableCell align="left">Acciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {dataSource
-          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          .map((item) => (
-           
-            <TableRow key={item.periodId}>
-              <TableCell>{item.perStartYear}</TableCell>
-              <TableCell>{item.perEndYear}</TableCell>
-              <TableCell> <StatusInTable status={item.perStatus}/> </TableCell>
-              <TableCell ><PeriodOptions periodObject={periodObject} setPeriodObject={setPeriodObject} value={item} setOpenModal={setOpenModal}/>  </TableCell>
-            </TableRow> 
-          ))}
-        </TableBody>
-      </Table>
-      <Pagination  dataSource={dataSource} page={page} setPage={setPage} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage}/>
-      {(openModal)? 
-      <PeriodModal message={message} setAlertModal={setAlertModal} setAlertType={setAlertType} fillTable={fillTable}defaultMessages={defaultMessages} setMessage={setMessage} periodObject={periodObject} openModal={openModal} setOpenModal={setOpenModal} setPeriodObject={setPeriodObject}name={name} />
-      : null }
-      {(alertModal) ? 
+    <>
+    <MaterialTable title={'Períodos'}
+     data={dataSource} 
+     columns={columns}
+     actions={[
+      { icon: () => <FilterList />,
+        tooltip: "Activar Filtros",
+        onClick : ()=> setFiltering(!filtering),
+        isFreeAction: true }
+    ]}
+     options={{
+        width:300,
+        actionsCellStyle:{paddingLeft:50,paddingRight:50},
+        headerStyle: {
+          backgroundColor: "#007bff",
+          color: "#FFF",
+          fontWeight:'normal',
+          fontSize:18,
+        },
+         filtering:filtering,
+         actionsColumnIndex:-1,
+         addRowPosition:'first'
+     }}
+     editable={{
+         onRowAdd: (newRow) => new Promise((resolve, reject)=>{
+
+          AxiosInstance.post(`/periods/`,newRow)
+          .then(resp=>{
+            setTimeout(() => {
+              if(resp.data.ok === true){
+                setAlertType("success")
+                setMessage(resp.data.message)
+                setAlertModal(true)
+                fillTable()
+                resolve()
+              }else{
+                setMessage(resp.data.message) 
+                setAlertType("error")
+                setAlertModal(true)
+                reject()
+              }
+              // setMessage(resp.data.message)
+              // setAlertModal(true)
+              // fillTable()
+              // resolve()
+            }, 2000);
+            
+          })
+          .catch((err) => {
+            setTimeout(() => {
+              setMessage(standardMessages.connectionError)
+              setAlertType("error")
+              setAlertModal(true)
+              fillTable()
+              reject()
+            }, 1000);
+          });
+          }),
+         onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
+          AxiosInstance.delete(`/periods/${selectRow.perId}`)
+          .then(resp=>{
+            setTimeout(() => {
+              if(resp.data.ok === true){
+                setAlertType("success")
+              }else{
+                setAlertType("error")
+              }
+              setMessage(resp.data.message)
+              setAlertModal(true)
+              fillTable()
+              resolve()
+            }, 2000);
+            
+          }).catch((err) => {
+            setTimeout(() => {
+              setMessage(standardMessages.connectionError)
+              setAlertType("error")
+              setAlertModal(true)
+              fillTable()
+              reject()
+            }, 2000);
+          });
+
+        }),
+
+         onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
+            AxiosInstance.put(`/periods/${newRow.perId}`,newRow)
+            .then(resp=>{
+              setTimeout(() => {
+                if(resp.data.ok === true){
+                  setAlertType("success")
+                  setMessage(resp.data.message)
+                  setAlertModal(true)
+                  fillTable()
+                  resolve()
+                }else{
+                  setMessage(resp.data.message) 
+                  setAlertType("error")
+                  setAlertModal(true)
+                  reject()
+                }
+              }, 2000);
+              
+            }).catch((err) => {
+              setTimeout(() => {
+                setMessage(standardMessages.connectionError)
+                setAlertType("error")
+                setAlertModal(true)
+                fillTable()
+                reject()
+              }, 2000);
+            });
+
+         })
+     }}
+    />
+    {(alertModal) ? 
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null}
-      {(periodObject.modalPeriodDelete)?
-        <DeletePeriod 
-        fillTable={fillTable} setMessage={setMessage} setAlertType={setAlertType}
-        periodObject={periodObject} setPeriodObject={setPeriodObject} defaultMessages={defaultMessages} setAlertModal={setAlertModal} />
-        : null}
-    </React.Fragment>
-  );
+
+      
+    </>
+    
+
+  )
 }
+
+export default PeriodsList
