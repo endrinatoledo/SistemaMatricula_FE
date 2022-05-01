@@ -1,5 +1,7 @@
 import * as React from 'react';
-import MaterialTable from 'material-table'; 
+import MaterialTable from '@material-table/core'; 
+import { ExportPdf } from '@material-table/exporters';
+import * as Xlsx from 'xlsx'
 const {StatusTag} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
@@ -31,6 +33,21 @@ const FamiliesList = () => {
       // setConnErr(true)
   }
 }
+
+const downloadExcel = (cols, datas) =>{
+
+  const workSheet = Xlsx.utils.json_to_sheet(datas);
+  const workBook = Xlsx.utils.book_new();
+  Xlsx.utils.book_append_sheet(workBook ,workSheet,'Familias' )
+  Xlsx.utils.sheet_add_aoa(workSheet, [["Código", "Familia", "Estatus"]], { origin: "A1" });
+
+  let buf = Xlsx.write(workBook,{bookType:"xlsx", type:"buffer"})
+  Xlsx.write(workBook,{bookType:"xlsx", type:"binary"})
+
+  Xlsx.writeFile(workBook,"ReporteDeFamilias.xlsx")
+
+}
+
 React.useEffect(() => {  
     fillTable()
         // const statusTag={}
@@ -44,7 +61,15 @@ React.useEffect(() => {
      data={dataSource} 
      columns={columns}
      options={{
-         exportButton:true,
+        exportMenu: [{
+          label: 'Export PDF',
+          exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte de Familias')
+        }, 
+        {
+          label: 'Export EXCEL',
+          exportFunc: (cols, datas) => downloadExcel(cols, datas)
+        }
+      ],
          filtering:true,
          actionsColumnIndex:-1,
          addRowPosition:'first'
