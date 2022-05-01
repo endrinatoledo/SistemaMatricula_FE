@@ -5,14 +5,18 @@ import * as Xlsx from 'xlsx'
 const {StatusTag} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
+const DownloadExcel = require('../commonComponents/DownloadExcel').default
 
 const FamiliesList = () => {
   
     const [Reload, SetReload] = React.useState(0);
     const [dataSource, setDataSource] = React.useState([])
-    const [familyObject, setFamilyObject] = React.useState({idFamily:'',name:'', code:'',status:''});
+    const excelStructure ={
+      fileName : 'ReporteDeFamilias.xlsx',
+      columns:[["Códigos", "Familias", "Estatus"]],
+      sheetName: "Familias"
+    }
 
-    
   const columns = [
     { title: 'Código', field: 'famCode', editable:false},
     { title: 'Nombre', field: 'famName', validate:rowData=>(rowData.famName === undefined || rowData.famName === '')?"Required":true },
@@ -34,20 +38,6 @@ const FamiliesList = () => {
   }
 }
 
-const downloadExcel = (cols, datas) =>{
-
-  const workSheet = Xlsx.utils.json_to_sheet(datas);
-  const workBook = Xlsx.utils.book_new();
-  Xlsx.utils.book_append_sheet(workBook ,workSheet,'Familias' )
-  Xlsx.utils.sheet_add_aoa(workSheet, [["Código", "Familia", "Estatus"]], { origin: "A1" });
-
-  let buf = Xlsx.write(workBook,{bookType:"xlsx", type:"buffer"})
-  Xlsx.write(workBook,{bookType:"xlsx", type:"binary"})
-
-  Xlsx.writeFile(workBook,"ReporteDeFamilias.xlsx")
-
-}
-
 React.useEffect(() => {  
     fillTable()
         // const statusTag={}
@@ -57,7 +47,7 @@ React.useEffect(() => {
     }, [Reload]);
 
   return (
-    <MaterialTable title={'tabla ejemplo'}
+    <MaterialTable title={'Familias'}
      data={dataSource} 
      columns={columns}
      options={{
@@ -67,7 +57,7 @@ React.useEffect(() => {
         }, 
         {
           label: 'Export EXCEL',
-          exportFunc: (cols, datas) => downloadExcel(cols, datas)
+          exportFunc: (cols, datas) => DownloadExcel(cols, datas,excelStructure)
         }
       ],
          filtering:true,
