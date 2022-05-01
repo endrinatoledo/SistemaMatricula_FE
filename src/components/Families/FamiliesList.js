@@ -2,6 +2,7 @@ import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
 import { ExportPdf } from '@material-table/exporters';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
+import FilterList from '@material-ui/icons/FilterList';
 const {StatusTag, standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
@@ -11,6 +12,7 @@ const FamiliesList = () => {
   
     const [Reload, SetReload] = React.useState(0);
     const [dataSource, setDataSource] = React.useState([])
+    const [filtering, setFiltering] = React.useState(false)
     const excelStructure ={
       fileName : 'ReporteDeFamilias.xlsx',
       columns:[["Códigos", "Familias", "Estatus"]],
@@ -21,10 +23,10 @@ const FamiliesList = () => {
     const [alertType, setAlertType] = React.useState('');
 
   const columns = [
-    { title: 'Código', field: 'famCode', editable:false},
+    { title: 'Código', field: 'famCode', editable:false, width: 150},
     { title: 'Nombre', field: 'famName', validate:rowData=>(rowData.famName === undefined || rowData.famName === '')?"Required":true },
     // { title: 'Estatus', field: 'famStatus',filtering:false, render:(row)=> <StatusInTable status={row.famStatus} /> }
-    { title: 'Estatus', field: 'famStatus', lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.famStatus === undefined)?"Required":true }
+    { title: 'Estatus', field: 'famStatus',headerStyle:{paddingLeft:'5%'}, width: 200,  lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.famStatus === undefined)?"Required":true }
 
   ];
 
@@ -55,7 +57,21 @@ React.useEffect(() => {
     <MaterialTable title={'Familias'}
      data={dataSource} 
      columns={columns}
+     actions={[
+      { icon: () => <FilterList />,
+        tooltip: "Activar Filtros",
+        onClick : ()=> setFiltering(!filtering),
+        isFreeAction: true }
+    ]}
      options={{
+        width:300,
+        actionsCellStyle:{paddingLeft:50,paddingRight:50},
+        headerStyle: {
+          backgroundColor: "#007bff",
+          color: "#FFF",
+          fontWeight:'normal',
+          fontSize:18,
+        },
         exportMenu: [{
           label: 'Export PDF',
           exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte de Familias')
@@ -65,7 +81,7 @@ React.useEffect(() => {
           exportFunc: (cols, datas) => DownloadExcel(cols, datas,excelStructure)
         }
       ],
-         filtering:true,
+         filtering:filtering,
          actionsColumnIndex:-1,
          addRowPosition:'first'
      }}

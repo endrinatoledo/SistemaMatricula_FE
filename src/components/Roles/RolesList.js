@@ -1,28 +1,26 @@
 import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
-import { ExportPdf } from '@material-table/exporters';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
-const {StatusTag, standardMessages} = require('../commonComponents/MessagesAndLabels')
+import FilterList from '@material-ui/icons/FilterList';
+const { standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
-const DownloadExcel = require('../commonComponents/DownloadExcel').default 
 
 const RolesList = () => {
   
     const [Reload, SetReload] = React.useState(0);
     const [dataSource, setDataSource] = React.useState([])
-    const excelStructure ={
-      fileName : 'ReporteDeFamilias.xlsx',
-      columns:[["Códigos", "Familias", "Estatus"]],
-      sheetName: "Familias"
-    }
     const [alertModal, setAlertModal] = React.useState(false)
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
+    const [filtering, setFiltering] = React.useState(false)
 
   const columns = [
-    { title: 'Nombre', field: 'rolName', validate:rowData=>(rowData.rolName === undefined || rowData.rolName === '')?"Required":true },
-    // { title: 'Estatus', field: 'famStatus',filtering:false, render:(row)=> <StatusInTable status={row.famStatus} /> }
-    { title: 'Estatus', field: 'rolStatus', lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.rolStatus === undefined)?"Required":true }
+    { title: 'Nombre', field: 'rolName',
+    headerStyle:{ paddingLeft:'30%'},
+    validate:rowData=>(rowData.rolName === undefined || rowData.rolName === '')?"Required":true },
+    { title: 'Estatus', field: 'rolStatus', 
+    headerStyle:{paddingLeft:'5%'}, width: 200, 
+    lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.rolStatus === undefined)?"Required":true }
 
   ];
 
@@ -40,6 +38,7 @@ const RolesList = () => {
   }
 }
 
+
 React.useEffect(() => {  
     fillTable()
         // const statusTag={}
@@ -51,21 +50,30 @@ React.useEffect(() => {
   return (
     <>
     <MaterialTable title={'Roles'}
-     data={dataSource} 
-     columns={columns}
-     options={{
-        exportMenu: [{
-          label: 'Export PDF',
-          exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte de Familias')
-        }, 
-        {
-          label: 'Export EXCEL',
-          exportFunc: (cols, datas) => DownloadExcel(cols, datas,excelStructure)
-        }
-      ],
-         filtering:true,
+    data={dataSource} 
+    columns={columns}
+    actions={[
+      { icon: () => <FilterList />,
+        tooltip: "Activar Filtros",
+        onClick : ()=> setFiltering(!filtering),
+        isFreeAction: true }
+    ]}
+    options={{
+        width:300,
+        actionsCellStyle:{paddingLeft:50,paddingRight:50},
+         filtering:filtering,
          actionsColumnIndex:-1,
-         addRowPosition:'first'
+         addRowPosition:'first',
+         headerStyle: {
+          backgroundColor: "#007bff",
+          color: "#FFF",
+          fontWeight:'normal',
+          fontSize:18,
+          textAlign:"center",
+        },
+        filterCellStyle:{
+
+        }
      }}
      editable={{
          onRowAdd: (newRow) => new Promise((resolve, reject)=>{
@@ -75,13 +83,17 @@ React.useEffect(() => {
             setTimeout(() => {
               if(resp.data.ok === true){
                 setAlertType("success")
+                setMessage(resp.data.message)
+                setAlertModal(true)
+                fillTable()
+                resolve()
               }else{
+                setMessage(resp.data.message) 
                 setAlertType("error")
+                setAlertModal(true)
+                reject()
               }
-              setMessage(resp.data.message)
-              setAlertModal(true)
-              fillTable()
-              resolve()
+              
             }, 2000);
             
           })
