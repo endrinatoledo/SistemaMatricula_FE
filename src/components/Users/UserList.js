@@ -1,125 +1,194 @@
 import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableContainer from '@mui/material/TableContainer';
-import Stack from '@mui/material/Stack';
-import Title from '../Layout/Title';
-import { makeStyles } from '@mui/styles';
-import UserModal from './UserModal';
+import MaterialTable from '@material-table/core'; 
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
-import DeleteUser from './DeleteUser';
-import UserOptions from './UserOptions';
+import FilterList from '@material-ui/icons/FilterList';
+const { standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
-const StatusInTable = require('../commonComponents/StatusInTable').default
-const Pagination = require('../commonComponents/Pagination').default
-const AddButton = require('../commonComponents/AddButton').default
+
+const UserList = () => {
+  
+    const [Reload, SetReload] = React.useState(0);
+    const [dataSource, setDataSource] = React.useState([])
+    const [alertModal, setAlertModal] = React.useState(false)
+    const [message, setMessage] = React.useState()
+    const [alertType, setAlertType] = React.useState('');
+    const [filtering, setFiltering] = React.useState(false)
+    const [roles, setRoles] = React.useState([])
+    const [rolLookup, setRolLookup] = React.useState([])
 
 
+  const columns = [
+    { title: 'Nombre', field: 'usuName',headerStyle:{},validate:rowData=>(rowData.usuName === undefined || rowData.usuName === '')?"Requerido":true },
+    { title: 'Apellido', field: 'usuLastName',headerStyle:{ },validate:rowData=>(rowData.usuLastName === undefined || rowData.usuLastName === '')?"Requerido":true },
 
-// function preventDefault(event) {
-//   event.preventDefault();
-// }
+    { title: 'Correo', field: 'usuEmail', type:'email',headerStyle:{ },validate:rowData=>(rowData.usuEmail === undefined || rowData.usuEmail === '')?"Requerido":true },
+    // { title: 'usuPassword', field: 'usuPassword',headerStyle:{ paddingLeft:'30%'},validate:rowData=>(rowData.usuPassword === undefined || rowData.usuPassword === '')?"Requerido":true },
+    { title: 'Rol', field: 'rolId',lookup:rolLookup,
+    validate:rowData=>(rowData.rolId === undefined || rowData.rolId === '')?"Requerido":true },
 
-const useStyles = makeStyles({
-  moduleHeader:{
-    marginBottom:20,
-    marginTop:10
+
+    { title: 'Estatus', field: 'usuStatus', cellStyle:{paddingLeft:'5%'}, headerStyle:{paddingLeft:'5%'}, width: 200, 
+    lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.usuStatus === undefined)?"Requerido":true }
+
+  ];
+  const allRolesActives = async () => {
+
+    try{
+      const resultRoles = (await AxiosInstance.get("/roles/allRoles/active")).data
+      if(resultRoles.ok === true){
+          setRolLookup(resultRoles.lookup)
+          setRoles(resultRoles.data) 
+      }
+    }catch{
+      setMessage('Error de Conexion al consultar roles')
+      setAlertModal(true)
+      
   }
-});
-
-export default function UserList() {
-  const [dataSource, setDataSource] = React.useState([])
-  const [Reload, SetReload] = React.useState(0);
-  const [openModal, setOpenModal] = React.useState(false);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [alertModal, setAlertModal] = React.useState(false);
-  const [alertType, setAlertType] = React.useState('');
-  const [message, setMessage] = React.useState('');
-  const [userObject, setUserObject] = React.useState({idUser:'',name:'', lastName:'',email:'', password:'',status: 0, rol: '', rolName:'',modalUserDelete:false, editUser:false, newUser:false,seePassword:false});
-
-
-
-  const name = 'Usuario'
-  const defaultMessages = {update:'Usuario Actualizado',success : 'Usuario Guardado', connectionError: 'Error de Conexión', mailError: 'Formato de correo erróneo', removeUser:'¿Desea eliminar usuario ',userDelete:'El usuario ha sido Eliminado' }
-  const classes = useStyles();
+}
 
   const fillTable = async () => {
+
     try{
       const resultUsers = (await AxiosInstance.get("/users/")).data
       if(resultUsers.ok === true){
+        //   console.log(resultUsers)
         setDataSource(resultUsers.data)
       }
-
-
     }catch{
-      setMessage(defaultMessages.connectionError)
-      setAlertType('error')
+      setMessage('Error de Conexion al consultar usuarios')
       setAlertModal(true)
-      setTimeout(() => {
-        setAlertModal(false);
-    }, 3000)
+      
   }
 }
+
+
 React.useEffect(() => {  
-  fillTable()
-  }, [Reload]);
+    allRolesActives()
+    fillTable()
+    }, []);
 
   return (
-    <React.Fragment>
-      <Stack direction="row"  justifyContent="space-between" className={classes.moduleHeader}>
-        <Title>Listado de Usuarios</Title>
-        <AddButton name={name} setOpenModal={setOpenModal} />
-      </Stack>
-      <TableContainer >
-      <Table >
-        <TableHead>
-          <TableRow>
-            <TableCell align="left">Nombre</TableCell>
-            <TableCell align="left">Apellido</TableCell>
-            <TableCell align="left">Email</TableCell>
-            <TableCell align="left">Rol</TableCell>
-            <TableCell align="left">Estatus</TableCell>
-            <TableCell align="left">Acciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {dataSource
-          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          .map((item) => (
-            <TableRow key={item.usuId}>
-              <TableCell>{item.usuName}</TableCell>
-              <TableCell>{item.usuLastName}</TableCell>
-              <TableCell>{item.usuEmail}</TableCell>
-              <TableCell >{item.roles.rolName}</TableCell>
-              <TableCell> <StatusInTable status={item.usuStatus}/> </TableCell>
-              <TableCell > <UserOptions userObject={userObject} setUserObject={setUserObject} value={item} setOpenModal={setOpenModal} /> </TableCell>
-            </TableRow> 
-          ))}
-        </TableBody>
-      </Table>
-      </TableContainer>
-      <Pagination  dataSource={dataSource} page={page} setPage={setPage} rowsPerPage={rowsPerPage} setRowsPerPage={setRowsPerPage}/>
-      {(openModal) ? 
-      <UserModal 
-        userObject={userObject} setUserObject={setUserObject}
-        defaultMessages={defaultMessages} 
-        message={message} setMessage={setMessage}
-        setAlertType={setAlertType} name={name} 
-        openModal={openModal} setOpenModal={setOpenModal} 
-        fillTable={fillTable} setAlertModal={setAlertModal} 
-      /> : null}
-      {(alertModal) ? 
+    <>
+    <MaterialTable title={'Usuarios'}
+    data={dataSource} 
+    columns={columns}
+    actions={[
+      { icon: () => <FilterList />,
+        tooltip: "Activar Filtros",
+        onClick : ()=> setFiltering(!filtering),
+        isFreeAction: true }
+    ]}
+    options={{
+        width:300,
+        actionsCellStyle:{paddingLeft:50,paddingRight:50},
+         filtering:filtering,
+         actionsColumnIndex:-1,
+         addRowPosition:'first',
+         headerStyle: {
+          backgroundColor: "#007bff",
+          color: "#FFF",
+          fontWeight:'normal',
+          fontSize:18,
+          textAlign:"center",
+        },
+        filterCellStyle:{
+
+        }
+     }}
+     editable={{
+         onRowAdd: (newRow) => new Promise((resolve, reject)=>{
+
+          AxiosInstance.post(`/users/`,newRow)
+          .then(resp=>{
+            if(resp.data.ok === true){
+                setAlertType("success")
+                setMessage(resp.data.message)
+                setAlertModal(true)
+                fillTable()
+                resolve()
+              }else{
+                setMessage(resp.data.message) 
+                setAlertType("error")
+                setAlertModal(true)
+                reject()
+              }
+            
+          })
+          .catch((err) => {
+            setTimeout(() => {
+              setMessage(standardMessages.connectionError)
+              setAlertType("error")
+              setAlertModal(true)
+              fillTable()
+              reject()
+            }, 2000);
+          });
+          }),
+         onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
+
+          AxiosInstance.delete(`/users/${selectRow.usuId}`)
+          .then(resp=>{
+            setTimeout(() => {
+              if(resp.data.ok === true){
+                setAlertType("success")
+              }else{
+                setAlertType("error")
+              }
+              setMessage(resp.data.message)
+              setAlertModal(true)
+              fillTable()
+              resolve()
+            }, 2000);
+            
+          }).catch((err) => {
+            setTimeout(() => {
+              setMessage(standardMessages.connectionError)
+              setAlertType("error")
+              setAlertModal(true)
+              fillTable()
+              reject()
+            }, 2000);
+          });
+
+        }),
+
+         onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
+            AxiosInstance.put(`/users/${newRow.usuId}`,newRow)
+            .then(resp=>{
+              setTimeout(() => {
+                if(resp.data.ok === true){
+                  setAlertType("success")
+                }else{
+                  setAlertType("error")
+                }
+                setMessage(resp.data.message)
+                setAlertModal(true)
+                fillTable()
+                resolve()
+              }, 2000);
+              
+            }).catch((err) => {
+              setTimeout(() => {
+                setMessage(standardMessages.connectionError)
+                setAlertType("error")
+                setAlertModal(true)
+                fillTable()
+                reject()
+              }, 2000);
+            });
+
+         })
+     }}
+    />
+    {(alertModal) ? 
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null}
-      {(userObject.modalUserDelete)?
-        <DeleteUser 
-        fillTable={fillTable} setMessage={setMessage} setAlertType={setAlertType}
-        userObject={userObject} setUserObject={setUserObject} defaultMessages={defaultMessages} setAlertModal={setAlertModal} />
-        : null}
-      </React.Fragment>
-  );
+
+      
+    </>
+    
+
+  )
 }
+
+export default UserList
