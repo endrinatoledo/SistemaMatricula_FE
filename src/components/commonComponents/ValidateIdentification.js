@@ -67,15 +67,21 @@ const style = {
 const ValidateIdentification = ({setOpenModal, setRepresentativeObject, representativeObject}) => {
 
     const [buttonI, setButtonI] = React.useState(true)
+    const [errorMessage, setErrorMessage] = React.useState('')
+    const [errorInput, setErrorInput] = React.useState(false)
     const classes = UseStyles();
 
     const validate_Identification = async () => {
         try{
           const data = (await AxiosInstance.post("/representatives/byIdentification",representativeObject)).data
           console.log(data)
-          // if(data.data === 'registrado'){
-          //   
-          // }
+          if(data.data === 'registrado'){
+            setErrorMessage(data.message)
+            setErrorInput(true)
+          }else{
+            setErrorMessage('')
+            setErrorInput(false)
+          }
         }catch{
           console.log('no')
           // setConnErr(true)
@@ -97,7 +103,7 @@ const ValidateIdentification = ({setOpenModal, setRepresentativeObject, represen
               SelectProps={{
                 native: true,
               }}
-              // helperText="Tipo Idenfiticación"
+              
               variant="standard"
             >
               {IdentificationType.map((option) => (
@@ -111,15 +117,18 @@ const ValidateIdentification = ({setOpenModal, setRepresentativeObject, represen
                 id="repIdentificationNumber"
                 label="Identificación"
                 variant="standard"
+                helperText={errorMessage}
+                error={errorInput}
                 onChange={e => {
                   setRepresentativeObject({...representativeObject, repIdentificationNumber : e.target.value ? e.target.value : ''})          
                   if(e.target.value.length < 6 ){setButtonI(true)}else{setButtonI(false)}
                 }
+                
                 }
                 />
                 <Button variant="outlined" disabled={buttonI} size="small" onClick={() => validate_Identification()}>Validar</Button>
          </Stack>
-        ValidateIdentification
+        
         </div>
   )
 }
