@@ -3,12 +3,12 @@ import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import Autocomplete from '@mui/material/Autocomplete';
+const AxiosInstance = require("../utils/request").default;
+
 
 const UseStyles = makeStyles({
     stack: {
@@ -39,12 +39,53 @@ const UseStyles = makeStyles({
     }  
   });
 
+  const selectSex = [
+    {value:"m",
+      label : "Mujer"},
+    {value:"h",
+      label : "Hombre"}
+  ]
+  const selectMaritalStatus = [
+    {value:"Seleccionar",label : "Seleccionar"},
+    {value:"casado(a)",label : "Casado(a)"},
+    {value:"conviviente",label : "Conviviente"},
+    {value:"separado(a)",label : "Separado(a)"},
+    {value:"viudo",label : "Viudo(a)"},
+    {value:"soltero(a)",label : "Soltero(a)"}
+  ]
+
+
 const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => {
 
+    const [Reload, SetReload] = React.useState(0);
+    const [listOfProfessions, setListOfProfessions] = React.useState([])
+
+    const getProfessions = async () => {
+
+        try{
+          const resultProfessions = (await AxiosInstance.get("/professions/")).data
+          if(resultProfessions.ok === true){
+                setListOfProfessions(resultProfessions.data)
+          }
+        }catch{
+        //   setMessage('Error de Conexion')
+        //   setAlertModal(true)
+          
+      }
+    }
+    React.useEffect(() => {  
+        getProfessions()    
+        }, [Reload]);
+    
 
     const classes = UseStyles();
 
     const [valueDate, setValueDate] = React.useState(new Date('2014-08-18T21:11:54'));
+
+      const defaultPropsSex = {
+        options: selectSex,
+        getOptionLabel: (option) => option.label,
+    };
 
   const handleChange = (newValue) => {
     setValueDate(newValue);
@@ -103,25 +144,46 @@ const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => 
                 //   if(e.target.value.length < 6 ){setButtonI(true)}else{setButtonI(false)}
                 }   }
                 />
-                
-                <TextField
-                required
-                id="repSex"
-                label="Sexo"
-                variant="standard"
-                />
-                <TextField
-                required
-                id="repCivilStatus"
-                label="Estado Civil"
-                variant="standard"
-                />
-                <TextField
-                required
-                id="proId"
-                label="Profesión"
-                variant="standard"
-                />
+
+                <Autocomplete
+                require
+                options={selectSex}
+                getOptionLabel={(option) => option.label}
+                onChange={(event, newValue) => {
+                    setRepresentativeObject({...representativeObject, repSex : newValue.label ? newValue.label : null})          
+                  }}
+                 sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                 clearOnEscape
+                 renderInput={(params) =>(
+                   <TextField {...params} label="Sexo" variant="standard" />
+                 )}/>
+                 <Autocomplete
+                require
+                options={selectMaritalStatus}
+                getOptionLabel={(option) => option.label}
+                onChange={(event, newValue) => {
+                    setRepresentativeObject({...representativeObject, repCivilStatus : newValue.label ? newValue.label : null})          
+                  }}
+                 sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                 clearOnEscape
+                 renderInput={(params) => (
+                   <TextField {...params} label="Estado Civil" variant="standard" />
+                 )}/>
+              <Autocomplete
+                options={listOfProfessions}
+                onChange={(event, newValue) => {
+                    setRepresentativeObject({...representativeObject, proId : newValue.proId ? newValue.proId : null})          
+                  }}
+                getOptionLabel={(option) => option.proName}
+                //  {...selectProfession}
+                 sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                 clearOnEscape
+                 renderInput={(params) => (
+                   <TextField {...params} label="Profesión" variant="standard" />
+                 )}/>
     </Stack>
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
 
@@ -146,14 +208,14 @@ const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => 
                 // }   }
                 />
 
-    <TextField
-    sx={{ width: '47%' }}
-                // sx={{ width: 1/2 }} 
-                required
-                id="repAddress"
-                label="Direccion"
-                variant="standard"
-                />
+                <TextField
+                        sx={{ width: '47%' }}
+                            // sx={{ width: 1/2 }} 
+                            required
+                            id="repAddress"
+                            label="Direccion"
+                            variant="standard"
+                            />
 
                 
     </Stack>
