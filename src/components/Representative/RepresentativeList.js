@@ -1,86 +1,200 @@
 import * as React from 'react';
-import Link from '@mui/material/Link';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Title from '../Layout/Title';
+import MaterialTable from '@material-table/core'; 
+import { ExportPdf } from '@material-table/exporters';
+import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
+import FilterList from '@material-ui/icons/FilterList';
+import MiscellaneousServicesRoundedIcon from '@mui/icons-material/MiscellaneousServicesRounded';
+import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
+const {StatusTag, standardMessages} = require('../commonComponents/MessagesAndLabels')
+const AxiosInstance = require("../utils/request").default;
+const StatusInTable = require('../commonComponents/StatusInTable').default
+const DownloadExcel = require('../commonComponents/DownloadExcel').default 
+const ModalRepresentative = require('./ModalRepresentative').default 
 
-// Generate Order Data
-function createData(id, date, name, shipTo, paymentMethod, amount) {
-  return { id, date, name, shipTo, paymentMethod, amount };
+const RepresentativeList = () => {
+  
+    const [Reload, SetReload] = React.useState(0);
+    const [dataSource, setDataSource] = React.useState([])
+    const [filtering, setFiltering] = React.useState(false)
+    const [selectedRepresentative, setSelectedRepresentative] = React.useState()
+    const [openModal, setOpenModal] = React.useState(false)
+    const [titleModalHeader, setTitleModalHeader] = React.useState('')
+
+    const excelStructure ={
+      fileName : 'ReporteDeRepresentantes.xlsx',
+      columns:[["Códigos", "Representantes", "Estatus"]],
+      sheetName: "Representantes"
+    }
+    const [alertModal, setAlertModal] = React.useState(false)
+    const [message, setMessage] = React.useState()
+    const [alertType, setAlertType] = React.useState('');
+    const [representativeObject, setRepresentativeObject] = React.useState({
+        repFirstName           : null, 
+        repSecondName          : null,
+        repSurname             : null ,
+        repSecondSurname       : null,
+        repIdType              : 'v',
+        repIdentificationNumber: null,
+        repDateOfBirth         : null,
+        repSex                 : null,
+        repAddress             : null,
+        repCivilStatus         : null,
+        proId                  : null,
+        repPhones              : null,
+        repEmail               : null,
+        couId                  : null,
+        fedId                  : null,
+        repPhoto               : null,
+        repStatus              : 1,
+        repBond                : null,
+        famId                  : null,
+      });
+  const columns = [
+    { title: 'Nombre', field: 'repFirstName',filtering:true},
+    { title: 'Apellido', field: 'repSurname',filtering:true },
+    { title: 'Tipo Id', field: 'repIdType',filtering:true,cellStyle:{paddingLeft:'4%'}},
+    { title: 'Identificación', field: 'repIdentificationNumber',filtering:true},
+    { title: 'Vínculo', field: 'repBond',filtering:true},
+    
+  ];
+
+  const cleanRepresentativeObject = () =>{
+    setRepresentativeObject({
+        repFirstName           : null, 
+        repSecondName          : null,
+        repSurname             : null ,
+        repSecondSurname       : null,
+        repIdType              : null,
+        repIdentificationNumber: null,
+        repDateOfBirth         : null,
+        repSex                 : null,
+        repAddress             : null,
+        repCivilStatus         : null,
+        proId                  : null,
+        repPhones              : null,
+        repEmail               : null,
+        couId                  : null,
+        fedId                  : null,
+        repPhoto               : null,
+        repStatus              : 1,
+        repBond                : null,
+        famId                  : null,
+      })
+  }
+
+  const fillTable = async () => {
+
+    try{
+      const resultRepresentatives = (await AxiosInstance.get("/representatives/")).data
+      if(resultRepresentatives.ok === true){
+          console.log(resultRepresentatives.data)
+        setDataSource(resultRepresentatives.data)
+      }
+    }catch{
+      setMessage('Error de Conexion')
+      setAlertModal(true)
+      
+  }
 }
 
-const rows = [
-  createData(
-    0,
-    '16 Mar, 2019',
-    'Elvis Presley',
-    'Tupelo, MS',
-    'VISA ⠀•••• 3719',
-    312.44,
-  ),
-  createData(
-    1,
-    '16 Mar, 2019',
-    'Paul McCartney',
-    'London, UK',
-    'VISA ⠀•••• 2574',
-    866.99,
-  ),
-  createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-  createData(
-    3,
-    '16 Mar, 2019',
-    'Michael Jackson',
-    'Gary, IN',
-    'AMEX ⠀•••• 2000',
-    654.39,
-  ),
-  createData(
-    4,
-    '15 Mar, 2019',
-    'Bruce Springsteen',
-    'Long Branch, NJ',
-    'VISA ⠀•••• 5919',
-    212.79,
-  ),
-];
+React.useEffect(() => {  
+    fillTable()    
+    }, [Reload]);
 
-function preventDefault(event) {
-  event.preventDefault();
-}
-
-export default function RepresentativeList() {
   return (
-    <React.Fragment>
-      <Title>RepresentativeList</Title>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Ship To</TableCell>
-            <TableCell>Payment Method</TableCell>
-            <TableCell align="right">Sale Amount</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align="right">{`$${row.amount}`}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
-        See more RepresentativeList
-      </Link>
-    </React.Fragment>
-  );
+    <>
+    <MaterialTable title={'Representantes'}
+     data={dataSource} 
+     columns={columns}
+     actions={[
+      { icon: () => <FilterList />,
+        tooltip: "Activar Filtros",
+        onClick : ()=> setFiltering(!filtering),
+        isFreeAction: true },
+        {
+          icon: () => <MiscellaneousServicesRoundedIcon />,
+          tooltip: 'Configurar Periodo',
+          onClick: (event, rowData) => {
+            setTitleModalHeader('Editar Representante')
+            setSelectedRepresentative(rowData)
+            setOpenModal(true)
+          }
+        },
+        {
+            icon: () => <PersonAddAltRoundedIcon />,
+            tooltip: 'Agregar Representante',
+            isFreeAction: true,
+            onClick: (event, rowData) => {
+                setTitleModalHeader('Nuevo Representante')
+                setSelectedRepresentative(rowData)
+                setOpenModal(true)
+              }
+        }
+    ]}
+     options={{
+        width:300,
+        actionsCellStyle:{paddingLeft:50,paddingRight:50},
+        headerStyle: {
+          backgroundColor: "#007bff",
+          color: "#FFF",
+          fontWeight:'normal',
+          fontSize:18,
+        },
+        exportMenu: [{
+          label: 'Export PDF',
+          exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte de Representantes')
+        }, 
+        {
+          label: 'Export EXCEL',
+          exportFunc: (cols, datas) => DownloadExcel(cols, datas,excelStructure)
+        }
+      ],
+         filtering:filtering,
+         actionsColumnIndex:-1,
+         addRowPosition:'first'
+     }}
+
+    //      onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
+    //       AxiosInstance.delete(`/representatives/${selectRow.repId}`)
+    //       .then(resp=>{
+    //         setTimeout(() => {
+    //           if(resp.data.ok === true){
+    //             setAlertType("success")
+    //           }else{
+    //             setAlertType("error")
+    //           }
+    //           setMessage(resp.data.message)
+    //           setAlertModal(true)
+    //           fillTable()
+    //           resolve()
+    //         }, 2000);
+            
+    //       }).catch((err) => {
+    //         setTimeout(() => {
+    //           setMessage(standardMessages.connectionError)
+    //           setAlertType("error")
+    //           setAlertModal(true)
+    //           fillTable()
+    //           reject()
+    //         }, 2000);
+    //       });
+
+    //     })
+
+    />
+    {(alertModal) ? 
+      <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
+      : null}
+    {(openModal) ?
+      <ModalRepresentative 
+      selectedRepresentative={selectedRepresentative} openModal={openModal} 
+      setOpenModal={setOpenModal} titleModalHeader={titleModalHeader} 
+      representativeObject={representativeObject} setRepresentativeObject={setRepresentativeObject}
+      /> 
+      : null}  
+    </>
+
+  )
 }
+
+export default RepresentativeList

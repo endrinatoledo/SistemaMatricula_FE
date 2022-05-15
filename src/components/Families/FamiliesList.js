@@ -3,16 +3,21 @@ import MaterialTable from '@material-table/core';
 import { ExportPdf } from '@material-table/exporters';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import FilterList from '@material-ui/icons/FilterList';
+import MiscellaneousServicesRoundedIcon from '@mui/icons-material/MiscellaneousServicesRounded';
 const {StatusTag, standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
 const DownloadExcel = require('../commonComponents/DownloadExcel').default 
+const ModalConfigureFamily = require('./ModalConfigureFamily').default 
 
 const FamiliesList = () => {
   
     const [Reload, SetReload] = React.useState(0);
     const [dataSource, setDataSource] = React.useState([])
     const [filtering, setFiltering] = React.useState(false)
+    const [selectedFamily, setSelectedFamily] = React.useState()
+    const [openModal, setOpenModal] = React.useState(false)
+
     const excelStructure ={
       fileName : 'ReporteDeFamilias.xlsx',
       columns:[["Códigos", "Familias", "Estatus"]],
@@ -61,7 +66,17 @@ React.useEffect(() => {
       { icon: () => <FilterList />,
         tooltip: "Activar Filtros",
         onClick : ()=> setFiltering(!filtering),
-        isFreeAction: true }
+        isFreeAction: true },
+        {
+          icon: () => <MiscellaneousServicesRoundedIcon />,
+          tooltip: 'Configurar Periodo',
+          onClick: (event, rowData) => {
+            setSelectedFamily(rowData)
+            setOpenModal(true)
+            // console.log(event)
+            // console.log(rowData)
+          }
+        }
     ]}
      options={{
         width:300,
@@ -171,6 +186,9 @@ React.useEffect(() => {
     {(alertModal) ? 
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null}
+    {(openModal) ?
+      <ModalConfigureFamily selectedFamily={selectedFamily} openModal={openModal} setOpenModal={setOpenModal}/> 
+      : null}  
 
       
     </>
