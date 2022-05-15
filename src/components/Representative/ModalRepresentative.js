@@ -7,17 +7,18 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 const AxiosInstance = require("../utils/request").default;
 const ValidateIdentification = require('../commonComponents/ValidateIdentification').default 
+const RepresentativeForm = require('./RepresentativeForm').default 
 
 const style = {
     flexGrow: 1,
     overflow: 'scroll',
     overflowX: 'hidden',
     position: 'absolute',
-    top: '30%',
+    top: '45%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '80%',
-    height : '50%',
+    width: '70%',
+    height : '80%',
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -26,10 +27,19 @@ const style = {
     pb: 3,
   };
 
+  const UseStyles = makeStyles({
+    title: {
+      // marginTop : 40,
+      marginBottom:40
+    },
 
+ 
+  });
 const modalRepresentative = ({selectedRepresentative, openModal, setOpenModal,titleModalHeader,
   representativeObject,setRepresentativeObject
 }) => {
+
+  const classes = UseStyles();
 
   const handleClose = () => {
     setOpenModal(false);
@@ -43,11 +53,13 @@ const modalRepresentative = ({selectedRepresentative, openModal, setOpenModal,ti
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
-        <Box sx={{ ...style, width: '75%' }}>
-          <h4 id="child-modal-title">{titleModalHeader} </h4>
+        <Box sx={{ ...style, width: '65%' }}>
+          <h4 className={classes.title}>{titleModalHeader} </h4>
 
           <ValidateIdentification setOpenModal={setOpenModal} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject} />
           
+          <RepresentativeForm setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject}/>
+
           <Button onClick={handleClose}>Close Child Modal</Button>
         </Box>
       </Modal>
