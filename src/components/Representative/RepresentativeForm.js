@@ -59,7 +59,9 @@ const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => 
 
     const [Reload, SetReload] = React.useState(0);
     const [listOfProfessions, setListOfProfessions] = React.useState([])
-
+    const [listOfCountries, setListOfCountries] = React.useState([])
+    const [listOfFederalEntities, setListOfFederalEntities] = React.useState([])
+    const [federalEntity, setFederalEntity] = React.useState()
     const getProfessions = async () => {
 
         try{
@@ -73,8 +75,38 @@ const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => 
           
       }
     }
+
+    const getCountries = async () => {
+
+        try{
+          const resultCountries = (await AxiosInstance.get("/countries/")).data
+          if(resultCountries.ok === true){
+            setListOfCountries(resultCountries.data)
+          }
+        }catch{
+        //   setMessage('Error de Conexion')
+        //   setAlertModal(true)
+          
+      }
+    }
+    const getFederalEntities = async (couId) => {
+
+        try{
+          const resultFederalEntities = (await AxiosInstance.get("/federalEntities/country/"+couId)).data
+          if(resultFederalEntities.ok === true){
+              console.log(resultFederalEntities)
+                setListOfFederalEntities(resultFederalEntities.data)
+          }
+        }catch{
+        //   setMessage('Error de Conexion')
+        //   setAlertModal(true)
+          
+      }
+    }
+
     React.useEffect(() => {  
-        getProfessions()    
+        getProfessions()  
+        getCountries()  
         }, [Reload]);
     
 
@@ -186,27 +218,44 @@ const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => 
                  )}/>
     </Stack>
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
+    
+            <Autocomplete
+                options={listOfCountries}
+                onChange={(event, newValue) => {
+                    setRepresentativeObject({...representativeObject,fedId : null, couId : newValue.couId ? newValue.couId : null})          
+                    getFederalEntities(newValue.couId)
+                    setFederalEntity()
+                }}
+                getOptionLabel={(option) => option.couName}
+                 sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                 clearOnEscape
+                 renderInput={(params) => ( 
+                   <TextField {...params} label="País" variant="standard" />
+                 )}/>
 
-            <TextField
-                sx={{ width: '20%' }} 
-                required
-                id="couId"
-                label="Pais"
-                variant="standard"
-                />
-                <TextField
+                <Autocomplete
+                // value = {federalEntity}
+                disabled={(listOfFederalEntities.length === 0)? true : false}
+                options={listOfFederalEntities}
+                onChange={(event, newValue) => {
+                    setRepresentativeObject({...representativeObject, fedId : newValue.fedId ? newValue.fedId : null})          
+                  }}
+                getOptionLabel={ (option) => option.fedName }
+                 sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                 clearOnEscape
+                 renderInput={(params) => (
+                   <TextField {...params} label="Estado" variant="standard" />
+                 )}/>
+
+                {/* <TextField
                 sx={{ width: '20%' }} 
                 required
                 id="fedId"
                 label="Estado"
                 variant="standard"
-                // helperText={errorMessage}
-                // error={errorInput}
-                // onChange={e => {
-                //   setRepresentativeObject({...representativeObject, repIdentificationNumber : e.target.value ? e.target.value : ''})          
-                //   if(e.target.value.length < 6 ){setButtonI(true)}else{setButtonI(false)}
-                // }   }
-                />
+                /> */}
 
                 <TextField
                         sx={{ width: '47%' }}
