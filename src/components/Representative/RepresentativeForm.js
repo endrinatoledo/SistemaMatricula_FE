@@ -3,12 +3,10 @@ import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
 import Autocomplete from '@mui/material/Autocomplete';
-const AxiosInstance = require("../utils/request").default;
+import ValidateEmail from '../commonComponents/ValidateEmail';
 
+const AxiosInstance = require("../utils/request").default;
 
 const UseStyles = makeStyles({
     stack: {
@@ -45,23 +43,39 @@ const UseStyles = makeStyles({
     {value:"h",
       label : "Hombre"}
   ]
+  const selectBond = [
+    {value:"Madre",
+      label : "Madre"},
+    {value:"Padre",
+      label : "Padre"}
+  ]
   const selectMaritalStatus = [
-    {value:"Seleccionar",label : "Seleccionar"},
+    // {value:"Seleccionar",label : "Seleccionar"},
     {value:"casado(a)",label : "Casado(a)"},
+    {value:"divorciado(a)",label : "Divorciado(a)"},
     {value:"conviviente",label : "Conviviente"},
     {value:"separado(a)",label : "Separado(a)"},
-    {value:"viudo",label : "Viudo(a)"},
+    {value:"viudo(a)",label : "Viudo(a)"},
     {value:"soltero(a)",label : "Soltero(a)"}
   ]
+  const selectStatus = [
+    {value:1,
+      label : "Activo"},
+    {value:2,
+      label : "Inactivo"}
+  ]
 
+  const requiredField = 'Campo Requerido';
 
-const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => {
+const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
     const [listOfProfessions, setListOfProfessions] = React.useState([])
+    const [listOfFamilies, setListOfFamilies] = React.useState([])
     const [listOfCountries, setListOfCountries] = React.useState([])
     const [listOfFederalEntities, setListOfFederalEntities] = React.useState([])
     const [federalEntity, setFederalEntity] = React.useState()
+
     const getProfessions = async () => {
 
         try{
@@ -75,6 +89,18 @@ const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => 
           
       }
     }
+
+    const getFamilies = async () => {
+      try{
+        const resultFamilies = (await AxiosInstance.get("/families/allFamilies/active")).data
+        if(resultFamilies.ok === true){
+            setListOfFamilies(resultFamilies.data)
+        }
+      }catch{
+      //   setMessage('Error de Conexion')
+      //   setAlertModal(true)        
+    }
+  }
 
     const getCountries = async () => {
 
@@ -94,7 +120,6 @@ const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => 
         try{
           const resultFederalEntities = (await AxiosInstance.get("/federalEntities/country/"+couId)).data
           if(resultFederalEntities.ok === true){
-              console.log(resultFederalEntities)
                 setListOfFederalEntities(resultFederalEntities.data)
           }
         }catch{
@@ -107,78 +132,83 @@ const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => 
     React.useEffect(() => {  
         getProfessions()  
         getCountries()  
+        getFamilies()
         }, [Reload]);
-    
 
     const classes = UseStyles();
-
-    const [valueDate, setValueDate] = React.useState(new Date('2014-08-18T21:11:54'));
-
-      const defaultPropsSex = {
-        options: selectSex,
-        getOptionLabel: (option) => option.label,
-    };
-
-  const handleChange = (newValue) => {
-    setValueDate(newValue);
-  };
 
   return (
     <Box  >
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
                 <TextField
                 required
+                value={representativeObject.repFirstName}
                 id="repFirstName"
                 label="Primer Nombre"
                 variant="standard"
-                // helperText={errorMessage}
-                // error={errorInput}
-                // onChange={e => {
-                //   setRepresentativeObject({...representativeObject, repIdentificationNumber : e.target.value ? e.target.value : ''})          
-                //   if(e.target.value.length < 6 ){setButtonI(true)}else{setButtonI(false)}
-                // }   }
+                helperText={(representativeObject.repFirstName === null ||representativeObject.repFirstName === '')? requiredField : '' }
+                error={(representativeObject.repFirstName === null ||representativeObject.repFirstName === '' )? true : false }
+                onChange={e => {
+                  setRepresentativeObject({...representativeObject, repFirstName : e.target.value ? e.target.value : ''})          
+                  // if(e.target.value.length < 6 ){setButtonI(true)}else{setButtonI(false)}
+                }   }
                 />
                 <TextField
+                value={representativeObject.repSecondName}
                 id="repSecondName"
                 label="Segundo Nombre"
                 variant="standard"
+                // helperText={(representativeObject.repSecondName === null ||representativeObject.repSecondName === '')? requiredField : '' }
+                // error={(representativeObject.repSecondName === null ||representativeObject.repSecondName === '' )? true : false }
+                onChange={e => {
+                  setRepresentativeObject({...representativeObject, repSecondName : e.target.value ? e.target.value : ''})          
+                }   }
                 />
                 <TextField
                 required
+                value={representativeObject.repSurname}
                 id="repSurname"
                 label="Primer Apellido"
                 variant="standard"
+                helperText={(representativeObject.repSurname === null ||representativeObject.repSurname === '')? requiredField : '' }
+                error={(representativeObject.repSurname === null ||representativeObject.repSurname === '' )? true : false }
+                onChange={e => {
+                  setRepresentativeObject({...representativeObject, repSurname : e.target.value ? e.target.value : ''})          
+                }   }
                 />
                 <TextField
                 id="repSecondSurname"
+                value={representativeObject.repSecondSurname}
                 label="Segundo Apellido"
                 variant="standard"
+                onChange={e => {
+                  setRepresentativeObject({...representativeObject, repSecondSurname : e.target.value ? e.target.value : ''})          
+                }   }
                 />
     </Stack>
 
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
                 <TextField
                 required
+                inputRef={defaultValue}
                 type='date'
                 id="repDateOfBirth"
                 label="Fecha de Nacimiento"
                 variant="standard"
                 sx={{ width: '20%' }} 
-                value={valueDate}
-                InputLabelProps={{
-                    shrink: true,
-                  }}
-                // helperText={errorMessage}
-                // error={errorInput}
+                value={representativeObject.repDateOfBirth}
+                InputLabelProps={{shrink: true}}
+                helperText={(representativeObject.repDateOfBirth === null ||representativeObject.repDateOfBirth === '')? requiredField : '' }
+                error={(representativeObject.repDateOfBirth === null ||representativeObject.repDateOfBirth === '' )? true : false }
                 onChange={e => {
-                    setValueDate(e.target.value)
                     setRepresentativeObject({...representativeObject, repDateOfBirth : e.target.value ? e.target.value : ''})          
-                //   if(e.target.value.length < 6 ){setButtonI(true)}else{setButtonI(false)}
                 }   }
                 />
 
                 <Autocomplete
                 require
+                key={clearField}
+                noOptionsText={'Sin Opciones'}
                 options={selectSex}
                 getOptionLabel={(option) => option.label}
                 onChange={(event, newValue) => {
@@ -186,40 +216,53 @@ const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => 
                   }}
                  sx={{ width: '20%' }} 
                  id="clear-on-escape"
-                 clearOnEscape
                  renderInput={(params) =>(
-                   <TextField {...params} label="Sexo" variant="standard" />
+                   <TextField
+                   helperText={(representativeObject.repSex === null ||representativeObject.repSex === '')? requiredField : '' }
+                   error={(representativeObject.repSex === null ||representativeObject.repSex === '' )? true : false }
+                   {...params} label="Sexo" variant="standard" />
                  )}/>
                  <Autocomplete
-                require
-                options={selectMaritalStatus}
-                getOptionLabel={(option) => option.label}
-                onChange={(event, newValue) => {
-                    setRepresentativeObject({...representativeObject, repCivilStatus : newValue.label ? newValue.label : null})          
-                  }}
-                 sx={{ width: '20%' }} 
-                 id="clear-on-escape"
-                 clearOnEscape
-                 renderInput={(params) => (
-                   <TextField {...params} label="Estado Civil" variant="standard" />
-                 )}/>
+                    require
+                    // key={}
+                    noOptionsText={'Sin Opciones'}
+                    options={selectMaritalStatus}
+                    getOptionLabel={(option) => option.label}
+                    onChange={(event, newValue) => {
+                        setRepresentativeObject({...representativeObject, repCivilStatus : newValue.label ? newValue.label : null})          
+                      }}
+                    sx={{ width: '20%' }} 
+                    id="clear-on-escape"
+                    clearOnEscape
+                    renderInput={(params) => (
+                      <TextField {...params}
+                      helperText={(representativeObject.repCivilStatus === null ||representativeObject.repCivilStatus === '')? requiredField : '' }
+                      error={(representativeObject.repCivilStatus === null ||representativeObject.repCivilStatus === '' )? true : false }
+                      label="Estado Civil" variant="standard" />
+                    )}/>
               <Autocomplete
+                // key={clearField}
+                noOptionsText={'Sin Opciones'}
                 options={listOfProfessions}
                 onChange={(event, newValue) => {
                     setRepresentativeObject({...representativeObject, proId : newValue.proId ? newValue.proId : null})          
                   }}
                 getOptionLabel={(option) => option.proName}
-                //  {...selectProfession}
                  sx={{ width: '20%' }} 
                  id="clear-on-escape"
                  clearOnEscape
                  renderInput={(params) => (
-                   <TextField {...params} label="Profesión" variant="standard" />
+                   <TextField {...params} 
+                   helperText={(representativeObject.proId === null ||representativeObject.proId === '')? requiredField : '' }
+                   error={(representativeObject.proId === null ||representativeObject.proId === '' )? true : false }
+                   label="Profesión" variant="standard" />
                  )}/>
     </Stack>
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
     
             <Autocomplete
+                // key={clearField}
+                noOptionsText={'Sin Opciones'}
                 options={listOfCountries}
                 onChange={(event, newValue) => {
                     setRepresentativeObject({...representativeObject,fedId : null, couId : newValue.couId ? newValue.couId : null})          
@@ -231,42 +274,40 @@ const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => 
                  id="clear-on-escape"
                  clearOnEscape
                  renderInput={(params) => ( 
-                   <TextField {...params} label="País" variant="standard" />
+                   <TextField {...params}
+                   helperText={(representativeObject.couId === null ||representativeObject.couId === '')? requiredField : '' }
+                   error={(representativeObject.couId === null ||representativeObject.couId === '' )? true : false }
+                   label="País" variant="standard" />
                  )}/>
 
                 <Autocomplete
-                // value = {federalEntity}
-                disabled={(listOfFederalEntities.length === 0)? true : false}
-                options={listOfFederalEntities}
-                onChange={(event, newValue) => {
-                    setRepresentativeObject({...representativeObject, fedId : newValue.fedId ? newValue.fedId : null})          
-                  }}
-                getOptionLabel={ (option) => option.fedName }
-                 sx={{ width: '20%' }} 
-                 id="clear-on-escape"
-                 clearOnEscape
-                 renderInput={(params) => (
-                   <TextField {...params} label="Estado" variant="standard" />
-                 )}/>
-
-                {/* <TextField
-                sx={{ width: '20%' }} 
-                required
-                id="fedId"
-                label="Estado"
-                variant="standard"
-                /> */}
+                  // key={clearField}
+                  noOptionsText={'Sin Opciones'}
+                  disabled={(listOfFederalEntities.length === 0 || representativeObject.couId != 232)? true : false}
+                  options={listOfFederalEntities}
+                  onChange={(event, newValue) => {
+                      setRepresentativeObject({...representativeObject, fedId : newValue.fedId ? newValue.fedId : null})          
+                    }}
+                  getOptionLabel={ (option) => option.fedName }
+                  sx={{ width: '20%' }} 
+                  id="clear-on-escape"
+                  clearOnEscape
+                  renderInput={(params) => (
+                    <TextField {...params} label="Estado" variant="standard" />
+                  )}/>
 
                 <TextField
-                        sx={{ width: '47%' }}
-                            // sx={{ width: 1/2 }} 
-                            required
-                            id="repAddress"
-                            label="Direccion"
-                            variant="standard"
-                            />
-
-                
+                  sx={{ width: '47%' }}
+                  required
+                  id="repAddress"
+                  label="Direccion"
+                  variant="standard"
+                  helperText={(representativeObject.repAddress === null ||representativeObject.repAddress === '')? requiredField : '' }
+                  error={(representativeObject.repAddress === null ||representativeObject.repAddress === '' )? true : false }
+                  onChange={e => {
+                    setRepresentativeObject({...representativeObject, repAddress : e.target.value ? e.target.value : ''}) 
+                  }   }
+                />   
     </Stack>
 
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
@@ -275,44 +316,90 @@ const RepresentativeForm = ({setRepresentativeObject, representativeObject}) => 
                 id="repEmail"
                 label="Correo"
                 variant="standard"
-                // helperText={errorMessage}
-                // error={errorInput}
-                // onChange={e => {
-                //   setRepresentativeObject({...representativeObject, repIdentificationNumber : e.target.value ? e.target.value : ''})          
-                //   if(e.target.value.length < 6 ){setButtonI(true)}else{setButtonI(false)}
-                // }   }
+                helperText={(representativeObject.repEmail === null)? requiredField :(ValidateEmail(representativeObject.repEmail) === false)? 'Error en formato' : '' }
+                error={(representativeObject.repEmail === null ||representativeObject.repEmail === '' )? true : false }
+                onChange={e => {
+                  setRepresentativeObject({...representativeObject, repEmail : e.target.value ? e.target.value : ''}) 
+                }   }
                 />
                 
                 <TextField
                 required
+                // type={'number'}
                 id="repPhones"
                 label="Telefono"
                 variant="standard"
+                helperText={(representativeObject.repPhones === null ||representativeObject.repPhones === '')? requiredField : '' }
+                  error={(representativeObject.repPhones === null ||representativeObject.repPhones === '' )? true : false }
+                  onChange={e => {
+                    setRepresentativeObject({...representativeObject, repPhones : e.target.value ? e.target.value : ''}) 
+                  }   }
                 />
                 <TextField
                 required
                 id="repPhoto"
                 label="Foto"
                 variant="standard"
+                helperText={(representativeObject.repPhoto === null ||representativeObject.repPhoto === '')? requiredField : '' }
+                error={(representativeObject.repPhoto === null ||representativeObject.repPhoto === '' )? true : false }
+                onChange={e => {
+                  setRepresentativeObject({...representativeObject, repPhoto : e.target.value ? e.target.value : ''}) 
+                }   }
+ 
                 />
-                <TextField
-                required
-                id="repStatus"
-                label="Estatus"
-                variant="standard"
-                />
-                
+                <Autocomplete
+                  require
+                  // key={clearField}
+                  noOptionsText={'Sin Opciones'}
+                  options={selectBond}
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, newValue) => {
+                      setRepresentativeObject({...representativeObject, repBond : newValue.value ? newValue.value : null})          
+                    }}
+                  sx={{ width: '20%' }} 
+                  id="clear-on-escape"
+                  clearOnEscape
+                  renderInput={(params) =>(
+                    <TextField {...params} label="Vínculo" variant="standard" />
+                  )}/> 
+                               
     </Stack>
 
     
-    <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
+    <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
+              <Autocomplete
+                require
+                // key={clearField}
+                noOptionsText={'Sin Opciones'}
+                options={listOfFamilies}
+                getOptionLabel={(option) => option.famName}
+                onChange={(event, newValue) => {
+                    setRepresentativeObject({...representativeObject, famId : newValue.famId ? newValue.famId : null})          
+                  }}
+                 sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                 clearOnEscape
+                 renderInput={(params) =>(
+                   <TextField {...params} label="Familia" variant="standard" />
+                 )}
+              /> 
 
-                <TextField
-                
-                id="famId"
-                label="Familia"
-                variant="standard"
-                />
+                <Autocomplete
+                  require
+                  // key={clearField}
+                  noOptionsText={'Sin Opciones'}
+                  options={selectStatus}
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, newValue) => {
+                      setRepresentativeObject({...representativeObject, repStatus : newValue.value ? newValue.value : null})          
+                    }}
+                  sx={{ width: '20%' }} 
+                  id="clear-on-escape"
+                  clearOnEscape
+                  renderInput={(params) =>(
+                    <TextField {...params} label="Estatus" variant="standard" />
+                  )}/> 
+
                 
     </Stack>
 
