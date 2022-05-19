@@ -28,6 +28,9 @@ const RepresentativeList = () => {
     const [alertModal, setAlertModal] = React.useState(false)
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
+    const defaultValue = React.useRef(null)
+    const [clearField, setClearField] = React.useState(true)
+
     const [representativeObject, setRepresentativeObject] = React.useState({
         repFirstName           : null, 
         repSecondName          : null,
@@ -35,7 +38,7 @@ const RepresentativeList = () => {
         repSecondSurname       : null,
         repIdType              : 'v',
         repIdentificationNumber: null,
-        repDateOfBirth         : null,
+        repDateOfBirth         : '',
         repSex                 : null,
         repAddress             : null,
         repCivilStatus         : null,
@@ -58,27 +61,31 @@ const RepresentativeList = () => {
     
   ];
 
+  console.log('******',representativeObject)
+
   const cleanRepresentativeObject = () =>{
+    setClearField(!clearField)
+    defaultValue.current.value = "";
     setRepresentativeObject({
-        repFirstName           : null, 
-        repSecondName          : null,
-        repSurname             : null ,
-        repSecondSurname       : null,
-        repIdType              : null,
-        repIdentificationNumber: null,
+        repFirstName           : '', 
+        repSecondName          : '',
+        repSurname             : '' ,
+        repSecondSurname       : '',
+        repIdType              : 'v',
+        repIdentificationNumber: '',
         repDateOfBirth         : null,
-        repSex                 : null,
-        repAddress             : null,
-        repCivilStatus         : null,
-        proId                  : null,
-        repPhones              : null,
-        repEmail               : null,
-        couId                  : null,
-        fedId                  : null,
-        repPhoto               : null,
+        repSex                 : '',
+        repAddress             : '',
+        repCivilStatus         : '',
+        proId                  : '',
+        repPhones              : '',
+        repEmail               : '',
+        couId                  : '',
+        fedId                  : '',
+        repPhoto               : '',
         repStatus              : 1,
-        repBond                : null,
-        famId                  : null,
+        repBond                : '',
+        famId                  : '',
       })
   }
 
@@ -187,9 +194,12 @@ React.useEffect(() => {
       : null}
     {(openModal) ?
       <ModalRepresentative 
-      selectedRepresentative={selectedRepresentative} openModal={openModal} 
-      setOpenModal={setOpenModal} titleModalHeader={titleModalHeader} 
-      representativeObject={representativeObject} setRepresentativeObject={setRepresentativeObject}
+        clearField={clearField} setClearField={setClearField}
+        defaultValue={defaultValue}
+        cleanRepresentativeObject={cleanRepresentativeObject}
+        selectedRepresentative={selectedRepresentative} openModal={openModal} 
+        setOpenModal={setOpenModal} titleModalHeader={titleModalHeader} 
+        representativeObject={representativeObject} setRepresentativeObject={setRepresentativeObject}
       /> 
       : null}  
     </>
