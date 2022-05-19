@@ -54,7 +54,7 @@ const ValidateIdentification = ({setOpenModal, setRepresentativeObject, represen
     const validate_Identification = async () => {
         try{
           const data = (await AxiosInstance.post("/representatives/byIdentification",representativeObject)).data
-          console.log(data)
+          
           if(data.data === 'registrado'){
             setErrorMessage(data.message)
             setErrorInput(true)
@@ -72,8 +72,9 @@ const ValidateIdentification = ({setOpenModal, setRepresentativeObject, represen
 
   return (
     <div>
-        <Stack direction="row" spacing={2}  justifyContent="flex-start" className={classes.TextField}>
+        <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
               <TextField 
+              sx={{ width: '20%' }} 
               id="repIdType"
               select
               label="Tipo Idenfiticación"
@@ -93,6 +94,7 @@ const ValidateIdentification = ({setOpenModal, setRepresentativeObject, represen
               ))}
                 </TextField>
                 <TextField
+                sx={{ width: '20%' }} 
                 required
                 id="repIdentificationNumber"
                 label="Identificación"
