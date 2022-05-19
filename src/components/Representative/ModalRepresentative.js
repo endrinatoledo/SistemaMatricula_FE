@@ -35,13 +35,14 @@ const style = {
 
  
   });
-const modalRepresentative = ({selectedRepresentative, openModal, setOpenModal,titleModalHeader,
+const modalRepresentative = ({clearField, setClearField,defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
   representativeObject,setRepresentativeObject
 }) => {
 
   const classes = UseStyles();
 
   const handleClose = () => {
+    // cleanRepresentativeObject()
     setOpenModal(false);
   };
 
@@ -58,8 +59,15 @@ const modalRepresentative = ({selectedRepresentative, openModal, setOpenModal,ti
 
           <ValidateIdentification setOpenModal={setOpenModal} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject} />
           
-          <RepresentativeForm setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject}/>
+          <RepresentativeForm clearField={clearField} setClearField={setClearField}  defaultValue={defaultValue} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject}/>
 
+          <Stack spacing={2} direction="row" justifyContent="center">
+          
+            <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
+            <Button variant="outlined" color="error">Cancelar</Button>
+            <Button variant="contained" color="success">Guardar</Button>
+            
+          </Stack>
           <Button onClick={handleClose}>Close Child Modal</Button>
         </Box>
       </Modal>
