@@ -29,7 +29,8 @@ const RepresentativeList = () => {
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
     const defaultValue = React.useRef(null)
-    const [clearField, setClearField] = React.useState(true)
+    const [clearField, setClearField] = React.useState({sex:0,civil:100,profession:200,country:300,federalEntity:400,bond:500,family:600,status:700})
+    const [valueForm, setValueForm] = React.useState({})
 
     const [representativeObject, setRepresentativeObject] = React.useState({
         repFirstName           : null, 
@@ -61,10 +62,19 @@ const RepresentativeList = () => {
     
   ];
 
-  console.log('******',representativeObject)
+  // console.log('******',clearField)
 
   const cleanRepresentativeObject = () =>{
-    setClearField(!clearField)
+    setClearField(
+      { sex:(clearField.sex + 1),
+        civil:(clearField.civil + 1),
+        profession:(clearField.profession + 1),
+        country:(clearField.country + 1),
+        federalEntity:(clearField.federalEntity + 1),
+        bond:(clearField.bond + 1),
+        family:(clearField.family + 1),
+        status:(clearField.status + 1)
+      })
     defaultValue.current.value = "";
     setRepresentativeObject({
         repFirstName           : '', 
@@ -194,6 +204,7 @@ React.useEffect(() => {
       : null}
     {(openModal) ?
       <ModalRepresentative 
+        valueForm={valueForm} setValueForm={setValueForm}
         clearField={clearField} setClearField={setClearField}
         defaultValue={defaultValue}
         cleanRepresentativeObject={cleanRepresentativeObject}

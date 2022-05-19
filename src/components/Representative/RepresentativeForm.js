@@ -67,7 +67,7 @@ const UseStyles = makeStyles({
 
   const requiredField = 'Campo Requerido';
 
-const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresentativeObject, representativeObject}) => {
+const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
     const [listOfProfessions, setListOfProfessions] = React.useState([])
@@ -75,6 +75,7 @@ const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresen
     const [listOfCountries, setListOfCountries] = React.useState([])
     const [listOfFederalEntities, setListOfFederalEntities] = React.useState([])
     const [federalEntity, setFederalEntity] = React.useState()
+    
 
     const getProfessions = async () => {
 
@@ -207,7 +208,7 @@ const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresen
 
                 <Autocomplete
                 require
-                key={clearField}
+                key={clearField.sex}
                 noOptionsText={'Sin Opciones'}
                 options={selectSex}
                 getOptionLabel={(option) => option.label}
@@ -224,7 +225,7 @@ const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresen
                  )}/>
                  <Autocomplete
                     require
-                    // key={}
+                    key={clearField.civil}
                     noOptionsText={'Sin Opciones'}
                     options={selectMaritalStatus}
                     getOptionLabel={(option) => option.label}
@@ -241,7 +242,7 @@ const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresen
                       label="Estado Civil" variant="standard" />
                     )}/>
               <Autocomplete
-                // key={clearField}
+                key={clearField.profession}
                 noOptionsText={'Sin Opciones'}
                 options={listOfProfessions}
                 onChange={(event, newValue) => {
@@ -261,7 +262,7 @@ const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresen
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
     
             <Autocomplete
-                // key={clearField}
+                key={clearField.country}
                 noOptionsText={'Sin Opciones'}
                 options={listOfCountries}
                 onChange={(event, newValue) => {
@@ -281,7 +282,7 @@ const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresen
                  )}/>
 
                 <Autocomplete
-                  // key={clearField}
+                  key={clearField.federalEntity}
                   noOptionsText={'Sin Opciones'}
                   disabled={(listOfFederalEntities.length === 0 || representativeObject.couId != 232)? true : false}
                   options={listOfFederalEntities}
@@ -336,12 +337,10 @@ const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresen
                   }   }
                 />
                 <TextField
-                required
+                
                 id="repPhoto"
                 label="Foto"
                 variant="standard"
-                helperText={(representativeObject.repPhoto === null ||representativeObject.repPhoto === '')? requiredField : '' }
-                error={(representativeObject.repPhoto === null ||representativeObject.repPhoto === '' )? true : false }
                 onChange={e => {
                   setRepresentativeObject({...representativeObject, repPhoto : e.target.value ? e.target.value : ''}) 
                 }   }
@@ -349,7 +348,7 @@ const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresen
                 />
                 <Autocomplete
                   require
-                  // key={clearField}
+                  key={clearField.bond}
                   noOptionsText={'Sin Opciones'}
                   options={selectBond}
                   getOptionLabel={(option) => option.label}
@@ -369,7 +368,7 @@ const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresen
     <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
               <Autocomplete
                 require
-                // key={clearField}
+                key={clearField.family}
                 noOptionsText={'Sin Opciones'}
                 options={listOfFamilies}
                 getOptionLabel={(option) => option.famName}
@@ -386,7 +385,7 @@ const RepresentativeForm = ({clearField, setClearField,defaultValue, setRepresen
 
                 <Autocomplete
                   require
-                  // key={clearField}
+                  key={clearField.status}
                   noOptionsText={'Sin Opciones'}
                   options={selectStatus}
                   getOptionLabel={(option) => option.label}

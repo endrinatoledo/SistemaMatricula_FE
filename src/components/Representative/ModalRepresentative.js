@@ -35,10 +35,10 @@ const style = {
 
  
   });
-const modalRepresentative = ({clearField, setClearField,defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
+const modalRepresentative = ({valueForm, setValueForm,clearField, setClearField,defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
   representativeObject,setRepresentativeObject
 }) => {
-
+  
   const classes = UseStyles();
 
   const handleClose = () => {
@@ -59,7 +59,7 @@ const modalRepresentative = ({clearField, setClearField,defaultValue, cleanRepre
 
           <ValidateIdentification setOpenModal={setOpenModal} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject} />
           
-          <RepresentativeForm clearField={clearField} setClearField={setClearField}  defaultValue={defaultValue} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject}/>
+          <RepresentativeForm valueForm={valueForm} setValueForm={setValueForm} clearField={clearField} setClearField={setClearField}  defaultValue={defaultValue} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject}/>
 
           <Stack spacing={2} direction="row" justifyContent="center">
           
