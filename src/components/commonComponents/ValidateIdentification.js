@@ -44,11 +44,12 @@ const AxiosInstance = require("../utils/request").default;
   ]
 
 
-const ValidateIdentification = ({setOpenModal, setRepresentativeObject, representativeObject}) => {
+
+
+const ValidateIdentification = ({orfRepIdentificationNumber, setRepresentativeObject, representativeObject}) => {
 
     const [buttonI, setButtonI] = React.useState(true)
     const [errorMessage, setErrorMessage] = React.useState('')
-    const [errorInput, setErrorInput] = React.useState(false)
     const classes = UseStyles();
 
     const validate_Identification = async () => {
@@ -57,10 +58,9 @@ const ValidateIdentification = ({setOpenModal, setRepresentativeObject, represen
           
           if(data.data === 'registrado'){
             setErrorMessage(data.message)
-            setErrorInput(true)
           }else{
             setErrorMessage('')
-            setErrorInput(false)
+
           }
         }catch{
           console.log('no')
@@ -68,7 +68,6 @@ const ValidateIdentification = ({setOpenModal, setRepresentativeObject, represen
         }
     
       }
-
 
   return (
     <div>
@@ -101,7 +100,7 @@ const ValidateIdentification = ({setOpenModal, setRepresentativeObject, represen
                 label="Identificación"
                 variant="standard"
                 helperText={errorMessage}
-                error={errorInput}
+                error={orfRepIdentificationNumber}
                 onChange={e => {
                   setRepresentativeObject({...representativeObject, repIdentificationNumber : e.target.value ? e.target.value : ''})          
                   if(e.target.value.length < 6 ){setButtonI(true)}else{setButtonI(false)}
