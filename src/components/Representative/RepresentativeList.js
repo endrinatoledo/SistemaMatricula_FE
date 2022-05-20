@@ -49,7 +49,7 @@ const RepresentativeList = () => {
         couId                  : null,
         fedId                  : null,
         repPhoto               : null,
-        repStatus              : 1,
+        repStatus              : null,
         repBond                : null,
         famId                  : null,
       });
@@ -93,7 +93,7 @@ const RepresentativeList = () => {
         couId                  : '',
         fedId                  : '',
         repPhoto               : '',
-        repStatus              : 1,
+        repStatus              : null,
         repBond                : '',
         famId                  : '',
       })

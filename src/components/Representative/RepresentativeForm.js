@@ -67,7 +67,7 @@ const UseStyles = makeStyles({
 
   const requiredField = 'Campo Requerido';
 
-const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,defaultValue, setRepresentativeObject, representativeObject}) => {
+const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,orfProId, orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField, defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
     const [listOfProfessions, setListOfProfessions] = React.useState([])
@@ -148,7 +148,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                 label="Primer Nombre"
                 variant="standard"
                 helperText={(representativeObject.repFirstName === null ||representativeObject.repFirstName === '')? requiredField : '' }
-                error={(representativeObject.repFirstName === null ||representativeObject.repFirstName === '' )? true : false }
+                error={orfRepFirstName}
                 onChange={e => {
                   setRepresentativeObject({...representativeObject, repFirstName : e.target.value ? e.target.value : ''})          
                 }   }
@@ -171,7 +171,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                 label="Primer Apellido"
                 variant="standard"
                 helperText={(representativeObject.repSurname === null ||representativeObject.repSurname === '')? requiredField : '' }
-                error={(representativeObject.repSurname === null ||representativeObject.repSurname === '' )? true : false }
+                error={orfRepSurname}
                 onChange={e => {
                   setRepresentativeObject({...representativeObject, repSurname : e.target.value ? e.target.value : ''})          
                 }   }
@@ -199,7 +199,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                 value={representativeObject.repDateOfBirth}
                 InputLabelProps={{shrink: true}}
                 helperText={(representativeObject.repDateOfBirth === null ||representativeObject.repDateOfBirth === '')? requiredField : '' }
-                error={(representativeObject.repDateOfBirth === null ||representativeObject.repDateOfBirth === '' )? true : false }
+                error={orfRepDateOfBirth}
                 onChange={e => {
                     setRepresentativeObject({...representativeObject, repDateOfBirth : e.target.value ? e.target.value : ''})          
                 }   }
@@ -219,7 +219,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                  renderInput={(params) =>(
                    <TextField
                    helperText={(representativeObject.repSex === null ||representativeObject.repSex === '')? requiredField : '' }
-                   error={(representativeObject.repSex === null ||representativeObject.repSex === '' )? true : false }
+                   error={orfRepSex}
                    {...params} label="Sexo" variant="standard" />
                  )}/>
                  <Autocomplete
@@ -237,7 +237,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                     renderInput={(params) => (
                       <TextField {...params}
                       helperText={(representativeObject.repCivilStatus === null ||representativeObject.repCivilStatus === '')? requiredField : '' }
-                      error={(representativeObject.repCivilStatus === null ||representativeObject.repCivilStatus === '' )? true : false }
+                      error={orfRepCivilStatus}
                       label="Estado Civil" variant="standard" />
                     )}/>
               <Autocomplete
@@ -254,7 +254,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                  renderInput={(params) => (
                    <TextField {...params} 
                    helperText={(representativeObject.proId === null ||representativeObject.proId === '')? requiredField : '' }
-                   error={(representativeObject.proId === null ||representativeObject.proId === '' )? true : false }
+                   error={orfProId}
                    label="Profesión" variant="standard" />
                  )}/>
     </Stack>
@@ -276,7 +276,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                  renderInput={(params) => ( 
                    <TextField {...params}
                    helperText={(representativeObject.couId === null ||representativeObject.couId === '')? requiredField : '' }
-                   error={(representativeObject.couId === null ||representativeObject.couId === '' )? true : false }
+                   error={orfCouId}
                    label="País" variant="standard" />
                  )}/>
 
@@ -304,7 +304,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                   label="Direccion"
                   variant="standard"
                   helperText={(representativeObject.repAddress === null ||representativeObject.repAddress === '')? requiredField : '' }
-                  error={(representativeObject.repAddress === null ||representativeObject.repAddress === '' )? true : false }
+                  error={orfRepAddresse}
                   onChange={e => {
                     setRepresentativeObject({...representativeObject, repAddress : e.target.value ? e.target.value : ''}) 
                   }   }
@@ -319,7 +319,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                 label="Correo"
                 variant="standard"
                 helperText={(representativeObject.repEmail === null)? requiredField :(ValidateEmail(representativeObject.repEmail) === false)? 'Error en formato' : '' }
-                error={(representativeObject.repEmail === null ||representativeObject.repEmail === '' )? true : false }
+                error={orfRepEmail}
                 onChange={e => {
                   setRepresentativeObject({...representativeObject, repEmail : e.target.value ? e.target.value : ''}) 
                 }   }
@@ -332,21 +332,12 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                 label="Telefono"
                 variant="standard"
                 helperText={(representativeObject.repPhones === null ||representativeObject.repPhones === '')? requiredField : '' }
-                  error={(representativeObject.repPhones === null ||representativeObject.repPhones === '' )? true : false }
+                  error={orfRepPhones}
                   onChange={e => {
                     setRepresentativeObject({...representativeObject, repPhones : e.target.value ? e.target.value : ''}) 
                   }   }
                 />
-                {/* <TextField
-                value={representativeObject.repPhoto}
-                id="repPhoto"
-                label="Foto"
-                variant="standard"
-                onChange={e => {
-                  setRepresentativeObject({...representativeObject, repPhoto : e.target.value ? e.target.value : ''}) 
-                }   }
- 
-                /> */}
+
                 <Autocomplete
                   require
                   key={clearField.bond}
@@ -360,7 +351,9 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                   id="clear-on-escape"
                   clearOnEscape
                   renderInput={(params) =>(
-                    <TextField {...params} label="Vínculo" variant="standard" />
+                    <TextField {...params} label="Vínculo" variant="standard"
+                    helperText={(representativeObject.repBond === null ||representativeObject.repBond === '')? requiredField : '' }
+                    error={orfRepBond} />
                   )}/> 
                   <Autocomplete
                 require
@@ -375,7 +368,10 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                  id="clear-on-escape"
                  clearOnEscape
                  renderInput={(params) =>(
-                   <TextField {...params} label="Familia" variant="standard" />
+                   <TextField {...params} label="Familia" variant="standard"
+                   helperText={(representativeObject.famId === null ||representativeObject.famId === '')? requiredField : '' }
+
+                   error={orfFamId} />
                  )}
               /> 
                                
@@ -398,7 +394,9 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                   id="clear-on-escape"
                   clearOnEscape
                   renderInput={(params) =>(
-                    <TextField {...params} label="Estatus" variant="standard" />
+                    <TextField {...params} label="Estatus" variant="standard"
+                    helperText={(representativeObject.repStatus === null ||representativeObject.repStatus === '')? requiredField : '' }
+                    error={orfStatus}  />
                   )}/> 
 
                 
