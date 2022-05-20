@@ -62,7 +62,7 @@ const RepresentativeList = () => {
     
   ];
 
-  // console.log('******',clearField)
+  console.log('******',representativeObject)
 
   const cleanRepresentativeObject = () =>{
     setClearField(

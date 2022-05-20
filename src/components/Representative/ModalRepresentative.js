@@ -40,9 +40,9 @@ const modalRepresentative = ({valueForm, setValueForm,clearField, setClearField,
 }) => {
   
   const classes = UseStyles();
-
+ 
   const handleClose = () => {
-    // cleanRepresentativeObject()
+    cleanRepresentativeObject()
     setOpenModal(false);
   };
 
@@ -64,7 +64,7 @@ const modalRepresentative = ({valueForm, setValueForm,clearField, setClearField,
           <Stack spacing={2} direction="row" justifyContent="center">
           
             <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
-            <Button variant="outlined" color="error">Cancelar</Button>
+            <Button variant="outlined" onClick={handleClose} color="error">Cancelar</Button>
             <Button variant="contained" color="success">Guardar</Button>
             
           </Stack>

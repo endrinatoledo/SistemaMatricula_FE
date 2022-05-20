@@ -151,7 +151,6 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                 error={(representativeObject.repFirstName === null ||representativeObject.repFirstName === '' )? true : false }
                 onChange={e => {
                   setRepresentativeObject({...representativeObject, repFirstName : e.target.value ? e.target.value : ''})          
-                  // if(e.target.value.length < 6 ){setButtonI(true)}else{setButtonI(false)}
                 }   }
                 />
                 <TextField
@@ -300,6 +299,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                 <TextField
                   sx={{ width: '47%' }}
                   required
+                  value={representativeObject.repAddress}
                   id="repAddress"
                   label="Direccion"
                   variant="standard"
@@ -314,6 +314,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
                 <TextField
                 required
+                value={representativeObject.repEmail}
                 id="repEmail"
                 label="Correo"
                 variant="standard"
@@ -326,7 +327,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                 
                 <TextField
                 required
-                // type={'number'}
+                value={representativeObject.repPhones}
                 id="repPhones"
                 label="Telefono"
                 variant="standard"
@@ -336,8 +337,8 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                     setRepresentativeObject({...representativeObject, repPhones : e.target.value ? e.target.value : ''}) 
                   }   }
                 />
-                <TextField
-                
+                {/* <TextField
+                value={representativeObject.repPhoto}
                 id="repPhoto"
                 label="Foto"
                 variant="standard"
@@ -345,7 +346,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                   setRepresentativeObject({...representativeObject, repPhoto : e.target.value ? e.target.value : ''}) 
                 }   }
  
-                />
+                /> */}
                 <Autocomplete
                   require
                   key={clearField.bond}
@@ -361,12 +362,7 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                   renderInput={(params) =>(
                     <TextField {...params} label="Vínculo" variant="standard" />
                   )}/> 
-                               
-    </Stack>
-
-    
-    <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
-              <Autocomplete
+                  <Autocomplete
                 require
                 key={clearField.family}
                 noOptionsText={'Sin Opciones'}
@@ -382,6 +378,12 @@ const RepresentativeForm = ({valueForm, setValueForm,clearField, setClearField,d
                    <TextField {...params} label="Familia" variant="standard" />
                  )}
               /> 
+                               
+    </Stack>
+
+    
+    <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
+              
 
                 <Autocomplete
                   require

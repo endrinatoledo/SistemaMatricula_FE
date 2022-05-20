@@ -96,6 +96,7 @@ const ValidateIdentification = ({setOpenModal, setRepresentativeObject, represen
                 <TextField
                 sx={{ width: '20%' }} 
                 required
+                value={representativeObject.repIdentificationNumber}
                 id="repIdentificationNumber"
                 label="Identificación"
                 variant="standard"
