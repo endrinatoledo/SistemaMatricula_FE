@@ -70,90 +70,63 @@ React.useEffect(() => {
   return (
     <>
     <MaterialTable title={'Usuarios'}
-    data={dataSource} 
-    columns={columns}
-    actions={[
-      { icon: () => <FilterList />,
-        tooltip: "Activar Filtros",
-        onClick : ()=> setFiltering(!filtering),
-        isFreeAction: true }
-    ]}
-    options={{
-        width:300,
-        actionsCellStyle:{paddingLeft:50,paddingRight:50},
-         filtering:filtering,
-         actionsColumnIndex:-1,
-         addRowPosition:'first',
-         headerStyle: {
-          backgroundColor: "#007bff",
-          color: "#FFF",
-          fontWeight:'normal',
-          fontSize:18,
-          textAlign:"center",
-        },
-        filterCellStyle:{
+      data={dataSource} 
+      columns={columns}
+      actions={[
+        { icon: () => <FilterList />,
+          tooltip: "Activar Filtros",
+          onClick : ()=> setFiltering(!filtering),
+          isFreeAction: true }
+      ]}
+      options={{
+          width:300,
+          actionsCellStyle:{paddingLeft:50,paddingRight:50},
+          filtering:filtering,
+          actionsColumnIndex:-1,
+          addRowPosition:'first',
+          headerStyle: {
+            backgroundColor: "#007bff",
+            color: "#FFF",
+            fontWeight:'normal',
+            fontSize:18,
+            textAlign:"center",
+          },
+          filterCellStyle:{
 
-        }
-     }}
-     editable={{
-         onRowAdd: (newRow) => new Promise((resolve, reject)=>{
+          }
+      }}
+      editable={{
+          onRowAdd: (newRow) => new Promise((resolve, reject)=>{
 
-          AxiosInstance.post(`/users/`,newRow)
-          .then(resp=>{
-            if(resp.data.ok === true){
-                setAlertType("success")
-                setMessage(resp.data.message)
+            AxiosInstance.post(`/users/`,newRow)
+            .then(resp=>{
+              if(resp.data.ok === true){
+                  setAlertType("success")
+                  setMessage(resp.data.message)
+                  setAlertModal(true)
+                  fillTable()
+                  resolve()
+                }else{
+                  setMessage(resp.data.message) 
+                  setAlertType("error")
+                  setAlertModal(true)
+                  reject()
+                }
+              
+            })
+            .catch((err) => {
+              setTimeout(() => {
+                setMessage(standardMessages.connectionError)
+                setAlertType("error")
                 setAlertModal(true)
                 fillTable()
-                resolve()
-              }else{
-                setMessage(resp.data.message) 
-                setAlertType("error")
-                setAlertModal(true)
                 reject()
-              }
-            
-          })
-          .catch((err) => {
-            setTimeout(() => {
-              setMessage(standardMessages.connectionError)
-              setAlertType("error")
-              setAlertModal(true)
-              fillTable()
-              reject()
-            }, 2000);
-          });
-          }),
-         onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
+              }, 2000);
+            });
+            }),
+          onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
 
-          AxiosInstance.delete(`/users/${selectRow.usuId}`)
-          .then(resp=>{
-            setTimeout(() => {
-              if(resp.data.ok === true){
-                setAlertType("success")
-              }else{
-                setAlertType("error")
-              }
-              setMessage(resp.data.message)
-              setAlertModal(true)
-              fillTable()
-              resolve()
-            }, 2000);
-            
-          }).catch((err) => {
-            setTimeout(() => {
-              setMessage(standardMessages.connectionError)
-              setAlertType("error")
-              setAlertModal(true)
-              fillTable()
-              reject()
-            }, 2000);
-          });
-
-        }),
-
-         onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
-            AxiosInstance.put(`/users/${newRow.usuId}`,newRow)
+            AxiosInstance.delete(`/users/${selectRow.usuId}`)
             .then(resp=>{
               setTimeout(() => {
                 if(resp.data.ok === true){
@@ -177,8 +150,35 @@ React.useEffect(() => {
               }, 2000);
             });
 
-         })
-     }}
+          }),
+
+          onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
+              AxiosInstance.put(`/users/${newRow.usuId}`,newRow)
+              .then(resp=>{
+                setTimeout(() => {
+                  if(resp.data.ok === true){
+                    setAlertType("success")
+                  }else{
+                    setAlertType("error")
+                  }
+                  setMessage(resp.data.message)
+                  setAlertModal(true)
+                  fillTable()
+                  resolve()
+                }, 2000);
+                
+              }).catch((err) => {
+                setTimeout(() => {
+                  setMessage(standardMessages.connectionError)
+                  setAlertType("error")
+                  setAlertModal(true)
+                  fillTable()
+                  reject()
+                }, 2000);
+              });
+
+          })
+      }}
     />
     {(alertModal) ? 
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
