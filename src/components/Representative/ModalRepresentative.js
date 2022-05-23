@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 const AxiosInstance = require("../utils/request").default;
 const ValidateIdentification = require('../commonComponents/ValidateIdentification').default 
 const RepresentativeForm = require('./RepresentativeForm').default 
+const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
 
 const style = {
     flexGrow: 1,
@@ -53,12 +54,30 @@ const ModalRepresentative = ({clearField, defaultValue, cleanRepresentativeObjec
     const [orfStatus, setOrfStatus] = React.useState(false)
     const [orfRepBond , setOrfRepBond ] = React.useState(false)
     const [orfFamId  , setOrfFamId] = React.useState(false)
-
+    const [modalCancel  , setModalCancel] = React.useState(false)
+    const [messagesRepresentative  , setMessagesRepresentative] = React.useState({cancel:'¿ Desea cancelar el registro ?'})
+    const [userResponse  , setUserResponse] = React.useState('')
   const classes = UseStyles();
  
+  const confirmCancelNewRepresentative =() =>{
+    setModalCancel(true)
+  }
+
+
+
   const handleClose = () => {
-    cleanRepresentativeObject()
-    setOpenModal(false);
+
+    if(userResponse === 'yes'){
+      
+      cleanRepresentativeObject()
+      setModalCancel(false)
+      setOpenModal(false);
+    }else 
+    if(userResponse === 'no'){
+      setModalCancel(false)
+    }
+
+    
   };
 
   const validateRequiredFields = async () =>{
@@ -143,13 +162,23 @@ const ModalRepresentative = ({clearField, defaultValue, cleanRepresentativeObjec
 
     const emptyForm = await validateRequiredFields()
 
-    if(emptyForm)  {console.log('hay form vacios')} else {console.log('NO hay form vacios')}
+    if(emptyForm) {
+      console.log('hay form vacios')
+    } else {
+      console.log('NO hay form vacios')
+    }
 
 
   };
 
+  React.useEffect(() => {  
+    
+    handleClose()
+    }, [userResponse]);
+
   return (
-    <Modal
+    <>
+      <Modal
         hideBackdrop open={openModal} onClose={handleClose}
         aria-labelledby="child-modal-title" aria-describedby="child-modal-description" >
         <Box sx={{ ...style, width: '65%' }}>
@@ -170,11 +199,17 @@ const ModalRepresentative = ({clearField, defaultValue, cleanRepresentativeObjec
 
           <Stack spacing={2} direction="row" justifyContent="center">
             <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
-            <Button variant="outlined" onClick={handleClose} color="error">Cancelar</Button>
+            <Button variant="outlined" onClick={confirmCancelNewRepresentative} color="error">Cancelar</Button>
             <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
           </Stack>
         </Box>
+
       </Modal>
+      {(modalCancel) ? 
+              <ModalAlertCancel  modalCancel={modalCancel} setModalCancel={setModalCancel} message={'¿ Desea cancelar el registro ?'} setUserResponse={setUserResponse} /> 
+       : null}
+    </>
+    
   )
 }
 

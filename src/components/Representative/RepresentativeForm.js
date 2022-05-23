@@ -158,8 +158,6 @@ const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, o
                 id="repSecondName"
                 label="Segundo Nombre"
                 variant="standard"
-                // helperText={(representativeObject.repSecondName === null ||representativeObject.repSecondName === '')? requiredField : '' }
-                // error={(representativeObject.repSecondName === null ||representativeObject.repSecondName === '' )? true : false }
                 onChange={e => {
                   setRepresentativeObject({...representativeObject, repSecondName : e.target.value ? e.target.value : ''})          
                 }   }
@@ -206,7 +204,7 @@ const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, o
                 />
 
                 <Autocomplete
-                require
+                required
                 key={clearField.sex}
                 noOptionsText={'Sin Opciones'}
                 options={selectSex}
@@ -223,7 +221,7 @@ const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, o
                    {...params} label="Sexo" variant="standard" />
                  )}/>
                  <Autocomplete
-                    require
+                    required
                     key={clearField.civil}
                     noOptionsText={'Sin Opciones'}
                     options={selectMaritalStatus}
@@ -339,7 +337,7 @@ const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, o
                 />
 
                 <Autocomplete
-                  require
+                  required
                   key={clearField.bond}
                   noOptionsText={'Sin Opciones'}
                   options={selectBond}
@@ -356,7 +354,7 @@ const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, o
                     error={orfRepBond} />
                   )}/> 
                   <Autocomplete
-                require
+                required
                 key={clearField.family}
                 noOptionsText={'Sin Opciones'}
                 options={listOfFamilies}
@@ -382,7 +380,7 @@ const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, o
               
 
                 <Autocomplete
-                  require
+                  required
                   key={clearField.status}
                   noOptionsText={'Sin Opciones'}
                   options={selectStatus}

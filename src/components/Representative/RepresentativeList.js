@@ -5,9 +5,7 @@ import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import FilterList from '@material-ui/icons/FilterList';
 import MiscellaneousServicesRoundedIcon from '@mui/icons-material/MiscellaneousServicesRounded';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-const {StatusTag, standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
-const StatusInTable = require('../commonComponents/StatusInTable').default
 const DownloadExcel = require('../commonComponents/DownloadExcel').default 
 const ModalRepresentative = require('./ModalRepresentative').default 
 
@@ -33,36 +31,42 @@ const RepresentativeList = () => {
     const [valueForm, setValueForm] = React.useState({})
 
     const [representativeObject, setRepresentativeObject] = React.useState({
-        repFirstName           : null, 
-        repSecondName          : null,
-        repSurname             : null ,
-        repSecondSurname       : null,
+        repFirstName           : '', 
+        repSecondName          : '',
+        repSurname             : '' ,
+        repSecondSurname       : '',
         repIdType              : 'v',
-        repIdentificationNumber: null,
+        repIdentificationNumber: '',
         repDateOfBirth         : '',
-        repSex                 : null,
-        repAddress             : null,
-        repCivilStatus         : null,
-        proId                  : null,
-        repPhones              : null,
-        repEmail               : null,
-        couId                  : null,
-        fedId                  : null,
-        repPhoto               : null,
-        repStatus              : null,
-        repBond                : null,
-        famId                  : null,
+        repSex                 : '',
+        repAddress             : '',
+        repCivilStatus         : '',
+        proId                  : '',
+        repPhones              : '',
+        repEmail               : '',
+        couId                  : '',
+        fedId                  : '',
+        repPhoto               : '',
+        repStatus              : '',
+        repBond                : '',
+        famId                  : '',
       });
   const columns = [
-    { title: 'Nombre', field: 'repFirstName',filtering:true},
-    { title: 'Apellido', field: 'repSurname',filtering:true },
-    { title: 'Tipo Id', field: 'repIdType',filtering:true,cellStyle:{paddingLeft:'4%'}},
+    { title: 'Primer Nombre', field: 'repFirstName',filtering:true},
+    { title: 'Segundo Nombre', field: 'repSecondName',filtering:true},
+    { title: 'Primer Apellido', field: 'repSurname',filtering:true },
+    { title: 'Segundo Apellido', field: 'repSecondSurname',filtering:true },
+    { title: 'Tipo', field: 'repIdType',filtering:true, cellStyle:{paddingLeft:'2%'}},
     { title: 'Identificación', field: 'repIdentificationNumber',filtering:true},
-    { title: 'Vínculo', field: 'repBond',filtering:true},
+    { title: 'Vínculo', field: 'repBond',filtering:true, cellStyle:{paddingLeft:'1%'}},
+    { title: 'Sexo', field: 'repSex',headerStyle:{paddingLeft:'1%'},lookup: {'f': 'Femenino', 'm':'Masculino'},filtering:true},
+    { title: 'Fecha', field: 'repDateOfBirth',type:'date', filtering:true},
+    { title: 'Correo', field: 'repEmail',filtering:true,headerStyle:{paddingLeft:'3%'}},
+    { title: 'Estatus', field: 'repStatus',filtering:true, lookup: {1: 'Activo', 2:'Inactivo'}},
     
   ];
 
-  console.log('******',representativeObject)
+  console.log('******',dataSource)
 
   const cleanRepresentativeObject = () =>{
     setClearField(
@@ -83,7 +87,7 @@ const RepresentativeList = () => {
         repSecondSurname       : '',
         repIdType              : 'v',
         repIdentificationNumber: '',
-        repDateOfBirth         : null,
+        repDateOfBirth         : '',
         repSex                 : '',
         repAddress             : '',
         repCivilStatus         : '',
@@ -93,7 +97,7 @@ const RepresentativeList = () => {
         couId                  : '',
         fedId                  : '',
         repPhoto               : '',
-        repStatus              : null,
+        repStatus              : '',
         repBond                : '',
         famId                  : '',
       })
@@ -121,6 +125,7 @@ React.useEffect(() => {
   return (
     <>
     <MaterialTable title={'Representantes'}
+    
      data={dataSource} 
      columns={columns}
      actions={[
