@@ -46,7 +46,7 @@ const AxiosInstance = require("../utils/request").default;
 
 
 
-const ValidateIdentification = ({orfRepIdentificationNumber, setRepresentativeObject, representativeObject}) => {
+const ValidateIdentification = ({setIdentificationValidation, identificationValidation, orfRepIdentificationNumber, setRepresentativeObject, representativeObject}) => {
 
     const [buttonI, setButtonI] = React.useState(true)
     const [errorMessage, setErrorMessage] = React.useState('')
@@ -56,9 +56,12 @@ const ValidateIdentification = ({orfRepIdentificationNumber, setRepresentativeOb
         try{
           const data = (await AxiosInstance.post("/representatives/byIdentification",representativeObject)).data
           
+          console.log('data validacion',data)
+
           if(data.data === 'registrado'){
             setErrorMessage(data.message)
           }else{
+            setIdentificationValidation(true)
             setErrorMessage('')
 
           }
@@ -73,6 +76,7 @@ const ValidateIdentification = ({orfRepIdentificationNumber, setRepresentativeOb
     <div>
         <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
               <TextField 
+              disabled={(identificationValidation)? true :  false}
               sx={{ width: '20%' }} 
               id="repIdType"
               select
@@ -93,6 +97,7 @@ const ValidateIdentification = ({orfRepIdentificationNumber, setRepresentativeOb
               ))}
                 </TextField>
                 <TextField
+                disabled={(identificationValidation)? true :  false}
                 sx={{ width: '20%' }} 
                 required
                 value={representativeObject.repIdentificationNumber}
@@ -108,7 +113,7 @@ const ValidateIdentification = ({orfRepIdentificationNumber, setRepresentativeOb
                 
                 }
                 />
-                <Button variant="outlined" disabled={buttonI} size="small" onClick={() => validate_Identification()}>Validar</Button>
+                <Button variant="outlined" disabled={(buttonI || identificationValidation? true :  false)} size="small" onClick={() => validate_Identification()}>Validar</Button>
          </Stack>
         
         </div>

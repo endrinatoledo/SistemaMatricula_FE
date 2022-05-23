@@ -4,12 +4,14 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import ValidateEmail from '../commonComponents/ValidateEmail';
 import TextField from '@mui/material/TextField';
+import LoadingButtons from '../commonComponents/LoadingButton';
 const AxiosInstance = require("../utils/request").default;
 const ValidateIdentification = require('../commonComponents/ValidateIdentification').default 
 const RepresentativeForm = require('./RepresentativeForm').default 
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
-
+  
 const style = {
     flexGrow: 1,
     overflow: 'scroll',
@@ -19,7 +21,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: '70%',
-    height : '80%',
+    height : '85%',
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -36,7 +38,7 @@ const style = {
 
  
   });
-const ModalRepresentative = ({clearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
+const ModalRepresentative = ({identificationValidation, setIdentificationValidation,clearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
   representativeObject,setRepresentativeObject
 }) => {
     // object Required Fields
@@ -55,6 +57,7 @@ const ModalRepresentative = ({clearField, defaultValue, cleanRepresentativeObjec
     const [orfRepBond , setOrfRepBond ] = React.useState(false)
     const [orfFamId  , setOrfFamId] = React.useState(false)
     const [modalCancel  , setModalCancel] = React.useState(false)
+    const [statusCcircularProgress  , setStatusCcircularProgress] = React.useState(false)
     const [messagesRepresentative  , setMessagesRepresentative] = React.useState({cancel:'¿ Desea cancelar el registro ?'})
     const [userResponse  , setUserResponse] = React.useState('')
   const classes = UseStyles();
@@ -62,8 +65,6 @@ const ModalRepresentative = ({clearField, defaultValue, cleanRepresentativeObjec
   const confirmCancelNewRepresentative =() =>{
     setModalCancel(true)
   }
-
-
 
   const handleClose = () => {
 
@@ -129,7 +130,7 @@ const ModalRepresentative = ({clearField, defaultValue, cleanRepresentativeObjec
       emptyForm = true
     }else{ setOrfPhones(false) }
 
-    if(representativeObject.repEmail == null || representativeObject.repEmail == ''){
+    if(representativeObject.repEmail == null || representativeObject.repEmail == '' || ValidateEmail(representativeObject.repEmail)  === false){
       setOrfRepEmail(true) ;
       emptyForm = true
     }else{ setOrfRepEmail(false) }
@@ -162,17 +163,36 @@ const ModalRepresentative = ({clearField, defaultValue, cleanRepresentativeObjec
 
     const emptyForm = await validateRequiredFields()
 
-    if(emptyForm) {
-      console.log('hay form vacios')
-    } else {
-      console.log('NO hay form vacios')
+    if(!emptyForm) {
+      setStatusCcircularProgress(true)
+      try{
+        
+        const data = (await AxiosInstance.post("/representatives",representativeObject)).data
+        
+        setTimeout(() => {
+          setStatusCcircularProgress(false)
+
+          if(data.message == 'Identificación ya se encuentra registrada'){
+
+          }
+
+        }, 2000);
+
+        console.log(data)
+  
+        // if(data.data === 'registrado'){
+        //   setErrorMessage(data.message)
+        // }else{
+        //   setErrorMessage('')
+        // }
+      }catch{
+        console.log('no')
+        // setConnErr(true)
+      }
     }
-
-
   };
 
   React.useEffect(() => {  
-    
     handleClose()
     }, [userResponse]);
 
@@ -184,30 +204,37 @@ const ModalRepresentative = ({clearField, defaultValue, cleanRepresentativeObjec
         <Box sx={{ ...style, width: '65%' }}>
           <h4 className={classes.title}>{titleModalHeader} </h4>
 
-          <ValidateIdentification orfRepIdentificationNumber={orfRepIdentificationNumber} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject} />
+          <ValidateIdentification setIdentificationValidation={setIdentificationValidation} identificationValidation={identificationValidation} orfRepIdentificationNumber={orfRepIdentificationNumber} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject} />
           
-          <RepresentativeForm 
-          orfRepFirstName = {orfRepFirstName} orfRepSurname={orfRepSurname}
-          orfRepDateOfBirth = {orfRepDateOfBirth} orfRepSex ={orfRepSex}          
-          orfRepAddresse = {orfRepAddresse} orfRepCivilStatus = {orfRepCivilStatus}
-          orfProId = {orfProId} orfRepPhones = {orfRepPhones}
-          orfRepEmail ={orfRepEmail} orfCouId = {orfCouId}
-          orfStatus = {orfStatus} orfRepBond = {orfRepBond} orfFamId = {orfFamId}
-          clearField={clearField}            
-          defaultValue={defaultValue} setRepresentativeObject={setRepresentativeObject} 
-          representativeObject={representativeObject}/>
+          {(identificationValidation) ? 
+            <RepresentativeForm 
+            orfRepFirstName = {orfRepFirstName} orfRepSurname={orfRepSurname}
+            orfRepDateOfBirth = {orfRepDateOfBirth} orfRepSex ={orfRepSex}          
+            orfRepAddresse = {orfRepAddresse} orfRepCivilStatus = {orfRepCivilStatus}
+            orfProId = {orfProId} orfRepPhones = {orfRepPhones}
+            orfRepEmail ={orfRepEmail} orfCouId = {orfCouId}
+            orfStatus = {orfStatus} orfRepBond = {orfRepBond} orfFamId = {orfFamId}
+            clearField={clearField} defaultValue={defaultValue} 
+            setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject}/>
+            : null
 
-          <Stack spacing={2} direction="row" justifyContent="center">
+          }
+
+          
+          <Stack spacing={2}  alignItems="flex-end" direction="row" justifyContent="center">
             <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
             <Button variant="outlined" onClick={confirmCancelNewRepresentative} color="error">Cancelar</Button>
-            <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
+           { (!statusCcircularProgress) ? 
+              <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
+            :
+              <LoadingButtons />}
           </Stack>
         </Box>
-
       </Modal>
       {(modalCancel) ? 
               <ModalAlertCancel  modalCancel={modalCancel} setModalCancel={setModalCancel} message={'¿ Desea cancelar el registro ?'} setUserResponse={setUserResponse} /> 
        : null}
+
     </>
     
   )

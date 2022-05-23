@@ -29,7 +29,7 @@ const RepresentativeList = () => {
     const defaultValue = React.useRef(null)
     const [clearField, setClearField] = React.useState({sex:0,civil:100,profession:200,country:300,federalEntity:400,bond:500,family:600,status:700})
     const [valueForm, setValueForm] = React.useState({})
-
+    const [identificationValidation  , setIdentificationValidation] = React.useState(false)
     const [representativeObject, setRepresentativeObject] = React.useState({
         repFirstName           : '', 
         repSecondName          : '',
@@ -66,9 +66,10 @@ const RepresentativeList = () => {
     
   ];
 
-  console.log('******',dataSource)
+  // console.log('******',dataSource)
 
   const cleanRepresentativeObject = () =>{
+    setIdentificationValidation(false)
     setClearField(
       { sex:(clearField.sex + 1),
         civil:(clearField.civil + 1),
@@ -108,7 +109,7 @@ const RepresentativeList = () => {
     try{
       const resultRepresentatives = (await AxiosInstance.get("/representatives/")).data
       if(resultRepresentatives.ok === true){
-          console.log(resultRepresentatives.data)
+          // console.log(resultRepresentatives.data)
         setDataSource(resultRepresentatives.data)
       }
     }catch{
@@ -209,6 +210,7 @@ React.useEffect(() => {
       : null}
     {(openModal) ?
       <ModalRepresentative 
+        identificationValidation={identificationValidation} setIdentificationValidation={setIdentificationValidation}
         valueForm={valueForm} setValueForm={setValueForm}
         clearField={clearField} setClearField={setClearField}
         defaultValue={defaultValue}

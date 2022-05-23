@@ -38,10 +38,10 @@ const UseStyles = makeStyles({
   });
 
   const selectSex = [
+    {value:"f",
+      label : "Femenino"},
     {value:"m",
-      label : "Mujer"},
-    {value:"h",
-      label : "Hombre"}
+      label : "Masculino"}
   ]
   const selectBond = [
     {value:"Madre",
@@ -210,7 +210,7 @@ const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, o
                 options={selectSex}
                 getOptionLabel={(option) => option.label}
                 onChange={(event, newValue) => {
-                    setRepresentativeObject({...representativeObject, repSex : newValue.label ? newValue.label : null})          
+                    setRepresentativeObject({...representativeObject, repSex : newValue.value ? newValue.value : null})          
                   }}
                  sx={{ width: '20%' }} 
                  id="clear-on-escape"
