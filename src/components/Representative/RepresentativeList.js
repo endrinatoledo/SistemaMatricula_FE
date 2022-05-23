@@ -80,7 +80,9 @@ const RepresentativeList = () => {
         family:(clearField.family + 1),
         status:(clearField.status + 1)
       })
-    defaultValue.current.value = "";
+
+      if (identificationValidation){defaultValue.current.value = ""}
+    
     setRepresentativeObject({
         repFirstName           : '', 
         repSecondName          : '',
