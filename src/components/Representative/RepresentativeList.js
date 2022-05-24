@@ -214,6 +214,7 @@ React.useEffect(() => {
       : null}
     {(openModal) ?
       <ModalRepresentative  fillTable={fillTable}
+        setAlertModal={setAlertModal} setMessage={setMessage} setAlertType={setAlertType}
         statusCcircularProgress={statusCcircularProgress}  setStatusCcircularProgress = {setStatusCcircularProgress}
         identificationValidation={identificationValidation} setIdentificationValidation={setIdentificationValidation}
         valueForm={valueForm} setValueForm={setValueForm}

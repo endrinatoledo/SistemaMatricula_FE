@@ -38,7 +38,7 @@ const style = {
 
  
   });
-const ModalRepresentative = ({fillTable,statusCcircularProgress  , setStatusCcircularProgress,identificationValidation, setIdentificationValidation,clearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
+const ModalRepresentative = ({fillTable,setAlertModal, setMessage, setAlertType,statusCcircularProgress, setStatusCcircularProgress,identificationValidation, setIdentificationValidation,clearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
   representativeObject,setRepresentativeObject
 }) => {
     // object Required Fields
@@ -174,11 +174,14 @@ const ModalRepresentative = ({fillTable,statusCcircularProgress  , setStatusCcir
 
           }else 
           if(data.message === 'Representante creado con éxito'){
-
+              setMessage(data.message)
+              setAlertType('success')
               setIdentificationValidation(false)
               setOpenModal(false);
               fillTable() 
-              cleanRepresentativeObject()           
+              setAlertModal(true)  
+              cleanRepresentativeObject()       
+               
           }
 
         }, 2000);
