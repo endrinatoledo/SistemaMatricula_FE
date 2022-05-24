@@ -376,9 +376,8 @@ const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, o
     </Stack>
 
     
-    <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
+    {/* <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
               
-
                 <Autocomplete
                   required
                   key={clearField.status}
@@ -398,7 +397,7 @@ const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, o
                   )}/> 
 
                 
-    </Stack>
+    </Stack> */}
 
   </Box>
   )

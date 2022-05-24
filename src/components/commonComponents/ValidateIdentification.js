@@ -46,7 +46,7 @@ const AxiosInstance = require("../utils/request").default;
 
 
 
-const ValidateIdentification = ({setIdentificationValidation, identificationValidation, orfRepIdentificationNumber, setRepresentativeObject, representativeObject}) => {
+const ValidateIdentification = ({setOrfRepIdentificationNumber,setIdentificationValidation, identificationValidation, orfRepIdentificationNumber, setRepresentativeObject, representativeObject}) => {
 
     const [buttonI, setButtonI] = React.useState(true)
     const [errorMessage, setErrorMessage] = React.useState('')
@@ -55,12 +55,12 @@ const ValidateIdentification = ({setIdentificationValidation, identificationVali
     const validate_Identification = async () => {
         try{
           const data = (await AxiosInstance.post("/representatives/byIdentification",representativeObject)).data
-          
-          console.log('data validacion',data)
 
           if(data.data === 'registrado'){
+            setOrfRepIdentificationNumber(true)
             setErrorMessage(data.message)
           }else{
+            setOrfRepIdentificationNumber(false)
             setIdentificationValidation(true)
             setErrorMessage('')
 

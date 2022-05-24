@@ -138,10 +138,10 @@ const ModalRepresentative = ({fillTable,statusCcircularProgress  , setStatusCcir
       emptyForm = true
     }else{ setOrfCouId(false) }
 
-    if(representativeObject.repStatus == null || representativeObject.repStatus == ''){
-      setOrfStatus(true) ;
-      emptyForm = true
-    }else{ setOrfStatus(false) }
+    // if(representativeObject.repStatus == null || representativeObject.repStatus == ''){
+    //   setOrfStatus(true) ;
+    //   emptyForm = true
+    // }else{ setOrfStatus(false) }
 
     if(representativeObject.repBond == null || representativeObject.repBond == ''){
       setOrfRepBond(true) ;
@@ -202,7 +202,7 @@ const ModalRepresentative = ({fillTable,statusCcircularProgress  , setStatusCcir
         <Box sx={{ ...style, width: '65%' }}>
           <h4 className={classes.title}>{titleModalHeader} </h4>
 
-          <ValidateIdentification setIdentificationValidation={setIdentificationValidation} identificationValidation={identificationValidation} orfRepIdentificationNumber={orfRepIdentificationNumber} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject} />
+          <ValidateIdentification setOrfRepIdentificationNumber={setOrfRepIdentificationNumber} setIdentificationValidation={setIdentificationValidation} identificationValidation={identificationValidation} orfRepIdentificationNumber={orfRepIdentificationNumber} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject} />
           
           {(identificationValidation) ? 
             <RepresentativeForm 
