@@ -284,7 +284,7 @@ const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, o
                   disabled={(listOfFederalEntities.length === 0 || representativeObject.couId != 232)? true : false}
                   options={listOfFederalEntities}
                   onChange={(event, newValue) => {
-                      setRepresentativeObject({...representativeObject, fedId : newValue.fedId ? newValue.fedId : null})          
+                      setRepresentativeObject({...representativeObject, fedId : newValue.fedId ? newValue.fedId : null})
                     }}
                   getOptionLabel={ (option) => option.fedName }
                   sx={{ width: '20%' }} 

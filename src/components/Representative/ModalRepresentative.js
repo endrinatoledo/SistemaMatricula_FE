@@ -11,7 +11,7 @@ const AxiosInstance = require("../utils/request").default;
 const ValidateIdentification = require('../commonComponents/ValidateIdentification').default 
 const RepresentativeForm = require('./RepresentativeForm').default 
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
-  
+   
 const style = {
     flexGrow: 1,
     overflow: 'scroll',
@@ -38,7 +38,7 @@ const style = {
 
  
   });
-const ModalRepresentative = ({identificationValidation, setIdentificationValidation,clearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
+const ModalRepresentative = ({fillTable,statusCcircularProgress  , setStatusCcircularProgress,identificationValidation, setIdentificationValidation,clearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
   representativeObject,setRepresentativeObject
 }) => {
     // object Required Fields
@@ -57,7 +57,6 @@ const ModalRepresentative = ({identificationValidation, setIdentificationValidat
     const [orfRepBond , setOrfRepBond ] = React.useState(false)
     const [orfFamId  , setOrfFamId] = React.useState(false)
     const [modalCancel  , setModalCancel] = React.useState(false)
-    const [statusCcircularProgress  , setStatusCcircularProgress] = React.useState(false)
     const [messagesRepresentative  , setMessagesRepresentative] = React.useState({cancel:'¿ Desea cancelar el registro ?'})
     const [userResponse  , setUserResponse] = React.useState('')
   const classes = UseStyles();
@@ -78,7 +77,6 @@ const ModalRepresentative = ({identificationValidation, setIdentificationValidat
       setModalCancel(false)
     }
 
-    
   };
 
   const validateRequiredFields = async () =>{
@@ -171,20 +169,20 @@ const ModalRepresentative = ({identificationValidation, setIdentificationValidat
         
         setTimeout(() => {
           setStatusCcircularProgress(false)
+          
+          if(data.message === 'Identificación ya se encuentra registrada'){
 
-          if(data.message == 'Identificación ya se encuentra registrada'){
+          }else 
+          if(data.message === 'Representante creado con éxito'){
 
+              setIdentificationValidation(false)
+              setOpenModal(false);
+              fillTable() 
+              cleanRepresentativeObject()           
           }
 
         }, 2000);
-
         console.log(data)
-  
-        // if(data.data === 'registrado'){
-        //   setErrorMessage(data.message)
-        // }else{
-        //   setErrorMessage('')
-        // }
       }catch{
         console.log('no')
         // setConnErr(true)

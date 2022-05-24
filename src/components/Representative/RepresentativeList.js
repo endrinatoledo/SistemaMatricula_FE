@@ -29,6 +29,7 @@ const RepresentativeList = () => {
     const defaultValue = React.useRef(null)
     const [clearField, setClearField] = React.useState({sex:0,civil:100,profession:200,country:300,federalEntity:400,bond:500,family:600,status:700})
     const [valueForm, setValueForm] = React.useState({})
+    const [statusCcircularProgress  , setStatusCcircularProgress] = React.useState(false)
     const [identificationValidation  , setIdentificationValidation] = React.useState(false)
     const [representativeObject, setRepresentativeObject] = React.useState({
         repFirstName           : '', 
@@ -66,10 +67,11 @@ const RepresentativeList = () => {
     
   ];
 
-  // console.log('******',dataSource)
+    console.log('***representativeObject***',representativeObject)
 
   const cleanRepresentativeObject = () =>{
     setIdentificationValidation(false)
+    setStatusCcircularProgress(false)
     setClearField(
       { sex:(clearField.sex + 1),
         civil:(clearField.civil + 1),
@@ -80,8 +82,6 @@ const RepresentativeList = () => {
         family:(clearField.family + 1),
         status:(clearField.status + 1)
       })
-
-      if (identificationValidation){defaultValue.current.value = ""}
     
     setRepresentativeObject({
         repFirstName           : '', 
@@ -104,6 +104,9 @@ const RepresentativeList = () => {
         repBond                : '',
         famId                  : '',
       })
+
+      if (identificationValidation && openModal){defaultValue.current.value = ""}
+
   }
 
   const fillTable = async () => {
@@ -111,7 +114,6 @@ const RepresentativeList = () => {
     try{
       const resultRepresentatives = (await AxiosInstance.get("/representatives/")).data
       if(resultRepresentatives.ok === true){
-          // console.log(resultRepresentatives.data)
         setDataSource(resultRepresentatives.data)
       }
     }catch{
@@ -211,7 +213,8 @@ React.useEffect(() => {
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null}
     {(openModal) ?
-      <ModalRepresentative 
+      <ModalRepresentative  fillTable={fillTable}
+        statusCcircularProgress={statusCcircularProgress}  setStatusCcircularProgress = {setStatusCcircularProgress}
         identificationValidation={identificationValidation} setIdentificationValidation={setIdentificationValidation}
         valueForm={valueForm} setValueForm={setValueForm}
         clearField={clearField} setClearField={setClearField}
