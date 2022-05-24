@@ -166,7 +166,7 @@ const ModalRepresentative = ({fillTable,setAlertModal, setMessage, setAlertType,
       try{
         
         const data = (await AxiosInstance.post("/representatives",representativeObject)).data
-        
+        // console.log('datadatadatadatadata',data)
         setTimeout(() => {
           setStatusCcircularProgress(false)
           
@@ -180,15 +180,20 @@ const ModalRepresentative = ({fillTable,setAlertModal, setMessage, setAlertType,
               setOpenModal(false);
               fillTable() 
               setAlertModal(true)  
-              cleanRepresentativeObject()       
-               
+              cleanRepresentativeObject()      
+          }else{
+            setStatusCcircularProgress(false)
+            setAlertModal(true)  
+            setMessage('Error al crear nuevo Representante')
+            setAlertType('error')
           }
 
         }, 2000);
-        console.log(data)
       }catch{
-        console.log('no')
-        // setConnErr(true)
+            setStatusCcircularProgress(false)
+            setMessage('Error al crear nuevo Representante')
+            setAlertType('error')
+            setAlertModal(true)   
       }
     }
   };
