@@ -64,6 +64,7 @@ const ModalRepresentative = ({fillTable,editRepresentative, setEditRepresentativ
  
   const confirmCancelNewRepresentative =() =>{
     setModalCancel(true)
+    
   }
 
   const handleClose = () => {
@@ -73,6 +74,7 @@ const ModalRepresentative = ({fillTable,editRepresentative, setEditRepresentativ
       cleanRepresentativeObject()
       setModalCancel(false)
       setOpenModal(false);
+      setEditRepresentative(false);
     }else 
     if(userResponse === 'no'){
       setModalCancel(false)
@@ -200,7 +202,7 @@ const ModalRepresentative = ({fillTable,editRepresentative, setEditRepresentativ
   };
 
   const updateRepresentative = async () => {
-
+    //cuando se procese la accion cambiar setEditRepresentative(false)
     const emptyForm = await validateRequiredFields()
 
     if(!emptyForm) {
@@ -256,6 +258,7 @@ const ModalRepresentative = ({fillTable,editRepresentative, setEditRepresentativ
           
           {(identificationValidation || editRepresentative) ? 
             <RepresentativeForm 
+            editRepresentative={editRepresentative}
             orfRepFirstName = {orfRepFirstName} orfRepSurname={orfRepSurname}
             orfRepDateOfBirth = {orfRepDateOfBirth} orfRepSex ={orfRepSex}          
             orfRepAddresse = {orfRepAddresse} orfRepCivilStatus = {orfRepCivilStatus}

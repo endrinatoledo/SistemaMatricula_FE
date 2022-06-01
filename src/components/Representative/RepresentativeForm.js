@@ -67,7 +67,7 @@ const UseStyles = makeStyles({
 
   const requiredField = 'Campo Requerido';
 
-const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,orfProId, orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField, defaultValue, setRepresentativeObject, representativeObject}) => {
+const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,orfProId, orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField, defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
     const [listOfProfessions, setListOfProfessions] = React.useState([])
@@ -375,7 +375,29 @@ const RepresentativeForm = ({orfRepFirstName, orfRepSurname,orfRepDateOfBirth, o
                                
     </Stack>
 
-    
+    {(editRepresentative)? 
+         <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
+      
+                <Autocomplete
+                  required
+                  key={clearField.status}
+                  noOptionsText={'Sin Opciones'}
+                  options={selectStatus}
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, newValue) => {
+                      setRepresentativeObject({...representativeObject, repStatus : newValue.value ? newValue.value : null})          
+                    }}
+                  sx={{ width: '20%' }} 
+                  id="clear-on-escape"
+                  clearOnEscape
+                  renderInput={(params) =>(
+                    <TextField {...params} label="Estatus" variant="standard"
+                    helperText={(representativeObject.repStatus === null ||representativeObject.repStatus === '')? requiredField : '' }
+                    error={orfStatus}  />
+                  )}/> 
+
+    </Stack> 
+  : null}
     {/* <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
               
                 <Autocomplete
