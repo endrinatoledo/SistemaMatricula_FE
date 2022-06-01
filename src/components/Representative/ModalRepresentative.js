@@ -258,7 +258,7 @@ const ModalRepresentative = ({fillTable,editRepresentative, setEditRepresentativ
           
           {(identificationValidation || editRepresentative) ? 
             <RepresentativeForm 
-            editRepresentative={editRepresentative}
+            editRepresentative={editRepresentative} selectedRepresentative={selectedRepresentative}
             orfRepFirstName = {orfRepFirstName} orfRepSurname={orfRepSurname}
             orfRepDateOfBirth = {orfRepDateOfBirth} orfRepSex ={orfRepSex}          
             orfRepAddresse = {orfRepAddresse} orfRepCivilStatus = {orfRepCivilStatus}

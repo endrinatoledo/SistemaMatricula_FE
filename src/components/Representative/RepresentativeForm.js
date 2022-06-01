@@ -67,7 +67,7 @@ const UseStyles = makeStyles({
 
   const requiredField = 'Campo Requerido';
 
-const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,orfProId, orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField, defaultValue, setRepresentativeObject, representativeObject}) => {
+const RepresentativeForm = ({editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,orfProId, orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField, defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
     const [listOfProfessions, setListOfProfessions] = React.useState([])
@@ -75,8 +75,28 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
     const [listOfCountries, setListOfCountries] = React.useState([])
     const [listOfFederalEntities, setListOfFederalEntities] = React.useState([])
     const [federalEntity, setFederalEntity] = React.useState()
+    const [editRepre, setEditRepre] = React.useState({
+      repFirstName           : '', 
+      repSecondName          : '',
+      repSurname             : '' ,
+      repSecondSurname       : '',
+      repIdType              : 'v',
+      repIdentificationNumber: '',
+      repDateOfBirth         : '',
+      repSex                 : '',
+      repAddress             : '',
+      repCivilStatus         : '',
+      profession             : null,
+      repPhones              : '',
+      repEmail               : '',
+      couId                  : '',
+      fedId                  : '',
+      repPhoto               : '',
+      repStatus              : '',
+      repBond                : '',
+      famId                  : '',
+    })
     
-
     const getProfessions = async () => {
 
         try{
@@ -129,6 +149,29 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
           
       }
     }
+    const labelSex = (repSex) =>{
+      let result
+      return result = ((repSex=='m') ? 'Masculino':'Femenino')
+    }
+    const labelMaritalStatus = (maritalStatus) =>{
+
+      let result = selectMaritalStatus.filter((element) =>{ 
+        if(element.value == maritalStatus.toLowerCase()){
+          return element.label
+        }
+      })
+        return result[0].label
+    }
+
+    const labelProfession = (idProfession) =>{
+       
+       let result = listOfProfessions.filter((element) =>{ 
+        if(element.proId == idProfession){
+          setEditRepre({...editRepre, profession : element.proName}) 
+        }
+      })
+
+    }
 
     React.useEffect(() => {  
         getProfessions()  
@@ -139,11 +182,11 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
     const classes = UseStyles();
 
   return (
-    <Box  >
+    <Box >
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
                 <TextField
                 required
-                value={representativeObject.repFirstName}
+                value={(editRepresentative) ? selectedRepresentative.repFirstName :representativeObject.repFirstName}
                 id="repFirstName"
                 label="Primer Nombre"
                 variant="standard"
@@ -154,7 +197,7 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
                 }   }
                 />
                 <TextField
-                value={representativeObject.repSecondName}
+                value={(editRepresentative) ? selectedRepresentative.repSecondName :representativeObject.repSecondName}
                 id="repSecondName"
                 label="Segundo Nombre"
                 variant="standard"
@@ -164,7 +207,7 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
                 />
                 <TextField
                 required
-                value={representativeObject.repSurname}
+                value={(editRepresentative) ? selectedRepresentative.repSurname :representativeObject.repSurname}
                 id="repSurname"
                 label="Primer Apellido"
                 variant="standard"
@@ -176,7 +219,7 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
                 />
                 <TextField
                 id="repSecondSurname"
-                value={representativeObject.repSecondSurname}
+                value={(editRepresentative) ? selectedRepresentative.repSecondSurname :representativeObject.repSecondSurname}
                 label="Segundo Apellido"
                 variant="standard"
                 onChange={e => {
@@ -194,7 +237,7 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
                 label="Fecha de Nacimiento"
                 variant="standard"
                 sx={{ width: '20%' }} 
-                value={representativeObject.repDateOfBirth}
+                value={(editRepresentative) ? selectedRepresentative.repDateOfBirth :representativeObject.repDateOfBirth}
                 InputLabelProps={{shrink: true}}
                 helperText={(representativeObject.repDateOfBirth === null ||representativeObject.repDateOfBirth === '')? requiredField : '' }
                 error={orfRepDateOfBirth}
@@ -225,7 +268,7 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
                     key={clearField.civil}
                     noOptionsText={'Sin Opciones'}
                     options={selectMaritalStatus}
-                    getOptionLabel={(option) => option.label}
+                    getOptionLabel={(option) => option.label}                
                     onChange={(event, newValue) => {
                         setRepresentativeObject({...representativeObject, repCivilStatus : newValue.label ? newValue.label : null})          
                       }}
@@ -245,7 +288,7 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
                 onChange={(event, newValue) => {
                     setRepresentativeObject({...representativeObject, proId : newValue.proId ? newValue.proId : null})          
                   }}
-                getOptionLabel={(option) => option.proName}
+                  getOptionLabel={(option) => option.proName}                
                  sx={{ width: '20%' }} 
                  id="clear-on-escape"
                  clearOnEscape
@@ -297,7 +340,7 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
                 <TextField
                   sx={{ width: '47%' }}
                   required
-                  value={representativeObject.repAddress}
+                  value={(editRepresentative) ? selectedRepresentative.repAddress :representativeObject.repAddress}
                   id="repAddress"
                   label="Direccion"
                   variant="standard"
@@ -312,7 +355,7 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
                 <TextField
                 required
-                value={representativeObject.repEmail}
+                value={(editRepresentative) ? selectedRepresentative.repEmail :representativeObject.repEmail}
                 id="repEmail"
                 label="Correo"
                 variant="standard"
@@ -325,7 +368,7 @@ const RepresentativeForm = ({editRepresentative,orfRepFirstName, orfRepSurname,o
                 
                 <TextField
                 required
-                value={representativeObject.repPhones}
+                value={(editRepresentative) ? selectedRepresentative.repPhones :representativeObject.repPhones}
                 id="repPhones"
                 label="Telefono"
                 variant="standard"
