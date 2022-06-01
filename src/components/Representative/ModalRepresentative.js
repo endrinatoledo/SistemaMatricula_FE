@@ -38,9 +38,10 @@ const style = {
 
  
   });
-const ModalRepresentative = ({fillTable,setAlertModal, setMessage, setAlertType,statusCcircularProgress, setStatusCcircularProgress,identificationValidation, setIdentificationValidation,clearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
+const ModalRepresentative = ({fillTable,editRepresentative, setEditRepresentative,setAlertModal, setMessage, setAlertType,statusCcircularProgress, setStatusCcircularProgress,identificationValidation, setIdentificationValidation,clearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
   representativeObject,setRepresentativeObject
 }) => {
+
     // object Required Fields
     const [orfRepFirstName, setOrfRepFirstName] = React.useState(false)
     const [orfRepSurname, setOrfRepSurname] = React.useState(false)
@@ -164,7 +165,48 @@ const ModalRepresentative = ({fillTable,setAlertModal, setMessage, setAlertType,
     if(!emptyForm) {
       setStatusCcircularProgress(true)
       try{
-        
+         
+        const data = (await AxiosInstance.post("/representatives",representativeObject)).data
+        // console.log('datadatadatadatadata',data)
+        setTimeout(() => {
+          setStatusCcircularProgress(false)
+          
+          if(data.message === 'Identificación ya se encuentra registrada'){
+
+          }else 
+          if(data.message === 'Representante creado con éxito'){
+              setMessage(data.message)
+              setAlertType('success')
+              setIdentificationValidation(false)
+              setOpenModal(false);
+              fillTable() 
+              setAlertModal(true)  
+              cleanRepresentativeObject()      
+          }else{
+            setStatusCcircularProgress(false)
+            setAlertModal(true)  
+            setMessage('Error al crear nuevo Representante')
+            setAlertType('error')
+          }
+
+        }, 2000);
+      }catch{
+            setStatusCcircularProgress(false)
+            setMessage('Error al crear nuevo Representante')
+            setAlertType('error')
+            setAlertModal(true)   
+      }
+    }
+  };
+
+  const updateRepresentative = async () => {
+
+    const emptyForm = await validateRequiredFields()
+
+    if(!emptyForm) {
+      setStatusCcircularProgress(true)
+      try{
+         
         const data = (await AxiosInstance.post("/representatives",representativeObject)).data
         // console.log('datadatadatadatadata',data)
         setTimeout(() => {
@@ -210,9 +252,9 @@ const ModalRepresentative = ({fillTable,setAlertModal, setMessage, setAlertType,
         <Box sx={{ ...style, width: '65%' }}>
           <h4 className={classes.title}>{titleModalHeader} </h4>
 
-          <ValidateIdentification setOrfRepIdentificationNumber={setOrfRepIdentificationNumber} setIdentificationValidation={setIdentificationValidation} identificationValidation={identificationValidation} orfRepIdentificationNumber={orfRepIdentificationNumber} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject} />
+          <ValidateIdentification editRepresentative={editRepresentative} setOrfRepIdentificationNumber={setOrfRepIdentificationNumber} setIdentificationValidation={setIdentificationValidation} identificationValidation={identificationValidation} orfRepIdentificationNumber={orfRepIdentificationNumber} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject} />
           
-          {(identificationValidation) ? 
+          {(identificationValidation || editRepresentative) ? 
             <RepresentativeForm 
             orfRepFirstName = {orfRepFirstName} orfRepSurname={orfRepSurname}
             orfRepDateOfBirth = {orfRepDateOfBirth} orfRepSex ={orfRepSex}          
@@ -231,7 +273,10 @@ const ModalRepresentative = ({fillTable,setAlertModal, setMessage, setAlertType,
             <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
             <Button variant="outlined" onClick={confirmCancelNewRepresentative} color="error">Cancelar</Button>
            { (!statusCcircularProgress) ? 
-              <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
+                (editRepresentative) ? 
+                <Button variant="contained"onClick={updateRepresentative} color="success">Actualizar</Button>
+                :
+                <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
             :
               <LoadingButtons />}
           </Stack>
