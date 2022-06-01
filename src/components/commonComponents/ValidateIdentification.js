@@ -46,7 +46,7 @@ const AxiosInstance = require("../utils/request").default;
 
 
 
-const ValidateIdentification = ({setOrfRepIdentificationNumber,setIdentificationValidation, identificationValidation, orfRepIdentificationNumber, setRepresentativeObject, representativeObject}) => {
+const ValidateIdentification = ({editRepresentative,setOrfRepIdentificationNumber,setIdentificationValidation, identificationValidation, orfRepIdentificationNumber, setRepresentativeObject, representativeObject}) => {
 
     const [buttonI, setButtonI] = React.useState(true)
     const [errorMessage, setErrorMessage] = React.useState('')
@@ -76,7 +76,7 @@ const ValidateIdentification = ({setOrfRepIdentificationNumber,setIdentification
     <div>
         <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
               <TextField 
-              disabled={(identificationValidation)? true :  false}
+              disabled={(identificationValidation || editRepresentative)? true :  false}
               sx={{ width: '20%' }} 
               id="repIdType"
               select
@@ -97,7 +97,7 @@ const ValidateIdentification = ({setOrfRepIdentificationNumber,setIdentification
               ))}
                 </TextField>
                 <TextField
-                disabled={(identificationValidation)? true :  false}
+                disabled={(identificationValidation || editRepresentative)? true :  false}
                 sx={{ width: '20%' }} 
                 required
                 value={representativeObject.repIdentificationNumber}
@@ -113,7 +113,7 @@ const ValidateIdentification = ({setOrfRepIdentificationNumber,setIdentification
                 
                 }
                 />
-                <Button variant="outlined" disabled={(buttonI || identificationValidation? true :  false)} size="small" onClick={() => validate_Identification()}>Validar</Button>
+                <Button variant="outlined" disabled={(buttonI || editRepresentative || identificationValidation? true :  false)} size="small" onClick={() => validate_Identification()}>Validar</Button>
          </Stack>
         
         </div>
