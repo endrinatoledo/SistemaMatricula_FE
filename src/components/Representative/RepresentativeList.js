@@ -4,6 +4,7 @@ import { ExportPdf } from '@material-table/exporters';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import FilterList from '@material-ui/icons/FilterList';
 import MiscellaneousServicesRoundedIcon from '@mui/icons-material/MiscellaneousServicesRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 const AxiosInstance = require("../utils/request").default;
 const DownloadExcel = require('../commonComponents/DownloadExcel').default 
@@ -17,7 +18,7 @@ const RepresentativeList = () => {
     const [selectedRepresentative, setSelectedRepresentative] = React.useState()
     const [openModal, setOpenModal] = React.useState(false)
     const [titleModalHeader, setTitleModalHeader] = React.useState('')
-
+    const [editRepresentative  , setEditRepresentative] = React.useState(false)
     const excelStructure ={
       fileName : 'ReporteDeRepresentantes.xlsx',
       columns:[["Códigos", "Representantes", "Estatus"]],
@@ -138,12 +139,14 @@ React.useEffect(() => {
         tooltip: "Activar Filtros",
         onClick : ()=> setFiltering(!filtering),
         isFreeAction: true },
+
         {
-          icon: () => <MiscellaneousServicesRoundedIcon />,
-          tooltip: 'Configurar Periodo',
+          icon: () => <EditRoundedIcon />,
+          tooltip: 'Editar Representante',
           onClick: (event, rowData) => {
             setTitleModalHeader('Editar Representante')
             setSelectedRepresentative(rowData)
+            setEditRepresentative(true)
             setOpenModal(true)
           }
         },
@@ -214,6 +217,7 @@ React.useEffect(() => {
       : null}
     {(openModal) ?
       <ModalRepresentative  fillTable={fillTable}
+        editRepresentative={editRepresentative} setEditRepresentative={setEditRepresentative}
         setAlertModal={setAlertModal} setMessage={setMessage} setAlertType={setAlertType}
         statusCcircularProgress={statusCcircularProgress}  setStatusCcircularProgress = {setStatusCcircularProgress}
         identificationValidation={identificationValidation} setIdentificationValidation={setIdentificationValidation}
