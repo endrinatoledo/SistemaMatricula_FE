@@ -169,7 +169,6 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
       try{
          
         const data = (await AxiosInstance.post("/representatives",representativeObject)).data
-        // console.log('datadatadatadatadata',data)
         setTimeout(() => {
           setStatusCcircularProgress(false)
           
@@ -210,7 +209,6 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
       try{
          
         const data = (await AxiosInstance.post("/representatives",representativeObject)).data
-        // console.log('datadatadatadatadata',data)
         setTimeout(() => {
           setStatusCcircularProgress(false)
           
@@ -274,13 +272,15 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
 
           
           <Stack spacing={2}  alignItems="flex-end" direction="row" justifyContent="center">
-            <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
             <Button variant="outlined" onClick={confirmCancelNewRepresentative} color="error">Cancelar</Button>
            { (!statusCcircularProgress) ? 
                 (editRepresentative) ? 
                 <Button variant="contained"onClick={updateRepresentative} color="success">Actualizar</Button>
                 :
-                <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
+                <>
+                            <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
+                            <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
+                </>
             :
               <LoadingButtons />}
           </Stack>
