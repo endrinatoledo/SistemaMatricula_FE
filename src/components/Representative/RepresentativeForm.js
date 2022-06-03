@@ -159,12 +159,10 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
     }
     const labelMaritalStatus = (maritalStatus) =>{
 
-      let result = selectMaritalStatus.filter((element) =>{ 
-        if(element.value == maritalStatus.toLowerCase()){
-          return element.label
-        }
+      const result = selectMaritalStatus.filter((item) =>{ 
+          return maritalStatus.toLowerCase() === item.value  
       })
-        return result[0].label
+        return result[0]
     }
 
     const labelProfession = (idProfession) =>{
@@ -253,8 +251,8 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 options={selectSex}
                 renderInput={(params) =>(
                   <TextField {...params}
-                      helperText={(representativeObject.repCivilStatus === null ||representativeObject.repCivilStatus === '')? requiredField : '' }
-                      error={orfRepCivilStatus} label="Estado Civil" variant="standard" />
+                      helperText={(representativeObject.repSex === null ||representativeObject.repSex === '')? requiredField : '' }
+                      error={orfRepSex} label="Sexo" variant="standard" />
                 )}
                 value={(editRepresentative) ? labelSex(selectedRepresentative.repSex) : null }
                 getOptionLabel={(option) => option.label}
@@ -268,7 +266,26 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 sx={{ width: '20%' }} 
                  id="clear-on-escape"
                 />
-                 <Autocomplete
+                <Autocomplete 
+                options={selectMaritalStatus}
+                renderInput={(params) =>(
+                  <TextField {...params}
+                      helperText={(representativeObject.repCivilStatus === null ||representativeObject.repCivilStatus === '')? requiredField : '' }
+                      error={orfRepCivilStatus} label="Estado Civil" variant="standard" />
+                )}
+                value={(editRepresentative) ? labelMaritalStatus(selectedRepresentative.repCivilStatus) : null }
+                getOptionLabel={(option) => option.label}
+                onChange={(event, newValue) => {
+                  setRepresentativeObject({...representativeObject, repSex : newValue.value ? newValue.value : null})          
+                  setSelectedRepresentative({...selectedRepresentative, repCivilStatus : newValue.value ? newValue.value : selectedRepresentative.repCivilStatus})
+                }}
+                required
+                key={clearField.civil}
+                noOptionsText={'Sin Opciones'}
+                sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                />
+                 {/* <Autocomplete
                     required
                     key={clearField.civil}
                     noOptionsText={'Sin Opciones'}
@@ -285,7 +302,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                       helperText={(representativeObject.repCivilStatus === null ||representativeObject.repCivilStatus === '')? requiredField : '' }
                       error={orfRepCivilStatus}
                       label="Estado Civil" variant="standard" />
-                    )}/>
+                    )}/> */}
               <Autocomplete
                 key={clearField.profession}
                 noOptionsText={'Sin Opciones'}
