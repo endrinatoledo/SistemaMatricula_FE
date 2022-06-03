@@ -157,22 +157,20 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
       })
         return result[0]
     }
+    const labelBond = (repBond) =>{
+      
+      const result =  selectBond.filter(item => {
+        return repBond === item.value
+      })
+        return result[0]
+    }
+
     const labelMaritalStatus = (maritalStatus) =>{
 
       const result = selectMaritalStatus.filter((item) =>{ 
           return maritalStatus.toLowerCase() === item.value  
       })
         return result[0]
-    }
-
-    const labelProfession = (idProfession) =>{
-       
-       let result = listOfProfessions.filter((element) =>{ 
-        if(element.proId == idProfession){
-          setEditRepre({...editRepre, profession : element.proName}) 
-        }
-      })
-
     }
 
     React.useEffect(() => {  
@@ -285,30 +283,16 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 sx={{ width: '20%' }} 
                  id="clear-on-escape"
                 />
-                 {/* <Autocomplete
-                    required
-                    key={clearField.civil}
-                    noOptionsText={'Sin Opciones'}
-                    options={selectMaritalStatus}
-                    getOptionLabel={(option) => option.label}                
-                    onChange={(event, newValue) => {
-                        setRepresentativeObject({...representativeObject, repCivilStatus : newValue.label ? newValue.label : null})          
-                      }}
-                    sx={{ width: '20%' }} 
-                    id="clear-on-escape"
-                    clearOnEscape
-                    renderInput={(params) => (
-                      <TextField {...params}
-                      helperText={(representativeObject.repCivilStatus === null ||representativeObject.repCivilStatus === '')? requiredField : '' }
-                      error={orfRepCivilStatus}
-                      label="Estado Civil" variant="standard" />
-                    )}/> */}
+                
+
               <Autocomplete
                 key={clearField.profession}
                 noOptionsText={'Sin Opciones'}
                 options={listOfProfessions}
+                value={(editRepresentative) ? selectedRepresentative.professions : null }
                 onChange={(event, newValue) => {
                     setRepresentativeObject({...representativeObject, proId : newValue.proId ? newValue.proId : null})          
+                    setSelectedRepresentative({...selectedRepresentative, professions : newValue.value ? newValue.value : selectedRepresentative.professions})
                   }}
                   getOptionLabel={(option) => option.proName}                
                  sx={{ width: '20%' }} 
@@ -400,25 +384,48 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                     setRepresentativeObject({...representativeObject, repPhones : e.target.value ? e.target.value : ''}) 
                   }   }
                 />
+                <Autocomplete 
+                options={selectBond}
+                renderInput={(params) =>(
+                  <TextField {...params}
+                      helperText={(representativeObject.repBond === null ||representativeObject.repBond === '')? requiredField : '' }
+                      error={orfRepBond} label="Vínculo" variant="standard" />
+                )}
+                value={(editRepresentative) ? labelBond(selectedRepresentative.repBond) : null }
+                getOptionLabel={(option) => option.label}
+                onChange={(event, newValue) => {
+                  setRepresentativeObject({...representativeObject, repBond : newValue.value ? newValue.value : null})          
+                  setSelectedRepresentative({...selectedRepresentative, repBond : newValue.value ? newValue.value : selectedRepresentative.repBond})
+                }}
+                required
+                key={clearField.bond}
+                noOptionsText={'Sin Opciones'}
+                sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                />
 
-                <Autocomplete
-                  required
-                  key={clearField.bond}
-                  noOptionsText={'Sin Opciones'}
-                  options={selectBond}
-                  getOptionLabel={(option) => option.label}
-                  onChange={(event, newValue) => {
-                      setRepresentativeObject({...representativeObject, repBond : newValue.value ? newValue.value : null})          
-                    }}
-                  sx={{ width: '20%' }} 
-                  id="clear-on-escape"
-                  clearOnEscape
-                  renderInput={(params) =>(
-                    <TextField {...params} label="Vínculo" variant="standard"
-                    helperText={(representativeObject.repBond === null ||representativeObject.repBond === '')? requiredField : '' }
-                    error={orfRepBond} />
-                  )}/> 
-                  <Autocomplete
+
+              <Autocomplete
+                key={clearField.family}
+                noOptionsText={'Sin Opciones'}
+                options={listOfFamilies}
+                value={(editRepresentative) ? selectedRepresentative.families : null }
+                onChange={(event, newValue) => {
+                    setRepresentativeObject({...representativeObject, famId : newValue.famId ? newValue.famId : null})          
+                    setSelectedRepresentative({...selectedRepresentative, families : newValue.value ? newValue.value : selectedRepresentative.families})
+                  }}
+                  getOptionLabel={(option) => option.famName}                
+                 sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                 clearOnEscape
+                 renderInput={(params) => (
+                   <TextField {...params} 
+                   helperText={(representativeObject.famId === null ||representativeObject.famId === '')? requiredField : '' }
+                   error={orfFamId}
+                   label="Familia" variant="standard" />
+                 )}/>
+
+                {/* <Autocomplete
                 required
                 key={clearField.family}
                 noOptionsText={'Sin Opciones'}
@@ -435,8 +442,8 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                    helperText={(representativeObject.famId === null ||representativeObject.famId === '')? requiredField : '' }
 
                    error={orfFamId} />
-                 )}
-              /> 
+                 )} 
+              /> */}
                                
     </Stack>
 
