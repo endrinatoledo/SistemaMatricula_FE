@@ -76,27 +76,6 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
     const [listOfFederalEntities, setListOfFederalEntities] = React.useState([])
     const [federalEntity, setFederalEntity] = React.useState()
     const [valueSex, setValueSex] = React.useState(null)
-    const [editRepre, setEditRepre] = React.useState({
-      repFirstName           : '', 
-      repSecondName          : '',
-      repSurname             : '' ,
-      repSecondSurname       : '',
-      repIdType              : 'v',
-      repIdentificationNumber: '',
-      repDateOfBirth         : '',
-      repSex                 : '',
-      repAddress             : '',
-      repCivilStatus         : '',
-      profession             : null,
-      repPhones              : '',
-      repEmail               : '',
-      couId                  : '',
-      fedId                  : '',
-      repPhoto               : '',
-      repStatus              : '',
-      repBond                : '',
-      famId                  : '',
-    })
 
     const getProfessions = async () => {
 
@@ -149,6 +128,21 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
           
       }
     }
+
+    const labelStatus = (repStatus) =>{
+
+      if(repStatus !== null && repStatus !== undefined && repStatus !== ''){
+        const result =  selectStatus.filter(item => {
+          return repStatus === item.value
+        })
+        if(result.length > 0){ return result[0] }else{ return null }
+      }else{
+        return null
+      }
+      
+        
+    }
+
     const labelSex = (repSex) =>{
 
       if(repSex !== null){
@@ -177,7 +171,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
 
     const labelMaritalStatus = (maritalStatus) =>{
 
-      if(maritalStatus !== null ){
+      if(maritalStatus !== null && maritalStatus !== undefined && maritalStatus !== ''){
         const result = selectMaritalStatus.filter((item) =>{ 
           return maritalStatus.toLowerCase() === item.value  
       })
@@ -195,6 +189,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
         getFederalEntities()
         getCountries()  
         getFamilies()
+        if(editRepresentative){setRepresentativeObject(selectedRepresentative)}
         }, [Reload]);
       
     const classes = UseStyles();
@@ -211,6 +206,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 helperText={(representativeObject.repFirstName === null ||representativeObject.repFirstName === '')? requiredField : '' }
                 error={orfRepFirstName}
                 onChange={e => {
+                  setSelectedRepresentative({...selectedRepresentative, repFirstName: e.target.value ? e.target.value : ''})
                   setRepresentativeObject({...representativeObject, repFirstName : e.target.value ? e.target.value : ''})          
                 }   }
                 />
@@ -220,6 +216,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 label="Segundo Nombre"
                 variant="standard"
                 onChange={e => {
+                  setSelectedRepresentative({...selectedRepresentative, repSecondName: e.target.value ? e.target.value : ''})
                   setRepresentativeObject({...representativeObject, repSecondName : e.target.value ? e.target.value : ''})          
                 }   }
                 />
@@ -232,6 +229,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 helperText={(representativeObject.repSurname === null ||representativeObject.repSurname === '')? requiredField : '' }
                 error={orfRepSurname}
                 onChange={e => {
+                  setSelectedRepresentative({...selectedRepresentative, repSurname: e.target.value ? e.target.value : ''})
                   setRepresentativeObject({...representativeObject, repSurname : e.target.value ? e.target.value : ''})          
                 }   }
                 />
@@ -241,6 +239,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 label="Segundo Apellido"
                 variant="standard"
                 onChange={e => {
+                  setSelectedRepresentative({...selectedRepresentative, repSecondSurname: e.target.value ? e.target.value : ''})
                   setRepresentativeObject({...representativeObject, repSecondSurname : e.target.value ? e.target.value : ''})          
                 }   }
                 />
@@ -390,6 +389,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                   helperText={(representativeObject.repAddress === null ||representativeObject.repAddress === '')? requiredField : '' }
                   error={orfRepAddresse}
                   onChange={e => {
+                    setSelectedRepresentative({...selectedRepresentative, repAddress: e.target.value ? e.target.value : ''})
                     setRepresentativeObject({...representativeObject, repAddress : e.target.value ? e.target.value : ''}) 
                   }   }
                 />   
@@ -428,7 +428,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                       helperText={(representativeObject.repBond === null ||representativeObject.repBond === '')? requiredField : '' }
                       error={orfRepBond} label="Vínculo" variant="standard" />
                 )}
-                value={(editRepresentative) ? labelBond(selectedRepresentative.repBond) : null }
+                value={(editRepresentative) ? labelBond(selectedRepresentative.repBond) : labelBond(representativeObject.repBond) }
                 getOptionLabel={(option) => option.label}
                 onChange={(event, newValue) => {
                   setRepresentativeObject({...representativeObject, repBond : newValue.value ? newValue.value : null})          
@@ -441,15 +441,14 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                  id="clear-on-escape"
                 />
 
-
-              <Autocomplete
+<Autocomplete
                 key={clearField.family}
                 noOptionsText={'Sin Opciones'}
                 options={listOfFamilies}
-                value={(editRepresentative) ? selectedRepresentative.families : null }
+                value={(editRepresentative) ? selectedRepresentative.families : representativeObject.families }
                 onChange={(event, newValue) => {
-                    setRepresentativeObject({...representativeObject, famId : newValue.famId ? newValue.famId : null})          
-                    setSelectedRepresentative({...selectedRepresentative, families : newValue.value ? newValue.value : selectedRepresentative.families})
+                    setRepresentativeObject({...representativeObject, famId : (newValue !== null) ? newValue.famId : null, families: (newValue !== null) ? newValue : null})          
+                    setSelectedRepresentative({...selectedRepresentative, families : (newValue !== null) ? newValue : selectedRepresentative.families})
                   }}
                   getOptionLabel={(option) => option.famName}                
                  sx={{ width: '20%' }} 
@@ -459,76 +458,35 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                    <TextField {...params} 
                    helperText={(representativeObject.famId === null ||representativeObject.famId === '')? requiredField : '' }
                    error={orfFamId}
-                   label="Familia" variant="standard" />
+                   label="Profesión" variant="standard" />
                  )}/>
-
-                {/* <Autocomplete
-                required
-                key={clearField.family}
-                noOptionsText={'Sin Opciones'}
-                options={listOfFamilies}
-                getOptionLabel={(option) => option.famName}
-                onChange={(event, newValue) => {
-                    setRepresentativeObject({...representativeObject, famId : newValue.famId ? newValue.famId : null})          
-                  }}
-                 sx={{ width: '20%' }} 
-                 id="clear-on-escape"
-                 clearOnEscape
-                 renderInput={(params) =>(
-                   <TextField {...params} label="Familia" variant="standard"
-                   helperText={(representativeObject.famId === null ||representativeObject.famId === '')? requiredField : '' }
-
-                   error={orfFamId} />
-                 )} 
-              /> */}
                                
     </Stack>
 
     {(editRepresentative)? 
          <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
-      
-                <Autocomplete
-                  required
-                  key={clearField.status}
-                  noOptionsText={'Sin Opciones'}
-                  options={selectStatus}
-                  getOptionLabel={(option) => option.label}
-                  onChange={(event, newValue) => {
-                      setRepresentativeObject({...representativeObject, repStatus : newValue.value ? newValue.value : null})          
-                    }}
-                  sx={{ width: '20%' }} 
-                  id="clear-on-escape"
-                  clearOnEscape
-                  renderInput={(params) =>(
-                    <TextField {...params} label="Estatus" variant="standard"
-                    helperText={(representativeObject.repStatus === null ||representativeObject.repStatus === '')? requiredField : '' }
-                    error={orfStatus}  />
-                  )}/> 
 
+      <Autocomplete 
+                options={selectStatus}
+                renderInput={(params) =>(
+                  <TextField {...params}
+                      helperText={(representativeObject.repStatus === null ||representativeObject.repStatus === '')? requiredField : '' }
+                      error={orfStatus} label="Estatus" variant="standard" />
+                )}
+                value={(editRepresentative) ? labelStatus(selectedRepresentative.repStatus) : labelStatus(representativeObject.repStatus) }
+                getOptionLabel={(option) => option.label}
+                onChange={(event, newValue) => {
+                  setRepresentativeObject({...representativeObject, repStatus : newValue.value ? newValue.value : null})          
+                  setSelectedRepresentative({...selectedRepresentative, repStatus : newValue.value ? newValue.value : selectedRepresentative.repStatus})
+                }}
+                required
+                key={clearField.status}
+                noOptionsText={'Sin Opciones'}
+                sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                />
     </Stack> 
   : null}
-    {/* <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
-              
-                <Autocomplete
-                  required
-                  key={clearField.status}
-                  noOptionsText={'Sin Opciones'}
-                  options={selectStatus}
-                  getOptionLabel={(option) => option.label}
-                  onChange={(event, newValue) => {
-                      setRepresentativeObject({...representativeObject, repStatus : newValue.value ? newValue.value : null})          
-                    }}
-                  sx={{ width: '20%' }} 
-                  id="clear-on-escape"
-                  clearOnEscape
-                  renderInput={(params) =>(
-                    <TextField {...params} label="Estatus" variant="standard"
-                    helperText={(representativeObject.repStatus === null ||representativeObject.repStatus === '')? requiredField : '' }
-                    error={orfStatus}  />
-                  )}/> 
-
-                
-    </Stack> */}
 
   </Box>
   )

@@ -54,6 +54,7 @@ const RepresentativeList = () => {
         repPhoto               : '',
         repStatus              : null,
         repBond                : null,
+        families               : null,
         famId                  : null,
       });
   const columns = [
@@ -70,8 +71,6 @@ const RepresentativeList = () => {
     { title: 'Estatus', field: 'repStatus',filtering:true, lookup: {1: 'Activo', 2:'Inactivo'}},
     
   ];
-
-    console.log('***representativeObject***',representativeObject)
 
   const cleanRepresentativeObject = () =>{
     setIdentificationValidation(false)
