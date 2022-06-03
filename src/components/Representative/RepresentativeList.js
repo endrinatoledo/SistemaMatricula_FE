@@ -40,18 +40,21 @@ const RepresentativeList = () => {
         repIdType              : 'v',
         repIdentificationNumber: '',
         repDateOfBirth         : '',
-        repSex                 : '',
+        repSex                 : null,
         repAddress             : '',
-        repCivilStatus         : '',
-        proId                  : '',
+        repCivilStatus         : null,
+        professions            : null,
+        proId                  : null,
         repPhones              : '',
         repEmail               : '',
-        couId                  : '',
-        fedId                  : '',
+        countries              : null,
+        couId                  : null,
+        federalEntity          : null,
+        fedId                  : null,
         repPhoto               : '',
-        repStatus              : '',
-        repBond                : '',
-        famId                  : '',
+        repStatus              : null,
+        repBond                : null,
+        famId                  : null,
       });
   const columns = [
     { title: 'Primer Nombre', field: 'repFirstName',filtering:true},
@@ -144,6 +147,7 @@ React.useEffect(() => {
           icon: () => <EditRoundedIcon />,
           tooltip: 'Editar Representante',
           onClick: (event, rowData) => {
+            console.log('rowData',rowData)
             setTitleModalHeader('Editar Representante')
             setSelectedRepresentative(rowData)
             setEditRepresentative(true)
