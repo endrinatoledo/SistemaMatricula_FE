@@ -38,7 +38,7 @@ const style = {
 
  
   });
-const ModalRepresentative = ({fillTable,editRepresentative, setEditRepresentative,setAlertModal, setMessage, setAlertType,statusCcircularProgress, setStatusCcircularProgress,identificationValidation, setIdentificationValidation,clearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
+const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresentative, setEditRepresentative,setAlertModal, setMessage, setAlertType,statusCcircularProgress, setStatusCcircularProgress,identificationValidation, setIdentificationValidation,clearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
   representativeObject,setRepresentativeObject
 }) => {
 
@@ -258,6 +258,7 @@ const ModalRepresentative = ({fillTable,editRepresentative, setEditRepresentativ
           
           {(identificationValidation || editRepresentative) ? 
             <RepresentativeForm 
+            setSelectedRepresentative={setSelectedRepresentative}
             editRepresentative={editRepresentative} selectedRepresentative={selectedRepresentative}
             orfRepFirstName = {orfRepFirstName} orfRepSurname={orfRepSurname}
             orfRepDateOfBirth = {orfRepDateOfBirth} orfRepSex ={orfRepSex}          

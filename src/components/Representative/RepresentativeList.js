@@ -216,7 +216,7 @@ React.useEffect(() => {
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null}
     {(openModal) ?
-      <ModalRepresentative  fillTable={fillTable}
+      <ModalRepresentative  fillTable={fillTable} setSelectedRepresentative={setSelectedRepresentative}
         editRepresentative={editRepresentative} setEditRepresentative={setEditRepresentative}
         setAlertModal={setAlertModal} setMessage={setMessage} setAlertType={setAlertType}
         statusCcircularProgress={statusCcircularProgress}  setStatusCcircularProgress = {setStatusCcircularProgress}

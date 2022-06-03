@@ -67,7 +67,7 @@ const UseStyles = makeStyles({
 
   const requiredField = 'Campo Requerido';
 
-const RepresentativeForm = ({editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,orfProId, orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField, defaultValue, setRepresentativeObject, representativeObject}) => {
+const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,orfProId, orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField, defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
     const [listOfProfessions, setListOfProfessions] = React.useState([])
@@ -75,6 +75,7 @@ const RepresentativeForm = ({editRepresentative,selectedRepresentative,orfRepFir
     const [listOfCountries, setListOfCountries] = React.useState([])
     const [listOfFederalEntities, setListOfFederalEntities] = React.useState([])
     const [federalEntity, setFederalEntity] = React.useState()
+    const [valueSex, setValueSex] = React.useState(null)
     const [editRepre, setEditRepre] = React.useState({
       repFirstName           : '', 
       repSecondName          : '',
@@ -96,7 +97,7 @@ const RepresentativeForm = ({editRepresentative,selectedRepresentative,orfRepFir
       repBond                : '',
       famId                  : '',
     })
-    
+
     const getProfessions = async () => {
 
         try{
@@ -150,8 +151,11 @@ const RepresentativeForm = ({editRepresentative,selectedRepresentative,orfRepFir
       }
     }
     const labelSex = (repSex) =>{
-      let result
-      return result = ((repSex=='m') ? 'Masculino':'Femenino')
+      
+      const result =  selectSex.filter(item => {
+        return repSex === item.value
+      })
+        return result[0]
     }
     const labelMaritalStatus = (maritalStatus) =>{
 
@@ -245,24 +249,25 @@ const RepresentativeForm = ({editRepresentative,selectedRepresentative,orfRepFir
                     setRepresentativeObject({...representativeObject, repDateOfBirth : e.target.value ? e.target.value : ''})          
                 }   }
                 />
-
-                <Autocomplete
+                <Autocomplete 
+                options={selectSex}
+                renderInput={(params) =>(
+                  <TextField {...params}
+                      helperText={(representativeObject.repCivilStatus === null ||representativeObject.repCivilStatus === '')? requiredField : '' }
+                      error={orfRepCivilStatus} label="Estado Civil" variant="standard" />
+                )}
+                value={(editRepresentative) ? labelSex(selectedRepresentative.repSex) : null }
+                getOptionLabel={(option) => option.label}
+                onChange={(event, newValue) => {
+                  setRepresentativeObject({...representativeObject, repSex : newValue.value ? newValue.value : null})          
+                  setSelectedRepresentative({...selectedRepresentative, repSex : newValue.value ? newValue.value : selectedRepresentative.repSex})
+                }}
                 required
                 key={clearField.sex}
                 noOptionsText={'Sin Opciones'}
-                options={selectSex}
-                getOptionLabel={(option) => option.label}
-                onChange={(event, newValue) => {
-                    setRepresentativeObject({...representativeObject, repSex : newValue.value ? newValue.value : null})          
-                  }}
-                 sx={{ width: '20%' }} 
+                sx={{ width: '20%' }} 
                  id="clear-on-escape"
-                 renderInput={(params) =>(
-                   <TextField
-                   helperText={(representativeObject.repSex === null ||representativeObject.repSex === '')? requiredField : '' }
-                   error={orfRepSex}
-                   {...params} label="Sexo" variant="standard" />
-                 )}/>
+                />
                  <Autocomplete
                     required
                     key={clearField.civil}
