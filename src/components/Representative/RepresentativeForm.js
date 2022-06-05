@@ -401,6 +401,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 helperText={(representativeObject.repEmail === null)? requiredField :(ValidateEmail(representativeObject.repEmail) === false)? 'Error en formato' : '' }
                 error={orfRepEmail}
                 onChange={e => {
+                  setSelectedRepresentative({...selectedRepresentative, repEmail: e.target.value ? e.target.value : ''})
                   setRepresentativeObject({...representativeObject, repEmail : e.target.value ? e.target.value : ''}) 
                 }   }
                 />

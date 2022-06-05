@@ -141,10 +141,10 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
       emptyForm = true
     }else{ setOrfCouId(false) }
 
-    // if(representativeObject.repStatus == null || representativeObject.repStatus == ''){
-    //   setOrfStatus(true) ;
-    //   emptyForm = true
-    // }else{ setOrfStatus(false) }
+    if((editRepresentative) && (representativeObject.repStatus == null || representativeObject.repStatus == '')){
+      setOrfStatus(true) ;
+      emptyForm = true
+    }else{ setOrfStatus(false) }
 
     if(representativeObject.repBond == null || representativeObject.repBond == ''){
       setOrfRepBond(true) ;
@@ -208,14 +208,15 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
       setStatusCcircularProgress(true)
       try{
          
-        const data = (await AxiosInstance.post("/representatives",representativeObject)).data
+        const data = (await AxiosInstance.put("/representatives/"+selectedRepresentative.repId, representativeObject)).data
+        
         setTimeout(() => {
           setStatusCcircularProgress(false)
           
           if(data.message === 'Identificación ya se encuentra registrada'){
 
           }else 
-          if(data.message === 'Representante creado con éxito'){
+          if(data.message === 'Representante actualizado con éxito'){
               setMessage(data.message)
               setAlertType('success')
               setIdentificationValidation(false)
@@ -226,7 +227,7 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
           }else{
             setStatusCcircularProgress(false)
             setAlertModal(true)  
-            setMessage('Error al crear nuevo Representante')
+            setMessage('Error al Actualizar Representante')
             setAlertType('error')
           }
 
@@ -273,16 +274,21 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
           
           <Stack spacing={2}  alignItems="flex-end" direction="row" justifyContent="center">
             <Button variant="outlined" onClick={confirmCancelNewRepresentative} color="error">Cancelar</Button>
-           { (!statusCcircularProgress) ? 
-                (editRepresentative) ? 
-                <Button variant="contained"onClick={updateRepresentative} color="success">Actualizar</Button>
-                :
-                <>
-                            <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
-                            <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
-                </>
-            :
-              <LoadingButtons />}
+           {
+             (editRepresentative) ? 
+              (statusCcircularProgress)? 
+                <LoadingButtons message={'Actualizando'} />
+                : <Button variant="contained"onClick={updateRepresentative} color="success">Actualizar</Button>
+             :
+             (statusCcircularProgress)?
+              <LoadingButtons message={'Guardando'} />
+              : 
+              <>
+                <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
+                <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
+              </>
+           }
+           
           </Stack>
         </Box>
       </Modal>

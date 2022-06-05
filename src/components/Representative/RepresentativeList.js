@@ -146,7 +146,6 @@ React.useEffect(() => {
           icon: () => <EditRoundedIcon />,
           tooltip: 'Editar Representante',
           onClick: (event, rowData) => {
-            console.log('rowData',rowData)
             setTitleModalHeader('Editar Representante')
             setSelectedRepresentative(rowData)
             setEditRepresentative(true)
