@@ -38,7 +38,7 @@ const style = {
 
  
   });
-const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresentative, setEditRepresentative,setAlertModal, setMessage, setAlertType,statusCcircularProgress, setStatusCcircularProgress,identificationValidation, setIdentificationValidation,clearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
+const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresentative, setEditRepresentative,setAlertModal, setMessage, setAlertType,statusCcircularProgress, setStatusCcircularProgress,identificationValidation, setIdentificationValidation,clearField,setClearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
   representativeObject,setRepresentativeObject
 }) => {
 
@@ -264,7 +264,7 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
             orfProId = {orfProId} orfRepPhones = {orfRepPhones}
             orfRepEmail ={orfRepEmail} orfCouId = {orfCouId}
             orfStatus = {orfStatus} orfRepBond = {orfRepBond} orfFamId = {orfFamId}
-            clearField={clearField} defaultValue={defaultValue} 
+            clearField={clearField} setClearField={setClearField} defaultValue={defaultValue} 
             setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject}/>
             : null
 

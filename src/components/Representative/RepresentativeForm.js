@@ -67,7 +67,7 @@ const UseStyles = makeStyles({
 
   const requiredField = 'Campo Requerido';
 
-const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,orfProId, orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField, defaultValue, setRepresentativeObject, representativeObject}) => {
+const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,orfProId, orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField,setClearField, defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
     const [listOfProfessions, setListOfProfessions] = React.useState([])
@@ -185,12 +185,24 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
     }
 
     React.useEffect(() => {  
+      if(representativeObject.couId !== 232){
+          setClearField({...clearField, federalEntity:(clearField.federalEntity + 1)})
+        }  
+          setRepresentativeObject({...representativeObject, federalEntity : null})
+        }, [representativeObject.couId]);
+
+    React.useEffect(() => {  
         getProfessions()  
         getFederalEntities()
         getCountries()  
         getFamilies()
-        if(editRepresentative){setRepresentativeObject(selectedRepresentative)}
+        if(editRepresentative){
+
+          setRepresentativeObject(selectedRepresentative)
+        }
         }, [Reload]);
+
+        
       
     const classes = UseStyles();
 
@@ -362,22 +374,6 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                  renderInput={(params) => (
                   <TextField {...params} label="Estado" variant="standard" />
                  )}/>
-
-                {/* <Autocomplete
-                  key={clearField.federalEntity}
-                  noOptionsText={'Sin Opciones'}
-                  disabled={(listOfFederalEntities.length === 0 || representativeObject.couId != 232)? true : false}
-                  options={listOfFederalEntities}
-                  onChange={(event, newValue) => {
-                      setRepresentativeObject({...representativeObject, fedId : newValue.fedId ? newValue.fedId : null})
-                    }}
-                  getOptionLabel={ (option) => option.fedName }
-                  sx={{ width: '20%' }} 
-                  id="clear-on-escape"
-                  clearOnEscape
-                  renderInput={(params) => (
-                    <TextField {...params} label="Estado" variant="standard" />
-                  )}/> */}
 
                 <TextField
                   sx={{ width: '47%' }}
