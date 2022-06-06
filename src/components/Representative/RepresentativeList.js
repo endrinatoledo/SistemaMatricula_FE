@@ -3,6 +3,7 @@ import MaterialTable from '@material-table/core';
 import { ExportPdf } from '@material-table/exporters';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import FilterList from '@material-ui/icons/FilterList';
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import MiscellaneousServicesRoundedIcon from '@mui/icons-material/MiscellaneousServicesRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
@@ -19,6 +20,7 @@ const RepresentativeList = () => {
     const [openModal, setOpenModal] = React.useState(false)
     const [titleModalHeader, setTitleModalHeader] = React.useState('')
     const [editRepresentative  , setEditRepresentative] = React.useState(false)
+    const [seeRepresentativeDetails  , setSeeRepresentativeDetails] = React.useState(false)
     const excelStructure ={
       fileName : 'ReporteDeRepresentantes.xlsx',
       columns:[["Códigos", "Representantes", "Estatus"]],
@@ -151,6 +153,16 @@ React.useEffect(() => {
             setEditRepresentative(true)
             setOpenModal(true)
           }
+        },{
+          icon: () => <VisibilityRoundedIcon />,
+          tooltip: 'Ver Detalles',
+          onClick: (event, rowData) => {
+            console.log(rowData)
+            setTitleModalHeader('Detalles del Representante ' + rowData.repFirstName + ' ' + rowData.repSurname)
+            setSelectedRepresentative(rowData)
+            setSeeRepresentativeDetails(true)
+            setOpenModal(true)
+          }
         },
         {
             icon: () => <PersonAddAltRoundedIcon />,
@@ -161,7 +173,8 @@ React.useEffect(() => {
                 setSelectedRepresentative(rowData)
                 setOpenModal(true)
               }
-        }
+        },
+        
     ]}
      options={{
         width:300,
@@ -218,7 +231,7 @@ React.useEffect(() => {
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null}
     {(openModal) ?
-      <ModalRepresentative  fillTable={fillTable} setSelectedRepresentative={setSelectedRepresentative}
+      <ModalRepresentative setSeeRepresentativeDetails={setSeeRepresentativeDetails} seeRepresentativeDetails={seeRepresentativeDetails}  fillTable={fillTable} setSelectedRepresentative={setSelectedRepresentative}
         editRepresentative={editRepresentative} setEditRepresentative={setEditRepresentative}
         setAlertModal={setAlertModal} setMessage={setMessage} setAlertType={setAlertType}
         statusCcircularProgress={statusCcircularProgress}  setStatusCcircularProgress = {setStatusCcircularProgress}

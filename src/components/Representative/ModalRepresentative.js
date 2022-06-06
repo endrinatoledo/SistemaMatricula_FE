@@ -5,8 +5,8 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import ValidateEmail from '../commonComponents/ValidateEmail';
-import TextField from '@mui/material/TextField';
 import LoadingButtons from '../commonComponents/LoadingButton';
+import SeeRepresentative from './SeeRepresentative';
 const AxiosInstance = require("../utils/request").default;
 const ValidateIdentification = require('../commonComponents/ValidateIdentification').default 
 const RepresentativeForm = require('./RepresentativeForm').default 
@@ -32,13 +32,11 @@ const style = {
 
   const UseStyles = makeStyles({
     title: {
-      // marginTop : 40,
       marginBottom:40
     },
 
- 
   });
-const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresentative, setEditRepresentative,setAlertModal, setMessage, setAlertType,statusCcircularProgress, setStatusCcircularProgress,identificationValidation, setIdentificationValidation,clearField,setClearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
+const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDetails, fillTable,setSelectedRepresentative,editRepresentative, setEditRepresentative,setAlertModal, setMessage, setAlertType,statusCcircularProgress, setStatusCcircularProgress,identificationValidation, setIdentificationValidation,clearField,setClearField, defaultValue, cleanRepresentativeObject,selectedRepresentative, openModal, setOpenModal,titleModalHeader,
   representativeObject,setRepresentativeObject
 }) => {
 
@@ -58,14 +56,21 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
     const [orfRepBond , setOrfRepBond ] = React.useState(false)
     const [orfFamId  , setOrfFamId] = React.useState(false)
     const [modalCancel  , setModalCancel] = React.useState(false)
-    const [messagesRepresentative  , setMessagesRepresentative] = React.useState({cancel:'¿ Desea cancelar el registro ?'})
     const [userResponse  , setUserResponse] = React.useState('')
   const classes = UseStyles();
- 
+
   const confirmCancelNewRepresentative =() =>{
     setModalCancel(true)
     
   }
+  const closeModal =() =>{
+    setSeeRepresentativeDetails(false)
+    setOpenModal(false)
+    cleanRepresentativeObject()
+    
+  }
+
+  
 
   const handleClose = () => {
 
@@ -86,72 +91,72 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
 
     let emptyForm = false
 
-    if(representativeObject.repIdentificationNumber == null || representativeObject.repIdentificationNumber == ''){
+    if(representativeObject.repIdentificationNumber === null || representativeObject.repIdentificationNumber === ''){
       setOrfRepIdentificationNumber(true) ;
       emptyForm = true
     }else{ setOrfRepIdentificationNumber(false) }
 
-    if(representativeObject.repFirstName == null || representativeObject.repFirstName == ''){
+    if(representativeObject.repFirstName === null || representativeObject.repFirstName === ''){
       setOrfRepFirstName(true) ;
       emptyForm = true
     }else{ setOrfRepFirstName(false) }
 
-    if(representativeObject.repSurname == null || representativeObject.repSurname == ''){
+    if(representativeObject.repSurname === null || representativeObject.repSurname === ''){
       setOrfRepSurname(true) ;
       emptyForm = true
     }else{ setOrfRepSurname(false) }
 
-    if(representativeObject.repDateOfBirth == null || representativeObject.repDateOfBirth == ''){
+    if(representativeObject.repDateOfBirth === null || representativeObject.repDateOfBirth === ''){
       setOrfRepDateOfBirth(true) ;
       emptyForm = true
     }else{ setOrfRepDateOfBirth(false) }
 
-    if(representativeObject.repSex == null || representativeObject.repSex == ''){
+    if(representativeObject.repSex === null || representativeObject.repSex === ''){
       setOrfRepSex(true) ;
       emptyForm = true
     }else{ setOrfRepSex(false) }
 
-    if(representativeObject.repAddress == null || representativeObject.repAddress == ''){
+    if(representativeObject.repAddress === null || representativeObject.repAddress === ''){
       setOrfRepAddress(true) ;
       emptyForm = true
     }else{ setOrfRepAddress(false) }
 
-    if(representativeObject.repCivilStatus == null || representativeObject.repCivilStatus == ''){
+    if(representativeObject.repCivilStatus === null || representativeObject.repCivilStatus === ''){
       setOrfRepCivilStatus(true) ;
       emptyForm = true
     }else{ setOrfRepCivilStatus(false) }
 
-    if(representativeObject.proId == null || representativeObject.proId == ''){
+    if(representativeObject.proId === null || representativeObject.proId === ''){
       setOrfProId(true) ;
       emptyForm = true
     }else{ setOrfProId(false) }
 
-    if(representativeObject.repPhones == null || representativeObject.repPhones == ''){
+    if(representativeObject.repPhones === null || representativeObject.repPhones === ''){
       setOrfPhones(true) ;
       emptyForm = true
     }else{ setOrfPhones(false) }
 
-    if(representativeObject.repEmail == null || representativeObject.repEmail == '' || ValidateEmail(representativeObject.repEmail)  === false){
+    if(representativeObject.repEmail === null || representativeObject.repEmail === '' || ValidateEmail(representativeObject.repEmail)  === false){
       setOrfRepEmail(true) ;
       emptyForm = true
     }else{ setOrfRepEmail(false) }
 
-    if(representativeObject.couId == null || representativeObject.couId == ''){
+    if(representativeObject.couId === null || representativeObject.couId === ''){
       setOrfCouId(true) ;
       emptyForm = true
     }else{ setOrfCouId(false) }
 
-    if((editRepresentative) && (representativeObject.repStatus == null || representativeObject.repStatus == '')){
+    if((editRepresentative) && (representativeObject.repStatus === null || representativeObject.repStatus === '')){
       setOrfStatus(true) ;
       emptyForm = true
     }else{ setOrfStatus(false) }
 
-    if(representativeObject.repBond == null || representativeObject.repBond == ''){
+    if(representativeObject.repBond === null || representativeObject.repBond === ''){
       setOrfRepBond(true) ;
       emptyForm = true
     }else{ setOrfRepBond(false) }
 
-    if(representativeObject.famId == null || representativeObject.famId == ''){
+    if(representativeObject.famId === null || representativeObject.famId === ''){
       setOrfFamId(true) ;
       emptyForm = true
     }else{ setOrfFamId(false) }
@@ -253,9 +258,14 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
         <Box sx={{ ...style, width: '65%' }}>
           <h4 className={classes.title}>{titleModalHeader} </h4>
 
-          <ValidateIdentification editRepresentative={editRepresentative} setOrfRepIdentificationNumber={setOrfRepIdentificationNumber} setIdentificationValidation={setIdentificationValidation} identificationValidation={identificationValidation} orfRepIdentificationNumber={orfRepIdentificationNumber} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject} />
-          
-          {(identificationValidation || editRepresentative) ? 
+          {(seeRepresentativeDetails)? 
+          <>
+            <SeeRepresentative selectedRepresentative={selectedRepresentative}/>
+          </>
+          :
+          <>
+              <ValidateIdentification editRepresentative={editRepresentative} setOrfRepIdentificationNumber={setOrfRepIdentificationNumber} setIdentificationValidation={setIdentificationValidation} identificationValidation={identificationValidation} orfRepIdentificationNumber={orfRepIdentificationNumber} setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject} />
+              {(identificationValidation || editRepresentative) ? 
             <RepresentativeForm 
             setSelectedRepresentative={setSelectedRepresentative}
             editRepresentative={editRepresentative} selectedRepresentative={selectedRepresentative}
@@ -270,23 +280,35 @@ const ModalRepresentative = ({fillTable,setSelectedRepresentative,editRepresenta
             : null
 
           }
-
-          
+          </>
+          }
+       
           <Stack spacing={2}  alignItems="flex-end" direction="row" justifyContent="center">
-            <Button variant="outlined" onClick={confirmCancelNewRepresentative} color="error">Cancelar</Button>
            {
-             (editRepresentative) ? 
-              (statusCcircularProgress)? 
-                <LoadingButtons message={'Actualizando'} />
-                : <Button variant="contained"onClick={updateRepresentative} color="success">Actualizar</Button>
+             
+             (seeRepresentativeDetails) ?  
+             <>
+                <Button variant="outlined" onClick={closeModal} color="error">Cerrar</Button>
+             </>
              :
-             (statusCcircularProgress)?
-              <LoadingButtons message={'Guardando'} />
-              : 
-              <>
-                <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
-                <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
-              </>
+             <>
+                <Button variant="outlined" onClick={confirmCancelNewRepresentative} color="error">Cancelar</Button>
+                {
+                  (editRepresentative) ? 
+                  (statusCcircularProgress)? 
+                    <LoadingButtons message={'Actualizando'} />
+                    : <Button variant="contained"onClick={updateRepresentative} color="success">Actualizar</Button>
+                 :
+                 (statusCcircularProgress)?
+                  <LoadingButtons message={'Guardando'} />
+                  : 
+                  <>
+                    <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
+                    <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
+                  </>
+                }
+             </>
+             
            }
            
           </Stack>

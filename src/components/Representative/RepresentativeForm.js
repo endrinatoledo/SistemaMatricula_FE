@@ -74,8 +74,6 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
     const [listOfFamilies, setListOfFamilies] = React.useState([])
     const [listOfCountries, setListOfCountries] = React.useState([])
     const [listOfFederalEntities, setListOfFederalEntities] = React.useState([])
-    const [federalEntity, setFederalEntity] = React.useState()
-    const [valueSex, setValueSex] = React.useState(null)
 
     const getProfessions = async () => {
 
@@ -359,7 +357,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
 
               <Autocomplete
                 key={clearField.federalEntity}
-                disabled={( representativeObject.couId != 232)? true : false}
+                disabled={( representativeObject.couId !== 232)? true : false}
                 noOptionsText={'Sin Opciones'}
                 options={listOfFederalEntities}
                 value={(editRepresentative) ? selectedRepresentative.federalEntity : representativeObject.federalEntity }
@@ -380,7 +378,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                   required
                   value={(editRepresentative) ? selectedRepresentative.repAddress :representativeObject.repAddress}
                   id="repAddress"
-                  label="Direccion"
+                  label="Dirección"
                   variant="standard"
                   helperText={(representativeObject.repAddress === null ||representativeObject.repAddress === '')? requiredField : '' }
                   error={orfRepAddresse}
@@ -410,7 +408,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 required
                 value={(editRepresentative) ? selectedRepresentative.repPhones :representativeObject.repPhones}
                 id="repPhones"
-                label="Telefono"
+                label="Teléfono"
                 variant="standard"
                 helperText={(representativeObject.repPhones === null ||representativeObject.repPhones === '')? requiredField : '' }
                   error={orfRepPhones}
