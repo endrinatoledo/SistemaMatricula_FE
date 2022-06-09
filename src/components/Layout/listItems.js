@@ -70,7 +70,7 @@ export const PeopleListItems = () => {
                 <ListItemIcon>
                   <LocalLibraryRoundedIcon />
                 </ListItemIcon>
-                <ListItemText primary="Alumnos" />
+                <ListItemText primary="Estudiantes" />
               </ListItemButton>
             </List>
         </NavLink>

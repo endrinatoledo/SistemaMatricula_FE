@@ -20,6 +20,7 @@ import Copyright from './Copyright';
 import Logout from './Logout';
 import UserList from '../Users/UserList';
 import RepresentativeList from '../Representative/RepresentativeList';
+import StudentsList from '../Student/StudentsList'
 import RolesList from '../Roles/RolesList';
 import PeriodsList from '../Periods/PeriodsList';
 import FamiliesList from '../Families/FamiliesList';
@@ -152,7 +153,7 @@ const Dashboard= () => {
                     <Routes>
                       <Route path="/"element={<UserList />} ></Route>
                       <Route path="/usuarios"element={<UserList />} ></Route>
-                      <Route path="/estudiantes"element={<RepresentativeList />} ></Route>
+                      <Route path="/estudiantes"element={<StudentsList />} ></Route>
                       <Route path="/familias"element={<FamiliesList />} ></Route>
                       <Route path="/colegio"element={<RepresentativeList />} ></Route>
                       <Route path="/metodosdepago"element={<PaymentMethodsList />} ></Route>

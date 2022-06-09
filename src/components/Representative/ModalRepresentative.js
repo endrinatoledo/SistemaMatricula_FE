@@ -203,7 +203,7 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
             setAlertModal(true)   
       }
     }
-  };
+  }; 
 
   const updateRepresentative = async () => {
     //cuando se procese la accion cambiar setEditRepresentative(false)
