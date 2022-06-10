@@ -28,6 +28,7 @@ import LevelsList from '../Levels/LevelsList';
 import SectionsList from '../Sections/SectionsList';
 import PaymentMethodsList from '../PaymentMethods/PaymentMethodsList';
 import ExchangeRatesList from '../ExchangeRates/ExchangeRatesList';
+import AddFamily from '../Families/AddFamily';
 
 
 const drawerWidth = 240;
@@ -164,6 +165,7 @@ const Dashboard= () => {
                       <Route path="/secciones"element={<SectionsList />} ></Route>
                       <Route path="/periodos"element={<PeriodsList />} ></Route>
                       <Route path="/tasas"element={<ExchangeRatesList />} ></Route>
+                      <Route path="/configurarfamilia"element={<AddFamily />} ></Route>
                     </Routes>
                   }
                   </Paper>

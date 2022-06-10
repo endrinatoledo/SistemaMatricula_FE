@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 
+
 const style = {
     flexGrow: 1,
     overflow: 'scroll',
@@ -38,9 +39,6 @@ const ModalConfigureFamily = ({selectedFamily, openModal, setOpenModal}) => {
       >
         <Box sx={{ ...style, width: '75%' }}>
           <h4 id="child-modal-title">Configurar Familia : {selectedFamily.famName} </h4>
-          <p id="child-modal-description">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-          </p>
           <Button onClick={handleClose}>Close Child Modal</Button>
         </Box>
       </Modal>
