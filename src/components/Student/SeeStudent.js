@@ -124,27 +124,6 @@ const SeeStudent = ({selectedStudent}) => {
                 }}
                 />
                 <TextField
-                
-                value={selectedStudent.stuCivilStatus}
-                id="stuCivilStatus"
-                label="Estado Civil"
-                variant="standard"
-                InputProps={{
-                  readOnly: true,
-                }}
-                />
-                <TextField
-                id="professions"
-                value={selectedStudent.professions.proName}
-                label="Profesión"
-                variant="standard"
-                InputProps={{
-                  readOnly: true,
-                }}
-                />
-    </Stack>
-    <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
-                <TextField
                 id="countries"
                 label="País"
                 variant="standard"
@@ -163,8 +142,10 @@ const SeeStudent = ({selectedStudent}) => {
                   readOnly: true,
                 }}
                 />
+
     </Stack>
-    <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
+
+    <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
 
                 <TextField
                 id="families"
@@ -175,8 +156,6 @@ const SeeStudent = ({selectedStudent}) => {
                   readOnly: true,
                 }}
                 />
-    </Stack>
-    <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
                 <TextField
                 id="stuStatus"
                 label="Estatus"
@@ -188,6 +167,7 @@ const SeeStudent = ({selectedStudent}) => {
                 }}
                 />
     </Stack>
+
   </Box>
   )
 }

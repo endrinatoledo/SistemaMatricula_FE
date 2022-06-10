@@ -299,7 +299,7 @@ console.log('--',studentObject)
 
     </Stack>
 
-    <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
+    <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
 
       <Autocomplete
                   key={clearField.family}
@@ -320,31 +320,30 @@ console.log('--',studentObject)
                     error={orfFamId}
                     label="Familia" variant="standard" />
                   )}/>
-    </Stack>
-    {(editStudent)? 
-         <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
-
-      <Autocomplete 
-                options={selectStatus}
-                renderInput={(params) =>(
-                  <TextField {...params}
-                      helperText={(studentObject.estStatus === null ||studentObject.estStatus === '')? requiredField : '' }
-                      error={orfStatus} label="Estatus" variant="standard" />
-                )}
-                value={(editStudent) ? labelStatus(selectedStudent.estStatus) : labelStatus(studentObject.estStatus) }
-                getOptionLabel={(option) => option.label}
-                onChange={(event, newValue) => {
-                  setStudentObject({...studentObject, estStatus : newValue.value ? newValue.value : null})          
-                  setSelectedStudent({...selectedStudent, estStatus : newValue.value ? newValue.value : selectedStudent.estStatus})
-                }}
-                required
-                key={clearField.status}
-                noOptionsText={'Sin Opciones'}
-                sx={{ width: '20%' }} 
-                 id="clear-on-escape"
-                />
-    </Stack> 
+                  {(editStudent)? 
+          <Autocomplete 
+          options={selectStatus}
+          renderInput={(params) =>(
+            <TextField {...params}
+                helperText={(studentObject.stuStatus === null ||studentObject.stuStatus === '')? requiredField : '' }
+                error={orfStatus} label="Estatus" variant="standard" />
+          )}
+          value={(editStudent) ? labelStatus(selectedStudent.stuStatus) : labelStatus(studentObject.stuStatus) }
+          getOptionLabel={(option) => option.label}
+          onChange={(event, newValue) => {
+            setStudentObject({...studentObject, stuStatus : newValue.value ? newValue.value : null})          
+            setSelectedStudent({...selectedStudent, stuStatus : newValue.value ? newValue.value : selectedStudent.stuStatus})
+          }}
+          required
+          key={clearField.status}
+          noOptionsText={'Sin Opciones'}
+          sx={{ width: '20%' }} 
+           id="clear-on-escape"
+          />
   : null}
+              
+    </Stack>
+    
 
   </Box>
   )
