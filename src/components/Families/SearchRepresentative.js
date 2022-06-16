@@ -30,20 +30,17 @@ const UseStyles = makeStyles({
       label : "Pasaporte"}
   ]
 
-const Representative = () => {
+const SearchRepresentative = ({listRepresentative,setListRepresentative}) => {
     const classes = UseStyles();
     const [identification, setIdentification] = React.useState({repIdType:null, repIdentificationNumber: ''})
     const [buttonI, setButtonI] = React.useState(true)
-    const [dataRepresentatives, setDataRepresentatives] = React.useState([])
-
-    console.log('*********',dataRepresentatives)
 
     const labelType = (value) =>{
         if(value !== null){
           const result =  IdentificationType.filter(item => {
             return value === item.value
-          })
-          if(result.length > 0){
+          }) 
+          if(result.length > 0){ 
             return result[0]
           }else{
             return null
@@ -57,14 +54,11 @@ const Representative = () => {
         try{
           const data = (await AxiosInstance.post("/representatives/byIdentification",identification)).data
 
-          let array = dataRepresentatives
-          console.log('data',data)
           if(data.data === 'registrado'){
-            array.push(data.result)
-            setDataRepresentatives(array)
+            setListRepresentative(listRepresentative.concat([data.result]))
             // setKeyIdentification(keyIdentification + 1)
             setIdentification({repIdType:null, repIdentificationNumber: ''})
-          }
+          } 
           
         }catch{
           console.log('***no')
@@ -73,7 +67,6 @@ const Representative = () => {
     
       }
 
-  console.log('identification',identification)
     return (
     <>
     <Box className={classes.box}>
@@ -82,7 +75,7 @@ const Representative = () => {
         </Typography> 
         <Divider variant="middle" />
         <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
-            
+              
         <Autocomplete 
                 options={IdentificationType}
                 renderInput={(params) =>(
@@ -128,4 +121,4 @@ const Representative = () => {
   )
 }
 
-export default Representative
+export default SearchRepresentative
