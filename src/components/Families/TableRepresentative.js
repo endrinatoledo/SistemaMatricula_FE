@@ -31,6 +31,13 @@ const TableRepresentative = ({listRepresentative, setListRepresentative}) => {
                 actionsColumnIndex:-1,
                 addRowPosition:'first'
             }}
+            editable={{
+                onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
+                    const newArray = listRepresentative.filter((item) => item.repId !== selectRow.repId)
+                    setListRepresentative(newArray)
+                    resolve()
+        })
+            }}
    />
     </>
   )
