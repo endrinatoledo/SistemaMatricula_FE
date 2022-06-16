@@ -1,21 +1,21 @@
 import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
 
-const TableRepresentative = ({listRepresentative, setListRepresentative}) => {
+const TableStudent = ({listStudent, setListStudent}) => {
 
     const columns = [
-        { title: 'Tipo', field: 'repIdType', cellStyle:{paddingLeft:'2%'}},
-        { title: 'Identificación', field: 'repIdentificationNumber'},
-        { title: 'Primer Nombre', field: 'repFirstName'},
-        { title: 'Primer Apellido', field: 'repSurname' },        
-        { title: 'Vínculo', field: 'repBond', cellStyle:{paddingLeft:'1%'}},
+        { title: 'Tipo', field: 'stuIdType', cellStyle:{paddingLeft:'2%'}},
+        { title: 'Identificación', field: 'stuIdentificationNumber'},
+        { title: 'Primer Nombre', field: 'stuFirstName'},
+        { title: 'Primer Apellido', field: 'stuSurname' },        
       ];
 
   return (
     <>
         <MaterialTable title={'Listado'}
-            data={listRepresentative} 
+            data={listStudent} 
             columns={columns}
+           
             options={{
             search: false,
             paging: false,
@@ -32,8 +32,8 @@ const TableRepresentative = ({listRepresentative, setListRepresentative}) => {
             }}
             editable={{
                 onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
-                    const newArray = listRepresentative.filter((item) => item.repId !== selectRow.repId)
-                    setListRepresentative(newArray)
+                    const newArray = listStudent.filter((item) => item.stuId !== selectRow.stuId)
+                    setListStudent(newArray)
                     resolve()
         })
             }}
@@ -42,4 +42,4 @@ const TableRepresentative = ({listRepresentative, setListRepresentative}) => {
   )
 }
 
-export default TableRepresentative
+export default TableStudent

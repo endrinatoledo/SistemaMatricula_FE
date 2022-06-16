@@ -180,6 +180,7 @@ React.useEffect(() => {
         width:300,
         actionsCellStyle:{paddingLeft:50,paddingRight:50},
         headerStyle: {
+          
           backgroundColor: "#007bff",
           color: "#FFF",
           fontWeight:'normal',
@@ -198,33 +199,6 @@ React.useEffect(() => {
          actionsColumnIndex:-1,
          addRowPosition:'first'
      }}
-
-    //      onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
-    //       AxiosInstance.delete(`/representatives/${selectRow.repId}`)
-    //       .then(resp=>{
-    //         setTimeout(() => {
-    //           if(resp.data.ok === true){
-    //             setAlertType("success")
-    //           }else{
-    //             setAlertType("error")
-    //           }
-    //           setMessage(resp.data.message)
-    //           setAlertModal(true)
-    //           fillTable()
-    //           resolve()
-    //         }, 2000);
-            
-    //       }).catch((err) => {
-    //         setTimeout(() => {
-    //           setMessage(standardMessages.connectionError)
-    //           setAlertType("error")
-    //           setAlertModal(true)
-    //           fillTable()
-    //           reject()
-    //         }, 2000);
-    //       });
-
-    //     })
 
     />
     {(alertModal) ? 
