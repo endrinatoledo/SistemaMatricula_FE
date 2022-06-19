@@ -157,7 +157,6 @@ React.useEffect(() => {
           icon: () => <VisibilityRoundedIcon />,
           tooltip: 'Ver Detalles',
           onClick: (event, rowData) => {
-            console.log(rowData)
             setTitleModalHeader('Detalles del Representante ' + rowData.repFirstName + ' ' + rowData.repSurname)
             setSelectedRepresentative(rowData)
             setSeeRepresentativeDetails(true)
