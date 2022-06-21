@@ -205,17 +205,6 @@ const SeeRepresentative = ({selectedRepresentative}) => {
                 }}
                 />
                 <TextField
-                id="families"
-                value={selectedRepresentative.families.famName}
-                label="Familia"
-                variant="standard"
-                InputProps={{
-                  readOnly: true,
-                }}
-                />
-    </Stack>
-    <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
-                <TextField
                 id="repStatus"
                 label="Estatus"
                 variant="standard"
@@ -225,7 +214,19 @@ const SeeRepresentative = ({selectedRepresentative}) => {
                   readOnly: true,
                 }}
                 />
+                {/* <TextField
+                id="families"
+                value={selectedRepresentative.families.famName}
+                label="Familia"
+                variant="standard"
+                InputProps={{
+                  readOnly: true,
+                }}
+                /> */}
     </Stack>
+    {/* <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
+                
+    </Stack> */}
   </Box>
   )
 }

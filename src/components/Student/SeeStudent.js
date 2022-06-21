@@ -147,7 +147,7 @@ const SeeStudent = ({selectedStudent}) => {
 
     <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
 
-                <TextField
+                {/* <TextField
                 id="families"
                 value={selectedStudent.families.famName}
                 label="Familia"
@@ -155,7 +155,7 @@ const SeeStudent = ({selectedStudent}) => {
                 InputProps={{
                   readOnly: true,
                 }}
-                />
+                /> */}
                 <TextField
                 id="stuStatus"
                 label="Estatus"
