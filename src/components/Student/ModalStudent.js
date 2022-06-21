@@ -119,10 +119,10 @@ const ModalStudent = ({ setSeeStudentDetails, seeStudentDetails, fillTable,setSe
       emptyForm = true
     }else{ setOrfStatus(false) }
 
-    if(studentObject.famId === null || studentObject.famId === ''){
-      setOrfFamId(true) ;
-      emptyForm = true
-    }else{ setOrfFamId(false) }
+    // if(studentObject.famId === null || studentObject.famId === ''){
+    //   setOrfFamId(true) ;
+    //   emptyForm = true
+    // }else{ setOrfFamId(false) }
 
     return emptyForm
 

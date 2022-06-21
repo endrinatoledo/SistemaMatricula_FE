@@ -156,10 +156,10 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
       emptyForm = true
     }else{ setOrfRepBond(false) }
 
-    if(representativeObject.famId === null || representativeObject.famId === ''){
-      setOrfFamId(true) ;
-      emptyForm = true
-    }else{ setOrfFamId(false) }
+    // if(representativeObject.famId === null || representativeObject.famId === ''){
+    //   setOrfFamId(true) ;
+    //   emptyForm = true
+    // }else{ setOrfFamId(false) }
 
     return emptyForm
 

@@ -435,33 +435,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 sx={{ width: '20%' }} 
                  id="clear-on-escape"
                 />
-
-<Autocomplete
-                key={clearField.family}
-                noOptionsText={'Sin Opciones'}
-                options={listOfFamilies}
-                value={(editRepresentative) ? selectedRepresentative.families : representativeObject.families }
-                onChange={(event, newValue) => {
-                    setRepresentativeObject({...representativeObject, famId : (newValue !== null) ? newValue.famId : null, families: (newValue !== null) ? newValue : null})          
-                    setSelectedRepresentative({...selectedRepresentative, families : (newValue !== null) ? newValue : selectedRepresentative.families})
-                  }}
-                  getOptionLabel={(option) => option.famName}                
-                 sx={{ width: '20%' }} 
-                 id="clear-on-escape"
-                 clearOnEscape
-                 renderInput={(params) => (
-                   <TextField {...params} 
-                   helperText={(representativeObject.famId === null ||representativeObject.famId === '')? requiredField : '' }
-                   error={orfFamId}
-                   label="Profesión" variant="standard" />
-                 )}/>
-                               
-    </Stack>
-
-    {(editRepresentative)? 
-         <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
-
-      <Autocomplete 
+                <Autocomplete 
                 options={selectStatus}
                 renderInput={(params) =>(
                   <TextField {...params}
@@ -480,6 +454,51 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 sx={{ width: '20%' }} 
                  id="clear-on-escape"
                 />
+
+            {/* <Autocomplete
+                key={clearField.family}
+                noOptionsText={'Sin Opciones'}
+                options={listOfFamilies}
+                value={(editRepresentative) ? selectedRepresentative.families : representativeObject.families }
+                onChange={(event, newValue) => {
+                    setRepresentativeObject({...representativeObject, famId : (newValue !== null) ? newValue.famId : null, families: (newValue !== null) ? newValue : null})          
+                    setSelectedRepresentative({...selectedRepresentative, families : (newValue !== null) ? newValue : selectedRepresentative.families})
+                  }}
+                  getOptionLabel={(option) => option.famName}                
+                 sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                 clearOnEscape
+                 renderInput={(params) => (
+                   <TextField {...params} 
+                  //  helperText={(representativeObject.famId === null ||representativeObject.famId === '')? requiredField : '' }
+                  //  error={orfFamId}
+                   label="Familia" variant="standard" /> 
+                 )}/> */}
+                               
+    </Stack>
+
+    {(editRepresentative)? 
+         <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
+
+      {/* <Autocomplete 
+                options={selectStatus}
+                renderInput={(params) =>(
+                  <TextField {...params}
+                      helperText={(representativeObject.repStatus === null ||representativeObject.repStatus === '')? requiredField : '' }
+                      error={orfStatus} label="Estatus" variant="standard" />
+                )}
+                value={(editRepresentative) ? labelStatus(selectedRepresentative.repStatus) : labelStatus(representativeObject.repStatus) }
+                getOptionLabel={(option) => option.label}
+                onChange={(event, newValue) => {
+                  setRepresentativeObject({...representativeObject, repStatus : newValue.value ? newValue.value : null})          
+                  setSelectedRepresentative({...selectedRepresentative, repStatus : newValue.value ? newValue.value : selectedRepresentative.repStatus})
+                }}
+                required
+                key={clearField.status}
+                noOptionsText={'Sin Opciones'}
+                sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                /> */}
     </Stack> 
   : null}
 

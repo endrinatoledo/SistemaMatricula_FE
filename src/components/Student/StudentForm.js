@@ -60,7 +60,7 @@ const StudentForm = ({setSelectedStudent,editStudent,selectedStudent,orfStuFirst
     const [listOfCountries, setListOfCountries] = React.useState([])
     const [listOfFederalEntities, setListOfFederalEntities] = React.useState([])
 
-console.log('--',studentObject)
+// console.log('--',studentObject)
     const getFamilies = async () => {
       try{
         const resultFamilies = (await AxiosInstance.get("/families/allFamilies/active")).data
@@ -301,7 +301,7 @@ console.log('--',studentObject)
 
     <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
 
-      <Autocomplete
+      {/* <Autocomplete
                   key={clearField.family}
                   noOptionsText={'Sin Opciones'}
                   options={listOfFamilies}
@@ -319,7 +319,7 @@ console.log('--',studentObject)
                     helperText={(studentObject.famId === null ||studentObject.famId === '')? requiredField : '' }
                     error={orfFamId}
                     label="Familia" variant="standard" />
-                  )}/>
+                  )}/> */}
                   {(editStudent)? 
           <Autocomplete 
           options={selectStatus}
