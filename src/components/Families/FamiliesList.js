@@ -30,17 +30,18 @@ const FamiliesList = () => {
     const [alertType, setAlertType] = React.useState('');
 
   const columns = [
-    { title: 'Código', field: 'famCode', editable:false, width: 150,headerStyle:{paddingLeft:'4%'},cellStyle:{paddingLeft:'5%'},},
-    { title: 'Nombre', field: 'famName', validate:rowData=>(rowData.famName === undefined || rowData.famName === '')?"Requerido":true },
+    { title: 'Código', field: 'families.famCode', editable:false, width: 150,headerStyle:{paddingLeft:'4%'},cellStyle:{paddingLeft:'5%'},},
+    { title: 'Nombre', field: 'families.famName' },
     // { title: 'Estatus', field: 'famStatus',filtering:false, render:(row)=> <StatusInTable status={row.famStatus} /> }
-    { title: 'Estatus', field: 'famStatus',cellStyle:{paddingLeft:'5%'},headerStyle:{paddingLeft:'5%',}, width: 200,  lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.famStatus === undefined)?"Requerido":true }
+    { title: 'Estatus', field: 'families.famStatus',cellStyle:{paddingLeft:'5%'},headerStyle:{paddingLeft:'5%',}, width: 200,  lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.famStatus === undefined)?"Requerido":true }
 
   ];
 
   const fillTable = async () => {
 
     try{
-      const resultFamilies = (await AxiosInstance.get("/families/")).data
+      const resultFamilies = (await AxiosInstance.get("/representativeStudent/byRepresentative/")).data
+
       if(resultFamilies.ok === true){
         setDataSource(resultFamilies.data)
       }
