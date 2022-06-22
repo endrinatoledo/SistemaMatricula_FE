@@ -4,9 +4,9 @@ import { ExportPdf } from '@material-table/exporters';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import FilterList from '@material-ui/icons/FilterList';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
-import MiscellaneousServicesRoundedIcon from '@mui/icons-material/MiscellaneousServicesRounded';
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import {NavLink} from 'react-router-dom'
-const {StatusTag, standardMessages} = require('../commonComponents/MessagesAndLabels')
+const { standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
 const DownloadExcel = require('../commonComponents/DownloadExcel').default 
@@ -40,7 +40,7 @@ const FamiliesList = () => {
   const fillTable = async () => {
 
     try{
-      const resultFamilies = (await AxiosInstance.get("/representativeStudent/byRepresentative/")).data
+      const resultFamilies = (await AxiosInstance.get("/representativeStudent/groupedByFamily/")).data
 
       if(resultFamilies.ok === true){
         setDataSource(resultFamilies.data)
@@ -70,18 +70,22 @@ React.useEffect(() => {
         tooltip: "Activar Filtros",
         onClick : ()=> setFiltering(!filtering),
         isFreeAction: true },
-        {
+      {
           icon: () => <NavLink to='/configurarfamilia' ><AddBoxRoundedIcon /></NavLink>,
-          tooltip: 'Configurar Periodo',
+          tooltip: 'Agregar Familia',
           isFreeAction: true,
           onClick: (event, rowData) => {
-            
             setSelectedFamily(rowData)
-            // setOpenModal(true)
-            // console.log(event)
-            // console.log(rowData)
           }
+      },{
+        icon: () => <VisibilityRoundedIcon />,
+        tooltip: 'Ver Detalles',
+        onClick: (event, rowData) => {
+          console.log(rowData)
+          setSelectedFamily(rowData)
+          window.location = `detallefamilia/${rowData.famId}`;
         }
+      }
     ]}
      options={{
         width:300,
