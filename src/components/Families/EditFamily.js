@@ -10,6 +10,7 @@ import TableStudent from './TableStudent';
 import FamilyData from './FamilyData';
 import {NavLink} from 'react-router-dom'
 import LoadingButtons from '../commonComponents/LoadingButton';
+import { useParams } from 'react-router-dom';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 const AxiosInstance = require("../utils/request").default;
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
@@ -21,8 +22,9 @@ const UseStyles = makeStyles({
 
 });
 
-const AddFamily = () => {
- 
+const EditFamily = () => {
+  let { famid } = useParams();
+  const [family, setFamily] = React.useState(famid)
   const [listRepresentative, setListRepresentative] = React.useState([])
   const [listStudent, setListStudent] = React.useState([])
   const [familyName, setFamilyName] = React.useState('')
@@ -34,11 +36,42 @@ const AddFamily = () => {
   const [statusCcircularProgress  , setStatusCcircularProgress] = React.useState(false)
   const [alertType, setAlertType] = React.useState('');
   const [alertModal, setAlertModal] = React.useState(false)
-  const familyData = null
-  const representativesData = null
-  const studentsData = null
+  const [toShow, setToShow] = React.useState(0)
+  const [familyData, setFamilyData] = React.useState({})
+  const [representativesData, setRepresentativesData] = React.useState([])
+  const [studentsData, setStudentsData] = React.useState([])
 
+  console.log('-----',studentsData)
   const classes = UseStyles();
+
+  const getFamilyById = async () => {
+
+    try {
+      const resultFamilies = (await AxiosInstance.get(`/representativeStudent/byFam/${famid}`)).data
+      console.log('0resultFamilies',resultFamilies)
+      if (resultFamilies.ok === true) {
+        setFamilyData(resultFamilies.data.family)
+        setRepresentativesData(resultFamilies.data.representatives)
+        setStudentsData(resultFamilies.data.students)
+        setToShow(toShow + 1)
+      }
+    } catch {
+      console.log('error al consutlar')
+      //   setMessage('Error de Conexion')
+      //   setAlertModal(true)
+
+    }
+  }
+
+  React.useEffect(() => {
+    getFamilyById()
+  }, [family]);
+
+  // React.useEffect(() => {
+  //   getFamilyById()    
+  // }, [toShow]);
+
+  
 
   const confirmCancelNewRepresentative =() =>{
     setModalCancel(true)
@@ -112,10 +145,11 @@ const AddFamily = () => {
   return (
     <>
     <Box >
-      <h4 id="child-modal-title">Agregar Familia </h4>
-      
+      <h4 id="child-modal-title">Editar Familia </h4>
+      {(toShow > 0) ? 
+      <>
         <FamilyData familyName={familyName} setFamilyName={setFamilyName} familyData={familyData}/>
-        <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative}/>
+        <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} />
         <TableRepresentative  listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData}/>
         <SearchStudent listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
         <TableStudent listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData}></TableStudent>
@@ -123,7 +157,7 @@ const AddFamily = () => {
               {
                 (statusCcircularProgress)?
                   <Stack className={classes.stack} spacing={2}  alignItems="flex-end" direction="row" justifyContent="center">
-                      <LoadingButtons message={'Guardando'} />
+                      <LoadingButtons message={'Actualizando'} />
                   </Stack>
                   
                   : 
@@ -131,9 +165,13 @@ const AddFamily = () => {
                     <NavLink to='/familias' >
                       <Button variant="outlined" onClick={confirmCancelNewRepresentative} color="error">Cancelar</Button>
                     </NavLink>
-                    <Button variant="contained" disabled={disableButtonSave} onClick={saveFamily} color="success">Guardar</Button>
+                    <Button variant="contained" disabled={disableButtonSave} onClick={saveFamily} color="success">Actualizar</Button>
                   </Stack>
                 }
+      </>
+      
+      : null}
+        
         
     </Box>
     {(modalCancel) ? 
@@ -151,4 +189,4 @@ const AddFamily = () => {
   )
 }
 
-export default AddFamily
+export default EditFamily

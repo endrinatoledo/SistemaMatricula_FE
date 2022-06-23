@@ -23,9 +23,12 @@ const UseStyles = makeStyles({
   });
 
 
-const FamilyData = ({familyName, setFamilyName}) => {
+const FamilyData = ({familyName, setFamilyName, familyData}) => {
     const classes = UseStyles();
-    
+
+    if(familyData !== null){
+      setFamilyName(familyData.famName)
+    } 
 
     return (
     <>
@@ -35,7 +38,7 @@ const FamilyData = ({familyName, setFamilyName}) => {
         <TextField
                 required
                 sx={{ width: '47%' }}
-                // value={(editRepresentative) ? selectedRepresentative.repFirstName :representativeObject.repFirstName}
+                value={familyName}
                 id="familyName"
                 label="Nombre de Familia"
                 variant="standard"

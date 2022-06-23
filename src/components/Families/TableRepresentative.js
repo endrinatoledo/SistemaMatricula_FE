@@ -1,7 +1,7 @@
 import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
 
-const TableRepresentative = ({listRepresentative, setListRepresentative}) => {
+const TableRepresentative = ({listRepresentative, setListRepresentative, representativesData}) => {
 
     const columns = [
         { title: 'Tipo', field: 'repIdType', cellStyle:{paddingLeft:'2%'}},
@@ -10,6 +10,10 @@ const TableRepresentative = ({listRepresentative, setListRepresentative}) => {
         { title: 'Primer Apellido', field: 'repSurname' },        
         { title: 'Vínculo', field: 'repBond', cellStyle:{paddingLeft:'1%'}},
       ];
+
+      if(representativesData !== null){
+        setListRepresentative(representativesData)
+      }
 
   return (
     <>

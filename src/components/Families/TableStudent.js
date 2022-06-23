@@ -1,7 +1,7 @@
 import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
 
-const TableStudent = ({listStudent, setListStudent}) => {
+const TableStudent = ({listStudent, setListStudent, studentsData}) => {
 
     const columns = [
         { title: 'Tipo', field: 'stuIdType', cellStyle:{paddingLeft:'2%'}},
@@ -9,6 +9,10 @@ const TableStudent = ({listStudent, setListStudent}) => {
         { title: 'Primer Nombre', field: 'stuFirstName'},
         { title: 'Primer Apellido', field: 'stuSurname' },        
       ];
+
+      if(studentsData !== null){
+        setListStudent(studentsData)
+      }
 
   return (
     <>

@@ -5,6 +5,7 @@ import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import FilterList from '@material-ui/icons/FilterList';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
+import ModeRoundedIcon from '@mui/icons-material/ModeRounded';
 import {NavLink} from 'react-router-dom'
 const { standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
@@ -78,6 +79,15 @@ React.useEffect(() => {
             setSelectedFamily(rowData)
           }
       },{
+        icon: () => <ModeRoundedIcon />,
+        tooltip: 'Editar Familia',
+        onClick: (event, rowData) => {
+          console.log(rowData)
+          setSelectedFamily(rowData)
+          window.location = `editarfamilia/${rowData.famId}`;
+        }
+      }
+      ,{
         icon: () => <VisibilityRoundedIcon />,
         tooltip: 'Ver Detalles',
         onClick: (event, rowData) => {
@@ -109,88 +119,7 @@ React.useEffect(() => {
          actionsColumnIndex:-1,
          addRowPosition:'first'
      }}
-     editable={{
-        //  onRowAdd: (newRow) => new Promise((resolve, reject)=>{
 
-        //   AxiosInstance.post(`/families/`,newRow)
-        //   .then(resp=>{
-        //     setTimeout(() => {
-        //       if(resp.data.ok === true){
-        //         setAlertType("success")
-        //       }else{
-        //         setAlertType("error")
-        //       }
-        //       setMessage(resp.data.message)
-        //       setAlertModal(true)
-        //       fillTable()
-        //       resolve()
-        //     }, 2000);
-            
-        //   })
-        //   .catch((err) => {
-        //     setTimeout(() => {
-        //       setMessage(standardMessages.connectionError)
-        //       setAlertType("error")
-        //       setAlertModal(true)
-        //       fillTable()
-        //       reject()
-        //     }, 2000);
-        //   });
-        //   }),
-        //  onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
-        //   AxiosInstance.delete(`/families/${selectRow.famId}`)
-        //   .then(resp=>{
-        //     setTimeout(() => {
-        //       if(resp.data.ok === true){
-        //         setAlertType("success")
-        //       }else{
-        //         setAlertType("error")
-        //       }
-        //       setMessage(resp.data.message)
-        //       setAlertModal(true)
-        //       fillTable()
-        //       resolve()
-        //     }, 2000);
-            
-        //   }).catch((err) => {
-        //     setTimeout(() => {
-        //       setMessage(standardMessages.connectionError)
-        //       setAlertType("error")
-        //       setAlertModal(true)
-        //       fillTable()
-        //       reject()
-        //     }, 2000);
-        //   });
-
-        // }),
-
-         onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
-            AxiosInstance.put(`/families/${newRow.famId}`,newRow)
-            .then(resp=>{
-              setTimeout(() => {
-                if(resp.data.ok === true){
-                  setAlertType("success")
-                }else{
-                  setAlertType("error")
-                }
-                setMessage(resp.data.message)
-                setAlertModal(true)
-                fillTable()
-                resolve()
-              }, 2000);
-              
-            }).catch((err) => {
-              setTimeout(() => {
-                setMessage(standardMessages.connectionError)
-                setAlertType("error")
-                setAlertModal(true)
-                fillTable()
-                reject()
-              }, 2000);
-            });
-
-         })
-     }}
     />
     {(alertModal) ? 
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 

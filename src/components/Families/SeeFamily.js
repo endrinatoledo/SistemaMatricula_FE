@@ -79,7 +79,7 @@ const SeeFamily = () => {
     <Box>
       <h4 id="child-modal-title">Detalles de Familia </h4>
     </Box>
-    {(toShow > 0) ?
+    {(toShow > 0) ? 
       <>
         <Stack direction="row" spacing={8} justifyContent="flex-start" className={classes.TextField}>
           <TextField

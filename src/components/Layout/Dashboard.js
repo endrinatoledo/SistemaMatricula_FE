@@ -30,6 +30,7 @@ import PaymentMethodsList from '../PaymentMethods/PaymentMethodsList';
 import ExchangeRatesList from '../ExchangeRates/ExchangeRatesList';
 import AddFamily from '../Families/AddFamily';
 import SeeFamily from '../Families/SeeFamily';
+import EditFamily from '../Families/EditFamily';
 
 
 const drawerWidth = 240;
@@ -168,7 +169,8 @@ const Dashboard= () => {
                       <Route path="/tasas"element={<ExchangeRatesList />} ></Route>
                       <Route path="/configurarfamilia"element={<AddFamily />} ></Route>
                       <Route path="/detallefamilia/:famid"element={<SeeFamily />} ></Route>
-                    </Routes>
+                      <Route path="/editarfamilia/:famid"element={<EditFamily />} ></Route>
+                    </Routes> 
                   }
                   </Paper>
                 </Grid>
