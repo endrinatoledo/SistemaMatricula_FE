@@ -18,8 +18,7 @@ const RolesList = () => {
     { title: 'Nombre', field: 'rolName',
     headerStyle:{ paddingLeft:'30%'},
     validate:rowData=>(rowData.rolName === undefined || rowData.rolName === '')?"Requerido":true },
-    { title: 'Estatus', field: 'rolStatus', 
-    cellStyle:{paddingLeft:'5%'},
+    { title: 'Estatus', field: 'rolStatus', cellStyle:{paddingLeft:'5%'},
     headerStyle:{paddingLeft:'5%'}, width: 200, 
     lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.rolStatus === undefined)?"Requerido":true }
 

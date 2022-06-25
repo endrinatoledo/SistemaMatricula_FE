@@ -40,6 +40,8 @@ const AddFamily = () => {
   const mode = 'add'
   const family = null
   const repStuData = null
+  const renderStatus = null
+  const setRenderStatus = null
 
   const classes = UseStyles();
 
@@ -119,9 +121,9 @@ const AddFamily = () => {
       
         <FamilyData familyName={familyName} setFamilyName={setFamilyName} familyData={familyData}/>
         <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative}/>
-        <TableRepresentative repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData}/>
+        <TableRepresentative renderStatus={renderStatus} setRenderStatus={setRenderStatus}  repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData}/>
         <SearchStudent listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
-        <TableStudent listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData}></TableStudent>
+        <TableStudent renderStatus={renderStatus} setRenderStatus={setRenderStatus}  listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData}></TableStudent>
     
               {
                 (statusCcircularProgress)?

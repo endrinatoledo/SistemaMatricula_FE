@@ -5,16 +5,18 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import IconButton from '@mui/material/IconButton';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import Button from '@mui/material/Button';
+import JoinRightRoundedIcon from '@mui/icons-material/JoinRightRounded';
 const AxiosInstance = require("../utils/request").default;
-const TableRepresentative = ({repStuData,family,mode,listRepresentative, setListRepresentative, representativesData,setRepresentativesData}) => {
+const TableRepresentative = ({renderStatus, setRenderStatus,repStuData,family,mode,listRepresentative, setListRepresentative, representativesData,setRepresentativesData}) => {
 
-  console.log('representativesData',representativesData)
     const columns = [
-        { title: 'Tipo', field: 'repIdType', cellStyle:{paddingLeft:'2%'}},
+        { title: 'Tipo', field: 'repIdType', width: 70, cellStyle:{maginLeft:'3%'}},
         { title: 'Identificación', field: 'repIdentificationNumber'},
         { title: 'Primer Nombre', field: 'repFirstName'},
         { title: 'Primer Apellido', field: 'repSurname' },        
-        { title: 'Vínculo', field: 'repBond', cellStyle:{paddingLeft:'1%'}},
+        { title: 'Vínculo', field: 'repBond',width: 70, cellStyle:{paddingLeft:'1%'}},
+        { title: 'Estatus',width: 70, field: 'statusRepSt',lookup: {1: 'Activo', 2:'Inactivo'}},
       ];
 
       if(representativesData !== null){
@@ -23,30 +25,18 @@ const TableRepresentative = ({repStuData,family,mode,listRepresentative, setList
 
       function deleteItemRepresentative(rowData){
 
-        if(mode === 'add'){
-          console.log('selectRow',rowData)
           const newArray = listRepresentative.filter((item) => item.repId !== rowData.repId)
           setListRepresentative(newArray)
           setRepresentativesData(newArray)
-        }else{
-          console.log('selectRow',rowData)
-          updateStatusRepresentative(rowData)
-        }
       }
 
-      function showRepStatus(){
-
-
-        // repStuData
-      }
-
-      const updateStatusRepresentative = async (representative) =>{
+      const updateStatusRepresentative = async (rowData) =>{
 
         try {
-          // const result = (await AxiosInstance.post(`/statusRepresentative/${family}`,representative)).data
-          // console.log('update resentative ', result)
+          const result = (await AxiosInstance.put(`/representativeStudent/status/representative/${rowData.famId}`,rowData)).data
+          setRenderStatus(renderStatus + 1)
         } catch (error) {
-          
+          console.log('entro por error')
         }
 
       }
@@ -63,21 +53,24 @@ const TableRepresentative = ({repStuData,family,mode,listRepresentative, setList
                   onClick : (event, rowData)=> deleteItemRepresentative(rowData)
                 }
               : 
-                { icon: () => <Switch />,
-                  tooltip: "Eliminar de la lista",
+                { 
+                  icon: () => <JoinRightRoundedIcon />,
+                  tooltip: "Cambiar estatus",
                   onClick : (event, rowData)=> updateStatusRepresentative(rowData)
                 }
               ]} 
+              // , cellStyle:{paddingRight:'5%'}
             options={{
             search: false,
             paging: false,
             width:300,
             actionsCellStyle:{paddingLeft:50,paddingRight:50},
             headerStyle: {
+                // width:'fit-content',
                 backgroundColor: "#007bff",
                 color: "#FFF",
                 fontWeight:'normal',
-                fontSize:18,
+                // fontSize:18,
             },
                 actionsColumnIndex:-1,
                 addRowPosition:'first'

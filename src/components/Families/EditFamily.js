@@ -41,6 +41,8 @@ const EditFamily = () => {
   const [representativesData, setRepresentativesData] = React.useState([])
   const [studentsData, setStudentsData] = React.useState([])
   const [repStuData, setRepStuData] = React.useState({})
+  const [renderStatus, setRenderStatus] = React.useState(0)
+
   const mode = 'edit'
 
   const classes = UseStyles();
@@ -49,7 +51,7 @@ const EditFamily = () => {
 
     try {
       const resultFamilies = (await AxiosInstance.get(`/representativeStudent/byFam/${famid}`)).data
-      console.log('0resultFamilies',resultFamilies)
+
       if (resultFamilies.ok === true) {
         setFamilyData(resultFamilies.data.family)
         setRepresentativesData(resultFamilies.data.representatives)
@@ -59,15 +61,10 @@ const EditFamily = () => {
       }
     } catch {
       console.log('error al consutlar')
-      //   setMessage('Error de Conexion')
-      //   setAlertModal(true)
 
     }
   }
 
-  React.useEffect(() => {
-    getFamilyById()
-  }, [family]);  
 
   const confirmCancelNewRepresentative =() =>{
     setModalCancel(true)
@@ -137,7 +134,13 @@ const EditFamily = () => {
     React.useEffect(() => {  
         handleClose()
     }, [userResponse]);
-
+    React.useEffect(() => {
+      getFamilyById()
+    }, [family]);  
+  
+    React.useEffect(() => {
+      getFamilyById()
+    }, [renderStatus]);
   return (
     <>
     <Box >
@@ -146,9 +149,9 @@ const EditFamily = () => {
       <>
         <FamilyData familyName={familyName} setFamilyName={setFamilyName} familyData={familyData} setFamilyData={setFamilyData}/>
         <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} />
-        <TableRepresentative repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData} setRepresentativesData={setRepresentativesData}/>
+        <TableRepresentative renderStatus={renderStatus} setRenderStatus={setRenderStatus} repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData} setRepresentativesData={setRepresentativesData}/>
         <SearchStudent listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
-        <TableStudent listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData} setStudentsData={setStudentsData}></TableStudent>
+        <TableStudent renderStatus={renderStatus} setRenderStatus={setRenderStatus} listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData} setStudentsData={setStudentsData}></TableStudent>
     
               {
                 (statusCcircularProgress)?
