@@ -14,6 +14,7 @@ import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded';
 import GridOnRoundedIcon from '@mui/icons-material/GridOnRounded';
 import PaymentRoundedIcon from '@mui/icons-material/PaymentRounded';
+import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
 
 
 export const CollectionListItems = () => {
@@ -38,6 +39,16 @@ export const EnrollmentListItems = () => {
           Matrícula
         </ListSubheader>
       </List>
+      <NavLink to='/inscriptions'>
+        <List component="div" disablePadding>
+          <ListItemButton sx={{ pl: 2 }} >
+              <ListItemIcon>
+                <ContentPasteRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Inscripciones" />
+            </ListItemButton>
+          </List>
+        </NavLink>
 
     </Fragment>
   )

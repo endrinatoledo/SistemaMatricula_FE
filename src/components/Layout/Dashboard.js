@@ -31,6 +31,7 @@ import ExchangeRatesList from '../ExchangeRates/ExchangeRatesList';
 import AddFamily from '../Families/AddFamily';
 import SeeFamily from '../Families/SeeFamily';
 import EditFamily from '../Families/EditFamily';
+import InscriptionList from '../Inscription/InscriptionList';
 
 
 const drawerWidth = 240;
@@ -170,6 +171,7 @@ const Dashboard= () => {
                       <Route path="/configurarfamilia"element={<AddFamily />} ></Route>
                       <Route path="/detallefamilia/:famid"element={<SeeFamily />} ></Route>
                       <Route path="/editarfamilia/:famid"element={<EditFamily />} ></Route>
+                      <Route path="/inscriptions"element={<InscriptionList />} ></Route>
                     </Routes> 
                   }
                   </Paper>
