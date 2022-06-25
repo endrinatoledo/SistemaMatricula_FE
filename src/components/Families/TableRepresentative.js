@@ -24,7 +24,6 @@ const TableRepresentative = ({renderStatus, setRenderStatus,repStuData,family,mo
       }
 
       function deleteItemRepresentative(rowData){
-
           const newArray = listRepresentative.filter((item) => item.repId !== rowData.repId)
           setListRepresentative(newArray)
           setRepresentativesData(newArray)

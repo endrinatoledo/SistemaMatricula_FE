@@ -151,7 +151,7 @@ const EditFamily = () => {
         <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} />
         <TableRepresentative renderStatus={renderStatus} setRenderStatus={setRenderStatus} repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData} setRepresentativesData={setRepresentativesData}/>
         <SearchStudent listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
-        <TableStudent renderStatus={renderStatus} setRenderStatus={setRenderStatus} listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData} setStudentsData={setStudentsData}></TableStudent>
+        <TableStudent mode={mode} renderStatus={renderStatus} setRenderStatus={setRenderStatus} listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData} setStudentsData={setStudentsData}></TableStudent>
     
               {
                 (statusCcircularProgress)?
