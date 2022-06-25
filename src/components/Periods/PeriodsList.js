@@ -19,7 +19,7 @@ const PeriodsList = () => {
 
   const columns = [
     { title: 'Año Inicio', field: 'perStartYear',cellStyle:{paddingRight:'14%'},headerStyle:{paddingRight:'12%'}, 
-    validate:rowData=>(rowData.perStartYear > year ||rowData.perStartYear < year)?"Ingrese Año Actual":'', type: "numeric"},
+     type: "numeric"},
     { title: 'Año Fin', field: 'perEndYear',cellStyle:{paddingRight:'14%'},headerStyle:{paddingRight:'12%'}, editable:false, type: "numeric"},
     { title: 'Estatus', field: 'perStatus',cellStyle:{paddingLeft:'5%'},headerStyle:{paddingLeft:'5%'}, width: 200,  lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.perStatus === undefined)?"Requerido":true }
 
@@ -86,10 +86,6 @@ React.useEffect(() => {
                 setAlertModal(true)
                 reject()
               }
-              // setMessage(resp.data.message)
-              // setAlertModal(true)
-              // fillTable()
-              // resolve()
             }, 2000);
             
           })
