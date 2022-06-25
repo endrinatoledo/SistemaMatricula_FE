@@ -37,6 +37,9 @@ const AddFamily = () => {
   const familyData = null
   const representativesData = null
   const studentsData = null
+  const mode = 'add'
+  const family = null
+  const repStuData = null
 
   const classes = UseStyles();
 
@@ -116,7 +119,7 @@ const AddFamily = () => {
       
         <FamilyData familyName={familyName} setFamilyName={setFamilyName} familyData={familyData}/>
         <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative}/>
-        <TableRepresentative  listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData}/>
+        <TableRepresentative repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData}/>
         <SearchStudent listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
         <TableStudent listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData}></TableStudent>
     

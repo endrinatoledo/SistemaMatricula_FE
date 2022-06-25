@@ -1,7 +1,7 @@
 import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
 
-const TableStudent = ({listStudent, setListStudent, studentsData}) => {
+const TableStudent = ({listStudent, setListStudent, studentsData,setStudentsData}) => {
 
     const columns = [
         { title: 'Tipo', field: 'stuIdType', cellStyle:{paddingLeft:'2%'}},
@@ -38,6 +38,7 @@ const TableStudent = ({listStudent, setListStudent, studentsData}) => {
                 onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
                     const newArray = listStudent.filter((item) => item.stuId !== selectRow.stuId)
                     setListStudent(newArray)
+                    setStudentsData(newArray)
                     resolve()
         })
             }}

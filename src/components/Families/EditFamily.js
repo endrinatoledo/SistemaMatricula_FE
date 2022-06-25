@@ -40,8 +40,9 @@ const EditFamily = () => {
   const [familyData, setFamilyData] = React.useState({})
   const [representativesData, setRepresentativesData] = React.useState([])
   const [studentsData, setStudentsData] = React.useState([])
+  const [repStuData, setRepStuData] = React.useState({})
+  const mode = 'edit'
 
-  console.log('-----',studentsData)
   const classes = UseStyles();
 
   const getFamilyById = async () => {
@@ -53,6 +54,7 @@ const EditFamily = () => {
         setFamilyData(resultFamilies.data.family)
         setRepresentativesData(resultFamilies.data.representatives)
         setStudentsData(resultFamilies.data.students)
+        setRepStuData(resultFamilies.data.representativeStudent)
         setToShow(toShow + 1)
       }
     } catch {
@@ -65,13 +67,7 @@ const EditFamily = () => {
 
   React.useEffect(() => {
     getFamilyById()
-  }, [family]);
-
-  // React.useEffect(() => {
-  //   getFamilyById()    
-  // }, [toShow]);
-
-  
+  }, [family]);  
 
   const confirmCancelNewRepresentative =() =>{
     setModalCancel(true)
@@ -86,15 +82,15 @@ const EditFamily = () => {
     }
   }
 
-  const saveFamily = async () =>{
+  const updateFamily = async () =>{
     setStatusCcircularProgress(true)
     const objData ={
       representatives: listRepresentative,
       students: listStudent,
-      family:familyName
+      family:familyData
     }
     try {
-      const result = (await AxiosInstance.post("/representativeStudent",objData)).data
+      const result = (await AxiosInstance.put(`/representativeStudent/${family}`,objData)).data
       setTimeout(() => {
         setStatusCcircularProgress(false)
       if(result.message === 'Familia creada con éxito'){
@@ -148,11 +144,11 @@ const EditFamily = () => {
       <h4 id="child-modal-title">Editar Familia </h4>
       {(toShow > 0) ? 
       <>
-        <FamilyData familyName={familyName} setFamilyName={setFamilyName} familyData={familyData}/>
+        <FamilyData familyName={familyName} setFamilyName={setFamilyName} familyData={familyData} setFamilyData={setFamilyData}/>
         <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} />
-        <TableRepresentative  listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData}/>
+        <TableRepresentative repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData} setRepresentativesData={setRepresentativesData}/>
         <SearchStudent listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
-        <TableStudent listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData}></TableStudent>
+        <TableStudent listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData} setStudentsData={setStudentsData}></TableStudent>
     
               {
                 (statusCcircularProgress)?
@@ -165,7 +161,7 @@ const EditFamily = () => {
                     <NavLink to='/familias' >
                       <Button variant="outlined" onClick={confirmCancelNewRepresentative} color="error">Cancelar</Button>
                     </NavLink>
-                    <Button variant="contained" disabled={disableButtonSave} onClick={saveFamily} color="success">Actualizar</Button>
+                    <Button variant="contained" disabled={disableButtonSave} onClick={updateFamily} color="success">Actualizar</Button>
                   </Stack>
                 }
       </>

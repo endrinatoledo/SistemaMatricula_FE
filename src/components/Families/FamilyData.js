@@ -23,8 +23,10 @@ const UseStyles = makeStyles({
   });
 
 
-const FamilyData = ({familyName, setFamilyName, familyData}) => {
+const FamilyData = ({familyName, setFamilyName, familyData,setFamilyData}) => {
     const classes = UseStyles();
+
+    // console.log('este es family fata', familyData)
 
     if(familyData !== null){
       setFamilyName(familyData.famName)
@@ -38,17 +40,27 @@ const FamilyData = ({familyName, setFamilyName, familyData}) => {
         <TextField
                 required
                 sx={{ width: '47%' }}
-                value={familyName}
+                value={(familyData !== null)?familyData.famName:familyName}
                 id="familyName"
                 label="Nombre de Familia"
                 variant="standard"
-                // helperText={(representativeObject.repFirstName === null ||representativeObject.repFirstName === '')? requiredField : '' }
-                // error={orfRepFirstName}
                 onChange={e => {
                   setFamilyName(e.target.value ? e.target.value : '')
-                  // setRepresentativeObject({...representativeObject, repFirstName : e.target.value ? e.target.value : ''})          
+                  setFamilyData({...familyData, famName : e.target.value ? e.target.value : ''})
                 }   }
                 />
+          {
+            (familyData !== null)?
+              <TextField
+                InputProps={{ readOnly: true }}
+                value={familyData.famCode}
+                id="familyCode"
+                label="Código de Familia"
+                variant="standard"
+              />
+            :
+            null
+          }      
                 
          </Stack>
     </Box>

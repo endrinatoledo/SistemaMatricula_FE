@@ -82,7 +82,6 @@ React.useEffect(() => {
         icon: () => <ModeRoundedIcon />,
         tooltip: 'Editar Familia',
         onClick: (event, rowData) => {
-          console.log(rowData)
           setSelectedFamily(rowData)
           window.location = `editarfamilia/${rowData.famId}`;
         }
@@ -91,7 +90,6 @@ React.useEffect(() => {
         icon: () => <VisibilityRoundedIcon />,
         tooltip: 'Ver Detalles',
         onClick: (event, rowData) => {
-          console.log(rowData)
           setSelectedFamily(rowData)
           window.location = `detallefamilia/${rowData.famId}`;
         }
