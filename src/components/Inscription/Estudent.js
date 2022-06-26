@@ -24,7 +24,7 @@ const UseStyles = makeStyles({
     }
   });
 
-const Estudent = () => {
+const Estudent = ({nonEnrolledStudents}) => {
 
     const classes = UseStyles();
 
@@ -38,16 +38,16 @@ const Estudent = () => {
         <Autocomplete
             // key={clearField.profession}
             noOptionsText={'Sin Opciones'}
-            // options={listOfFamilies}
+            options={nonEnrolledStudents}
             onChange={(event, newValue) => {
-                // setSelectedFamily(newValue)          
+                // setSelectedFamily(newValue)           
               }}
-            // getOptionLabel={(option) => option.famName}                
+            getOptionLabel={(option) => `${option.stuIdType}-${option.stuIdentificationNumber} - ${option.stuFirstName} ${option.stuSurname}`}                
             sx={{ width: '40%' }} 
             id="clear-on-escape"
             clearOnEscape
             renderInput={(params) => (
-              <TextField {...params} label="Seleccionar Familia" variant="standard" />
+              <TextField {...params} label="Seleccionar Estudiante" variant="standard" />
              )}/>
     </>
   )

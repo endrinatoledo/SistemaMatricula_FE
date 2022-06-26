@@ -106,7 +106,6 @@ const AddInscription = () => {
            console.log('resultStudent',resultStudent)
           if (resultStudent.ok === true) {
             setNonEnrolledStudents(resultStudent.data)
-
           }
         } catch {
           console.log('error al consutlar estudiantes inscritos en periodo actual')
@@ -151,7 +150,7 @@ const AddInscription = () => {
         {(selectedFamily)? 
             <>
               <ListRepresentative listOfRepresentatives={listOfRepresentatives}/>
-              <Estudent />
+              <Estudent nonEnrolledStudents={nonEnrolledStudents}/>
             </>
             
          : null}
