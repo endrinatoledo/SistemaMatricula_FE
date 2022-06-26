@@ -25,12 +25,7 @@ const UseStyles = makeStyles({
     }
   });
 
-const Estudent = ({endDate, setEndDate,perLevelSec,nonEnrolledStudents}) => {
-
-  const [levelSelect, setLevelSelect] = React.useState(null)
-  const [listOfSecctions, setListOfSecctions]= React.useState([])
-    // 
-  
+const Estudent = ({clearField,listOfSecctions, setListOfSecctions,levelSelect, setLevelSelect,endDate, setEndDate,perLevelSec,nonEnrolledStudents}) => {  
 
   const getListOfSecctions =  (levId) => {
 
@@ -60,7 +55,7 @@ const Estudent = ({endDate, setEndDate,perLevelSec,nonEnrolledStudents}) => {
         <Divider variant="middle" className={classes.divider}/>  
         <Stack direction="row" spacing={2}  justifyContent="flex-start" className={classes.styleStudent}>
             <Autocomplete
-                // key={clearField.profession}
+                key={clearField}
                 noOptionsText={'Sin Opciones'}
                 options={nonEnrolledStudents}
                 onChange={(event, newValue) => {

@@ -41,6 +41,10 @@ const AddInscription = () => {
     const [endDate, setEndDate] = React.useState({plsId:'', famId:'',insObservation:'',stuId:'',perId:''})
     const [Reload, SetReload] = React.useState(0);
     const [toShow, setToShow] = React.useState(0)
+    const [levelSelect, setLevelSelect] = React.useState(null)
+    const [listOfSecctions, setListOfSecctions]= React.useState([])
+    const [clearField, setClearField] = React.useState(0)
+
 
     console.log('endDate',endDate)
 
@@ -130,7 +134,6 @@ const AddInscription = () => {
     React.useEffect(() => {  
       getNonEnrolledStudents()   //buscar estudiantes no inscritos en periodo actual
   }, [listOfStudents])
-
     
 
   return (
@@ -142,8 +145,10 @@ const AddInscription = () => {
             noOptionsText={'Sin Opciones'}
             options={listOfFamilies}
             onChange={(event, newValue) => {
-                setSelectedFamily(newValue)    
-                setEndDate({...endDate, famId: (newValue !== null)? newValue.famId : ''})      
+                setListOfRepresentatives([])
+                setClearField(clearField + 1)
+                setEndDate({...endDate, stuId :'', famId: (newValue !== null)? newValue.famId : ''})      
+                setSelectedFamily(newValue)
               }}
             getOptionLabel={(option) => option.famName}                
             sx={{ width: '40%' }} 
@@ -157,7 +162,7 @@ const AddInscription = () => {
         {(selectedFamily)? 
             <>
               <ListRepresentative endDate={endDate} setEndDate={setEndDate} listOfRepresentatives={listOfRepresentatives}/>
-              <Estudent endDate={endDate} setEndDate={setEndDate} perLevelSec={perLevelSec} nonEnrolledStudents={nonEnrolledStudents}/>
+              <Estudent clearField={clearField} listOfSecctions={listOfSecctions} setListOfSecctions={setListOfSecctions} levelSelect={levelSelect} setLevelSelect={setLevelSelect} endDate={endDate} setEndDate={setEndDate} perLevelSec={perLevelSec} nonEnrolledStudents={nonEnrolledStudents}/>
             </>
             
          : null}
