@@ -11,8 +11,9 @@ const UseStyles = makeStyles({
     selectFamily: {
       marginTop:'2%'
     },
-    stylerepresentatives: {
+    styleStudent: {
         marginLeft:'4%',
+        marginRight:'4%',
         marginTop:'2%'
     },
     typography: {
@@ -24,31 +25,63 @@ const UseStyles = makeStyles({
     }
   });
 
-const Estudent = ({nonEnrolledStudents}) => {
+const Estudent = ({endDate, setEndDate,perLevelSec,nonEnrolledStudents}) => {
 
+    
     const classes = UseStyles();
 
 
   return (
     <>
         <Typography className={classes.typography} color="text.secondary" gutterBottom variant="h6" component="div">
-                Estudiante a inscribir
+                Estudiante a Inscribir
         </Typography> 
         <Divider variant="middle" className={classes.divider}/>  
-        <Autocomplete
-            // key={clearField.profession}
-            noOptionsText={'Sin Opciones'}
-            options={nonEnrolledStudents}
-            onChange={(event, newValue) => {
-                // setSelectedFamily(newValue)           
-              }}
-            getOptionLabel={(option) => `${option.stuIdType}-${option.stuIdentificationNumber} - ${option.stuFirstName} ${option.stuSurname}`}                
-            sx={{ width: '40%' }} 
-            id="clear-on-escape"
-            clearOnEscape
-            renderInput={(params) => (
-              <TextField {...params} label="Seleccionar Estudiante" variant="standard" />
-             )}/>
+        <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.styleStudent}>
+            <Autocomplete
+                // key={clearField.profession}
+                noOptionsText={'Sin Opciones'}
+                options={nonEnrolledStudents}
+                onChange={(event, newValue) => {
+                    // setSelectedFamily(newValue)           
+                  }}
+                getOptionLabel={(option) => `${option.stuIdType}-${option.stuIdentificationNumber} - ${option.stuFirstName} ${option.stuSurname}`}                
+                sx={{ width: '40%' }} 
+                id="clear-on-escape"
+                clearOnEscape
+                renderInput={(params) => (
+                  <TextField {...params} label="Seleccionar Estudiante" variant="standard" />
+                )}/>
+                <Autocomplete
+                // key={clearField.profession}
+                noOptionsText={'Sin Opciones'}
+                options={perLevelSec}
+                onChange={(event, newValue) => {
+                    // setSelectedFamily(newValue)           
+                  }}
+                getOptionLabel={(option) => option.level.levName}  
+                sx={{ width: '25%' }} 
+                id="clear-on-escape"
+                clearOnEscape
+                renderInput={(params) => (
+                  <TextField {...params} label="Seleccionar Nivel" variant="standard" />
+                )}/>
+                <Autocomplete
+                // key={clearField.profession}
+                noOptionsText={'Sin Opciones'}
+                options={perLevelSec}
+                onChange={(event, newValue) => {
+                    // setSelectedFamily(newValue)           
+                  }}
+                getOptionLabel={(option) => `Sección "${option.levName}" `}              
+                sx={{ width: '20%' }} 
+                id="clear-on-escape"
+                clearOnEscape
+                renderInput={(params) => (
+                  <TextField {...params} label="Seleccionar Sección" variant="standard" />
+                )}/>
+        </Stack>
+        
     </>
   )
 }

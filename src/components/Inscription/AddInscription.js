@@ -37,8 +37,8 @@ const AddInscription = () => {
     const [selectedFamily, setSelectedFamily] = React.useState();
     const [activePeriod, setActivePeriod] = React.useState();
     const [nonEnrolledStudents, setNonEnrolledStudents] = React.useState([]);
-    
-
+    const [perLevelSec, setPerLevelSec] = React.useState([])
+    const [endDate, setEndDate] = React.useState({plsId:'', famId:'',insObservation:'',stuId:'',perId:''})
     const [Reload, SetReload] = React.useState(0);
     const [toShow, setToShow] = React.useState(0)
 
@@ -51,6 +51,12 @@ const AddInscription = () => {
         const resultPeriod = (await AxiosInstance.get("/periods/onePeriod/active/")).data
         if(resultPeriod.ok === true){
           setActivePeriod(resultPeriod.data)
+
+          setEndDate({...endDate, perId: resultPeriod.data.perId}) 
+
+          const resultPLS = (await AxiosInstance.get(`/periodLevelSection/period/${resultPeriod.data.perId}`)).data
+          console.log('resultPLS',resultPLS.data)
+          setPerLevelSec(resultPLS.data.levels)
         }
       }catch{
           console.log('error al consultar periodo activo')
@@ -103,7 +109,6 @@ const AddInscription = () => {
         }
         try {
            const resultStudent = (await AxiosInstance.post(`/inscriptions/student/period/`,values)).data
-           console.log('resultStudent',resultStudent)
           if (resultStudent.ok === true) {
             setNonEnrolledStudents(resultStudent.data)
           }
@@ -136,7 +141,8 @@ const AddInscription = () => {
             noOptionsText={'Sin Opciones'}
             options={listOfFamilies}
             onChange={(event, newValue) => {
-                setSelectedFamily(newValue)          
+                setSelectedFamily(newValue)    
+                setEndDate({...endDate, famId: (newValue !== null)? newValue.famId : ''})      
               }}
             getOptionLabel={(option) => option.famName}                
             sx={{ width: '40%' }} 
@@ -149,8 +155,8 @@ const AddInscription = () => {
 
         {(selectedFamily)? 
             <>
-              <ListRepresentative listOfRepresentatives={listOfRepresentatives}/>
-              <Estudent nonEnrolledStudents={nonEnrolledStudents}/>
+              <ListRepresentative endDate={endDate} setEndDate={setEndDate} listOfRepresentatives={listOfRepresentatives}/>
+              <Estudent perLevelSec={perLevelSec} nonEnrolledStudents={nonEnrolledStudents}/>
             </>
             
          : null}

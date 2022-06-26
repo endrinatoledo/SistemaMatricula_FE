@@ -22,7 +22,7 @@ const UseStyles = makeStyles({
     }
   });
 
-const ListRepresentative = ({listOfRepresentatives}) => {
+const ListRepresentative = ({endDate, setEndDate,listOfRepresentatives}) => {
     const classes = UseStyles();
 
   return (
