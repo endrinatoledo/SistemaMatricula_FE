@@ -8,6 +8,7 @@ import Divider from '@mui/material/Divider';
 
 import { makeStyles } from '@mui/styles';
 import ListRepresentative from './ListRepresentative';
+import Estudent from './Estudent';
 const AxiosInstance = require("../utils/request").default;
 
 const UseStyles = makeStyles({
@@ -34,11 +35,28 @@ const AddInscription = () => {
     const [listOfRepresentatives, setListOfRepresentatives] = React.useState([]);
     const [listOfStudents, setListOfStudents] = React.useState([]);
     const [selectedFamily, setSelectedFamily] = React.useState();
+    const [activePeriod, setActivePeriod] = React.useState();
+    const [nonEnrolledStudents, setNonEnrolledStudents] = React.useState([]);
+    
+
     const [Reload, SetReload] = React.useState(0);
     const [toShow, setToShow] = React.useState(0)
 
+
     const classes = UseStyles();
 
+    const getActivePeriod = async () => {
+
+      try{
+        const resultPeriod = (await AxiosInstance.get("/periods/onePeriod/active/")).data
+        if(resultPeriod.ok === true){
+          setActivePeriod(resultPeriod.data)
+        }
+      }catch{
+          console.log('error al consultar periodo activo')
+        
+    }
+  }
     
     const getFamilies = async () => {
 
@@ -60,40 +78,55 @@ const AddInscription = () => {
 
           }
         }catch{
-            console.log('error al consultar listado de familias')
-        //   setMessage('Error de Conexion')
-        //   setAlertModal(true)
-          
+            console.log('error al consultar listado de familias')          
       }
     }
 
     const getFamilyById = async () => {
-
         try {
-            
            const resultFamilies = (await AxiosInstance.get(`/representativeStudent/byFam/${selectedFamily.famId}`)).data
-           console.log('resultFamilies',resultFamilies)
           if (resultFamilies.ok === true) {
     
             setListOfRepresentatives(resultFamilies.data.representatives)
             setListOfStudents(resultFamilies.data.students)
-
-        //     // setToShow(toShow + 1)
           }
         } catch {
           console.log('error al consutlar')
-          //   setMessage('Error de Conexion')
-          //   setAlertModal(true)
+        }
+      }
+
+      const getNonEnrolledStudents = async () => {
+
+        const values = {
+          students : listOfStudents,
+          period : activePeriod
+        }
+        try {
+           const resultStudent = (await AxiosInstance.post(`/inscriptions/student/period/`,values)).data
+           console.log('resultStudent',resultStudent)
+          if (resultStudent.ok === true) {
+            setNonEnrolledStudents(resultStudent.data)
+
+          }
+        } catch {
+          console.log('error al consutlar estudiantes inscritos en periodo actual')
         }
       }
 
     React.useEffect(() => {  
         getFamilies()  
+        getActivePeriod()
     }, [Reload])
 
     React.useEffect(() => {  
         getFamilyById()   //buscar representantes por familia
     }, [selectedFamily])
+
+    React.useEffect(() => {  
+      getNonEnrolledStudents()   //buscar estudiantes no inscritos en periodo actual
+  }, [listOfStudents])
+
+    
 
   return (
     <Box>
@@ -113,10 +146,14 @@ const AddInscription = () => {
             renderInput={(params) => (
               <TextField {...params} label="Seleccionar Familia" variant="standard" />
              )}/>
-        </Stack>
+        </Stack> 
 
         {(selectedFamily)? 
-            <ListRepresentative listOfRepresentatives={listOfRepresentatives}/>
+            <>
+              <ListRepresentative listOfRepresentatives={listOfRepresentatives}/>
+              <Estudent />
+            </>
+            
          : null}
     </Box>
   )
