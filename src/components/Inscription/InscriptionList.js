@@ -1,21 +1,21 @@
 import React from 'react'
+import {NavLink} from 'react-router-dom'
 import MaterialTable from '@material-table/core'; 
 import { ExportPdf } from '@material-table/exporters';
 import FilterList from '@material-ui/icons/FilterList';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
+import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 const AxiosInstance = require("../utils/request").default;
 const InscriptionList = () => {
 
     const [dataSource, setDataSource] = React.useState([])
-    // const [processedData, setProcessedData] = React.useState([])
+    const [filtering, setFiltering] = React.useState(false)
     const [Reload, SetReload] = React.useState(0);
     
 
 
     const columns = [
-        
         { title: 'Identificación', field: 'identification',filtering:true},
         { title: 'Nombres', field: 'names',filtering:true},
         { title: 'Apellidos', field: 'lastNames',filtering:true},
@@ -64,7 +64,7 @@ const InscriptionList = () => {
      actions={[
       { icon: () => <FilterList />,
         tooltip: "Activar Filtros",
-        // onClick : ()=> setFiltering(!filtering),
+        onClick : ()=> setFiltering(!filtering),
         isFreeAction: true },
 
         {
@@ -87,8 +87,8 @@ const InscriptionList = () => {
           }
         },
         {
-            icon: () => <PersonAddAltRoundedIcon />,
-            tooltip: 'Agregar Representante',
+            icon: () => <NavLink to='/addinscription' ><AddBoxRoundedIcon /></NavLink>,
+            tooltip: 'Nueva Inscripción',
             isFreeAction: true,
             onClick: (event, rowData) => {
                 // setTitleModalHeader('Nuevo Representante')
@@ -117,7 +117,7 @@ const InscriptionList = () => {
         //   exportFunc: (cols, datas) => DownloadExcel(cols, datas,excelStructure)
         }
       ],
-        //  filtering:filtering,
+        filtering:filtering,
          actionsColumnIndex:-1,
          addRowPosition:'first'
      }}

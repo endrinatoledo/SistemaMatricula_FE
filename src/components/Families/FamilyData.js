@@ -1,10 +1,6 @@
 import React from 'react'
-import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
-import Button from '@mui/material/Button';
-import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 const AxiosInstance = require("../utils/request").default;
@@ -25,8 +21,6 @@ const UseStyles = makeStyles({
 
 const FamilyData = ({familyName, setFamilyName, familyData,setFamilyData}) => {
     const classes = UseStyles();
-
-    // console.log('este es family fata', familyData)
 
     if(familyData !== null){
       setFamilyName(familyData.famName)

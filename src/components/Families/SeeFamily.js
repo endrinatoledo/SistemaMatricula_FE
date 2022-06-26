@@ -4,9 +4,6 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { makeStyles } from '@mui/styles';
-import TableRepresentative from './TableRepresentative';
-import SearchStudent from './SearchStudent';
-import TableStudent from './TableStudent';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { NavLink } from 'react-router-dom'
@@ -38,8 +35,6 @@ const SeeFamily = () => {
 
   let { famid } = useParams();
   const [family, setFamily] = React.useState(famid)
-  const [listRepresentative, setListRepresentative] = React.useState([])
-  const [listStudent, setListStudent] = React.useState([])
   const [toShow, setToShow] = React.useState(0)
   const [familyData, setFamilyData] = React.useState({})
   const [representativesData, setRepresentativesData] = React.useState([])
