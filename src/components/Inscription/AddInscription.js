@@ -42,6 +42,7 @@ const AddInscription = () => {
     const [Reload, SetReload] = React.useState(0);
     const [toShow, setToShow] = React.useState(0)
 
+    console.log('endDate',endDate)
 
     const classes = UseStyles();
 
@@ -55,7 +56,7 @@ const AddInscription = () => {
           setEndDate({...endDate, perId: resultPeriod.data.perId}) 
 
           const resultPLS = (await AxiosInstance.get(`/periodLevelSection/period/${resultPeriod.data.perId}`)).data
-          console.log('resultPLS',resultPLS.data)
+
           setPerLevelSec(resultPLS.data.levels)
         }
       }catch{
@@ -92,7 +93,7 @@ const AddInscription = () => {
         try {
            const resultFamilies = (await AxiosInstance.get(`/representativeStudent/byFam/${selectedFamily.famId}`)).data
           if (resultFamilies.ok === true) {
-    
+            
             setListOfRepresentatives(resultFamilies.data.representatives)
             setListOfStudents(resultFamilies.data.students)
           }
@@ -156,7 +157,7 @@ const AddInscription = () => {
         {(selectedFamily)? 
             <>
               <ListRepresentative endDate={endDate} setEndDate={setEndDate} listOfRepresentatives={listOfRepresentatives}/>
-              <Estudent perLevelSec={perLevelSec} nonEnrolledStudents={nonEnrolledStudents}/>
+              <Estudent endDate={endDate} setEndDate={setEndDate} perLevelSec={perLevelSec} nonEnrolledStudents={nonEnrolledStudents}/>
             </>
             
          : null}

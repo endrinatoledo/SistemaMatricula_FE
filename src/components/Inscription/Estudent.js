@@ -27,9 +27,30 @@ const UseStyles = makeStyles({
 
 const Estudent = ({endDate, setEndDate,perLevelSec,nonEnrolledStudents}) => {
 
-    
-    const classes = UseStyles();
+  const [levelSelect, setLevelSelect] = React.useState(null)
+  const [listOfSecctions, setListOfSecctions]= React.useState([])
+    // 
+  
 
+  const getListOfSecctions =  (levId) => {
+
+    if(levId !== null && levId !== undefined){
+      perLevelSec.forEach(item =>{
+        if(item.level.levId === levId){
+          setListOfSecctions(item.sections)
+        }
+      })
+
+    }
+}
+
+  React.useEffect(() => {  
+    if(levelSelect !== '') {
+      getListOfSecctions(levelSelect)
+    }
+}, [levelSelect])
+
+    const classes = UseStyles();
 
   return (
     <>
@@ -37,13 +58,13 @@ const Estudent = ({endDate, setEndDate,perLevelSec,nonEnrolledStudents}) => {
                 Estudiante a Inscribir
         </Typography> 
         <Divider variant="middle" className={classes.divider}/>  
-        <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.styleStudent}>
+        <Stack direction="row" spacing={2}  justifyContent="flex-start" className={classes.styleStudent}>
             <Autocomplete
                 // key={clearField.profession}
                 noOptionsText={'Sin Opciones'}
                 options={nonEnrolledStudents}
                 onChange={(event, newValue) => {
-                    // setSelectedFamily(newValue)           
+                  setEndDate({...endDate, stuId : (newValue !== null)? newValue.stuId : ''})        
                   }}
                 getOptionLabel={(option) => `${option.stuIdType}-${option.stuIdentificationNumber} - ${option.stuFirstName} ${option.stuSurname}`}                
                 sx={{ width: '40%' }} 
@@ -57,7 +78,7 @@ const Estudent = ({endDate, setEndDate,perLevelSec,nonEnrolledStudents}) => {
                 noOptionsText={'Sin Opciones'}
                 options={perLevelSec}
                 onChange={(event, newValue) => {
-                    // setSelectedFamily(newValue)           
+                  setLevelSelect((newValue !== null)? newValue.level.levId : '')          
                   }}
                 getOptionLabel={(option) => option.level.levName}  
                 sx={{ width: '25%' }} 
@@ -66,20 +87,25 @@ const Estudent = ({endDate, setEndDate,perLevelSec,nonEnrolledStudents}) => {
                 renderInput={(params) => (
                   <TextField {...params} label="Seleccionar Nivel" variant="standard" />
                 )}/>
-                <Autocomplete
-                // key={clearField.profession}
-                noOptionsText={'Sin Opciones'}
-                options={perLevelSec}
-                onChange={(event, newValue) => {
-                    // setSelectedFamily(newValue)           
-                  }}
-                getOptionLabel={(option) => `Sección "${option.levName}" `}              
-                sx={{ width: '20%' }} 
-                id="clear-on-escape"
-                clearOnEscape
-                renderInput={(params) => (
-                  <TextField {...params} label="Seleccionar Sección" variant="standard" />
-                )}/>
+
+                {(levelSelect !== '' && levelSelect !== null && levelSelect !== undefined )? 
+                  <Autocomplete
+                  // key={clearField.profession}
+                  noOptionsText={'Sin Opciones'}
+                  options={listOfSecctions}
+                  onChange={(event, newValue) => {
+                    setEndDate({...endDate, plsId : (newValue !== null)? newValue.pls : ''})
+                      // setSelectedFamily(newValue)           
+                    }}
+                  getOptionLabel={(option) => `Sección "${option.section.secName}" `}               
+                  sx={{ width: '20%' }} 
+                  id="clear-on-escape"
+                  clearOnEscape
+                  renderInput={(params) => (
+                    <TextField {...params} label="Seleccionar Sección" variant="standard" />
+                  )}/>
+                : null}
+                
         </Stack>
         
     </>
