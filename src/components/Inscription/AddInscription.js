@@ -73,10 +73,14 @@ const AddInscription = () => {
         setAlertModal(true) 
         window.location = '/inscriptions';
 
-      }else if(result.message === 'Error de conexión'){
-
+      }else if(result.message === 'No hay estudiantes para mostrar'){
+          setMessage(result.message)
+          setAlertType('error')
+          setAlertModal(true) 
       }else{
-
+        setMessage(result.message)
+        setAlertType('error')
+        setAlertModal(true)
       }
     }, 2000);
     } catch (error) {
