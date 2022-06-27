@@ -3,20 +3,22 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-
+import Button from '@mui/material/Button';
+import LoadingButtons from '../commonComponents/LoadingButton';
+import {NavLink} from 'react-router-dom'
 import { makeStyles } from '@mui/styles';
 import ListRepresentative from './ListRepresentative';
 import Estudent from './Estudent';
+import Observation from './Observation';
 const AxiosInstance = require("../utils/request").default;
 
 const UseStyles = makeStyles({
     selectFamily: {
-      marginTop:'2%'
+      marginTop:'2%',
+      marginLeft:'4%'
     },
     representatives: {
-        marginLeft:'4%'
+        marginLeft:'4%',
     },
     typography: {
         marginTop:'2%',
@@ -24,6 +26,9 @@ const UseStyles = makeStyles({
     },
     divider: {
         marginBottom:'2%'
+    },
+    stack: {
+      marginTop:'5%'
     },
 
   
@@ -40,11 +45,9 @@ const AddInscription = () => {
     const [perLevelSec, setPerLevelSec] = React.useState([])
     const [endDate, setEndDate] = React.useState({plsId:'', famId:'',insObservation:'',stuId:'',perId:''})
     const [Reload, SetReload] = React.useState(0);
-    const [toShow, setToShow] = React.useState(0)
     const [levelSelect, setLevelSelect] = React.useState(null)
     const [listOfSecctions, setListOfSecctions]= React.useState([])
     const [clearField, setClearField] = React.useState(0)
-
 
     console.log('endDate',endDate)
 
@@ -163,9 +166,23 @@ const AddInscription = () => {
             <>
               <ListRepresentative endDate={endDate} setEndDate={setEndDate} listOfRepresentatives={listOfRepresentatives}/>
               <Estudent clearField={clearField} listOfSecctions={listOfSecctions} setListOfSecctions={setListOfSecctions} levelSelect={levelSelect} setLevelSelect={setLevelSelect} endDate={endDate} setEndDate={setEndDate} perLevelSec={perLevelSec} nonEnrolledStudents={nonEnrolledStudents}/>
+              <Observation endDate={endDate} setEndDate={setEndDate}/> 
             </>
             
          : null}
+
+                    <Stack className={classes.stack} spacing={2}  alignItems="flex-end" direction="row" justifyContent="center">
+                    <NavLink to='/inscriptions' >
+                      <Button variant="outlined" 
+                      // onClick={confirmCancelNewRepresentative} 
+                      color="error">Cancelar</Button>
+                    </NavLink>
+                    <Button variant="contained" 
+                    // disabled={disableButtonSave} 
+                    // onClick={saveFamily} 
+                    color="success">Guardar</Button>
+                  </Stack>
+
     </Box>
   )
 }

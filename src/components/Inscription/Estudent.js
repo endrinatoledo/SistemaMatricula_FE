@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -8,12 +7,9 @@ import Divider from '@mui/material/Divider';
 import { makeStyles } from '@mui/styles';
 
 const UseStyles = makeStyles({
-    selectFamily: {
-      marginTop:'2%'
-    },
+
     styleStudent: {
         marginLeft:'4%',
-        marginRight:'4%',
         marginTop:'2%'
     },
     typography: {
@@ -22,10 +18,16 @@ const UseStyles = makeStyles({
     },
     divider: {
         marginBottom:'2%'
+    },
+    textfield:{
+      marginRight:'2%',
     }
   });
 
 const Estudent = ({clearField,listOfSecctions, setListOfSecctions,levelSelect, setLevelSelect,endDate, setEndDate,perLevelSec,nonEnrolledStudents}) => {  
+
+  
+  const classes = UseStyles();
 
   const getListOfSecctions =  (levId) => {
 
@@ -45,7 +47,6 @@ const Estudent = ({clearField,listOfSecctions, setListOfSecctions,levelSelect, s
     }
 }, [levelSelect])
 
-    const classes = UseStyles();
 
   return (
     <>
@@ -55,6 +56,7 @@ const Estudent = ({clearField,listOfSecctions, setListOfSecctions,levelSelect, s
         <Divider variant="middle" className={classes.divider}/>  
         <Stack direction="row" spacing={2}  justifyContent="flex-start" className={classes.styleStudent}>
             <Autocomplete
+                className={classes.textfield}
                 key={clearField}
                 noOptionsText={'Sin Opciones'}
                 options={nonEnrolledStudents}
@@ -69,7 +71,7 @@ const Estudent = ({clearField,listOfSecctions, setListOfSecctions,levelSelect, s
                   <TextField {...params} label="Seleccionar Estudiante" variant="standard" />
                 )}/>
                 <Autocomplete
-                // key={clearField.profession}
+                className={classes.textfield}
                 noOptionsText={'Sin Opciones'}
                 options={perLevelSec}
                 onChange={(event, newValue) => {
@@ -85,7 +87,7 @@ const Estudent = ({clearField,listOfSecctions, setListOfSecctions,levelSelect, s
 
                 {(levelSelect !== '' && levelSelect !== null && levelSelect !== undefined )? 
                   <Autocomplete
-                  // key={clearField.profession}
+                  
                   noOptionsText={'Sin Opciones'}
                   options={listOfSecctions}
                   onChange={(event, newValue) => {
@@ -93,7 +95,7 @@ const Estudent = ({clearField,listOfSecctions, setListOfSecctions,levelSelect, s
                       // setSelectedFamily(newValue)           
                     }}
                   getOptionLabel={(option) => `Sección "${option.section.secName}" `}               
-                  sx={{ width: '20%' }} 
+                  sx={{ width: '25%' }} 
                   id="clear-on-escape"
                   clearOnEscape
                   renderInput={(params) => (

@@ -6,9 +6,7 @@ import Divider from '@mui/material/Divider';
 import { makeStyles } from '@mui/styles';
 
 const UseStyles = makeStyles({
-    selectFamily: {
-      marginTop:'2%'
-    },
+
     stylerepresentatives: {
         marginLeft:'4%',
         marginTop:'2%'
@@ -19,6 +17,9 @@ const UseStyles = makeStyles({
     },
     divider: {
         marginBottom:'2%'
+    },
+    textfield:{
+      marginRight:'2%',
     }
   });
 
@@ -32,17 +33,18 @@ const ListRepresentative = ({endDate, setEndDate,listOfRepresentatives}) => {
                 </Typography> 
                 <Divider variant="middle" className={classes.divider}/>  
                     {listOfRepresentatives.map(representative =><>
-                        <Stack key={representative.repId} direction="row" spacing={2}  justifyContent="space-between" className={classes.stylerepresentatives}>
+                        <Stack key={representative.repId} direction="row" spacing={2}  justifyContent="flex-start" className={classes.stylerepresentatives}>
                             <TextField
+                                className={classes.textfield}
                                 InputProps={{ readOnly: true }}
                                 value={representative.repBond}
-                                // key={}
                                 id="repBond"
                                 label="Vínculo"
                                 variant="standard"
                                 sx={{ width: '20%' }} 
                             />
                             <TextField
+                                className={classes.textfield}
                                 InputProps={{ readOnly: true }}
                                 value={`${representative.repIdType}-${representative.repIdentificationNumber}`}
                                 id="repIdentification"
