@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import { makeStyles } from '@mui/styles';
 
+
 const UseStyles = makeStyles({
 
     styleStudent: {
@@ -21,11 +22,16 @@ const UseStyles = makeStyles({
     },
     textfield:{
       marginRight:'2%',
-    }
+    },
+    selectFamily: {
+      marginTop: '2%',
+      marginLeft: '4%'
+    },
   });
-const SeeEstudent = ({listOfStudents}) => {
+const SeeEstudent = ({levelSecc, listOfStudents, dataStudent}) => {
 
     const classes = UseStyles();
+
 
   return (
     <>
@@ -34,44 +40,37 @@ const SeeEstudent = ({listOfStudents}) => {
         </Typography> 
         <Divider variant="middle" className={classes.divider}/>  
         <Stack direction="row" spacing={4} justifyContent="flex-start" className={classes.selectFamily}>
-        <TextField
+
+           <TextField 
                    className={classes.textfield}
                    InputProps={{ readOnly: true }}
-                //    value={family.famCode}
-                   id="styIdentification"
-                   label="Identificación"
-                   variant="standard"
-                   sx={{ width: '10%' }} 
-           />
-           <TextField
-                   className={classes.textfield}
-                   InputProps={{ readOnly: true }}
-                //    value={family.famName}
+                   value={`${dataStudent.stuIdType}-${dataStudent.stuIdentificationNumber} - ${dataStudent.stuFirstName} ${dataStudent.stuSurname}`}
                    id="stuName"
                    label="Nombre de Estudiante"
                    variant="standard"
-                   sx={{ width: '30%' }} 
+                   sx={{ width: '40%' }} 
            />
            <TextField
                    className={classes.textfield}
                    InputProps={{ readOnly: true }}
-                //    value={family.famName}
+                   value={levelSecc.level}
                    id="insLevel"
                    label="Nivel"
                    variant="standard"
-                   sx={{ width: '20%' }} 
+                   sx={{ width: '25%' }} 
            />
            <TextField
                    className={classes.textfield}
                    InputProps={{ readOnly: true }}
-                //    value={family.famName}
+                   value={`Sección "${levelSecc.section}"`}
                    id="insSection"
                    label="Sección"
                    variant="standard"
-                   sx={{ width: '10%' }} 
+                   sx={{ width: '20%' }} 
            />
    
         </Stack>
+        
     </>
   )
 }

@@ -8,14 +8,16 @@ import { makeStyles } from '@mui/styles';
 import { useParams } from 'react-router-dom';
 import ListRepresentative from './ListRepresentative';
 import SeeEstudent from './SeeEstudent';
+import Observation from './Observation';
 
 const AxiosInstance = require("../utils/request").default;
 
 const UseStyles = makeStyles({
-    selectFamily: {
-      marginTop: '2%',
-      marginLeft: '4%'
-    },
+
+    styleStudent: {
+      marginLeft:'4%',
+      marginTop:'2%'
+  },
     representatives: {
       marginLeft: '4%',
     },
@@ -37,9 +39,13 @@ const SeeInscription = () => {
 
     let { insid } = useParams();
     const [insId, setInsId] = React.useState(insid)
+    const [dataStudent, setDataStudent] = React.useState(null)
     const [family, setFamily] = React.useState(null)
     const [listOfRepresentatives, setListOfRepresentatives] = React.useState([]);
     const [listOfStudents, setListOfStudents] = React.useState([]);
+    const [levelSecc, setLevelSecc] = React.useState(null)
+    const [insObservation, setInsObservation] = React.useState(null)
+    const mode = 'see'
 
   const classes = UseStyles();
 
@@ -48,10 +54,12 @@ const SeeInscription = () => {
     try {
       const resultInscrption = (await AxiosInstance.get(`/inscriptions/${insid}`)).data
 
-        console.log('****visualizar datos de la inscripcion****', resultInscrption)
-
       if (resultInscrption.ok === true) {
         setFamily(resultInscrption.data.family)
+        setDataStudent(resultInscrption.data.student)
+        setLevelSecc({ level: resultInscrption.data.periodLevelSectionI.level.levName,
+                      section: resultInscrption.data.periodLevelSectionI.section.secName})
+        setInsObservation(resultInscrption.data.insObservation)
       }
     } catch {
       console.log('error al consutlar')
@@ -80,9 +88,9 @@ const SeeInscription = () => {
   return (
     <Box>
     <h4 id="child-modal-title">Ver Inscripción</h4>
-    {(family !== null)?
+    {(family !== null && dataStudent !== null && levelSecc !== null && insObservation !== null )?
         <>
-        <Stack direction="row" spacing={4} justifyContent="flex-start" className={classes.selectFamily}>
+        <Stack direction="row" spacing={4} justifyContent="flex-start" className={classes.styleStudent}>
         <TextField
                    className={classes.textfield}
                    InputProps={{ readOnly: true }}
@@ -104,60 +112,18 @@ const SeeInscription = () => {
    
         </Stack>
         <ListRepresentative listOfRepresentatives={listOfRepresentatives} />
-        <SeeEstudent listOfStudents={listOfStudents}/>
+        <SeeEstudent levelSecc={levelSecc}  listOfStudents={listOfStudents} dataStudent={dataStudent}/>
+        <Observation mode={mode} insObservation={insObservation}/>
         </>
         
     : null
     }
      
-      
-        
- {/*     <Autocomplete
-        // key={clearField.profession}
-        noOptionsText={'Sin Opciones'}
-        options={listOfFamilies}
-        onChange={(event, newValue) => {
-          setListOfRepresentatives([])
-          setClearField(clearField + 1)
-          setEndDate({ ...endDate, stuId: '', famId: (newValue !== null) ? newValue.famId : '' })
-          setSelectedFamily(newValue)
-        }}
-        getOptionLabel={(option) => option.famName}
-        sx={{ width: '40%' }}
-        id="clear-on-escape"
-        clearOnEscape
-        renderInput={(params) => (
-          <TextField {...params} label="Seleccionar Familia" variant="standard" />
-        )} />
-    </Stack>
-
-    {(selectedFamily) ?
-      <>
-        <ListRepresentative endDate={endDate} setEndDate={setEndDate} listOfRepresentatives={listOfRepresentatives} />
-        <Estudent clearField={clearField} listOfSecctions={listOfSecctions} setListOfSecctions={setListOfSecctions} levelSelect={levelSelect} setLevelSelect={setLevelSelect} endDate={endDate} setEndDate={setEndDate} perLevelSec={perLevelSec} nonEnrolledStudents={nonEnrolledStudents} />
-        <Observation endDate={endDate} setEndDate={setEndDate} />
-      </>
-
-      : null}
-
-    {
-      (statusCcircularProgress) ?
-        <Stack className={classes.stack} spacing={2} alignItems="flex-end" direction="row" justifyContent="center">
-          <LoadingButtons message={'Guardando'} />
-        </Stack>
-
-        :
-        <Stack className={classes.stack} spacing={2} alignItems="flex-end" direction="row" justifyContent="center">
+     <Stack className={classes.stack} spacing={2} alignItems="flex-end" direction="row" justifyContent="center">
           <NavLink to='/inscriptions' >
-            <Button variant="outlined" onClick={confirmCancelInscrip} color="error">Cancelar</Button>
+            <Button variant="outlined" color="error">Cerrar</Button>
           </NavLink>
-          <Button variant="contained" disabled={disableButtonSave} onClick={saveInscription} color="success">Guardar</Button>
-        </Stack>
-    }
-  {(alertModal) ? 
-        <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
-      : null} 
- */}
+        </Stack> 
 
 
   </Box>

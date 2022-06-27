@@ -11,7 +11,7 @@ const UseStyles = makeStyles({
     }
   });
 
-const Observation = ({endDate, setEndDate}) => {
+const Observation = ({mode, insObservation,endDate, setEndDate}) => {
 
     
     const classes = UseStyles();
@@ -20,12 +20,17 @@ const Observation = ({endDate, setEndDate}) => {
   return (
     <Stack direction="row"  justifyContent="flex-start" className={classes.styleObservation}>
         <TextField
+            InputProps={{ readOnly: (mode !== 'see')? false : true }}
+            value = {(mode !== 'see')? endDate.insObservation : insObservation}
             sx={{ width: '100%' }} 
             id="observation"
             label="Observación"
             variant="outlined"
             onChange={e => {
+              if(mode !== 'see'){
                 setEndDate({...endDate, insObservation : (e.target.value) ? e.target.value : ''}) 
+              }
+                
             }   }
         /> 
 
