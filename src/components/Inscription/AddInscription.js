@@ -55,8 +55,6 @@ const AddInscription = () => {
   const [alertType, setAlertType] = React.useState('');
   const [alertModal, setAlertModal] = React.useState(false)
 
-  console.log('endDate', endDate)
-
   const classes = UseStyles();
 
   const saveInscription = async () => {
@@ -218,7 +216,7 @@ return (
 
     {(selectedFamily) ?
       <>
-        <ListRepresentative endDate={endDate} setEndDate={setEndDate} listOfRepresentatives={listOfRepresentatives} />
+        <ListRepresentative listOfRepresentatives={listOfRepresentatives} />
         <Estudent clearField={clearField} listOfSecctions={listOfSecctions} setListOfSecctions={setListOfSecctions} levelSelect={levelSelect} setLevelSelect={setLevelSelect} endDate={endDate} setEndDate={setEndDate} perLevelSec={perLevelSec} nonEnrolledStudents={nonEnrolledStudents} />
         <Observation endDate={endDate} setEndDate={setEndDate} />
       </>

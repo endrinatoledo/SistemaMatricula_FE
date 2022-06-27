@@ -33,6 +33,8 @@ import SeeFamily from '../Families/SeeFamily';
 import EditFamily from '../Families/EditFamily';
 import InscriptionList from '../Inscription/InscriptionList';
 import AddInscription from '../Inscription/AddInscription';
+import SeeInscription from '../Inscription/SeeInscription';
+import EditInscription from '../Inscription/EditInscription';
 
 const drawerWidth = 240;
 
@@ -173,6 +175,8 @@ const Dashboard= () => {
                       <Route path="/editarfamilia/:famid"element={<EditFamily />} ></Route>
                       <Route path="/inscriptions"element={<InscriptionList />} ></Route>
                       <Route path="/addinscription"element={<AddInscription />} ></Route>
+                      <Route path="/verinscripcion/:insid"element={<SeeInscription />} ></Route>
+                      <Route path="/editarinscripcion/:insid"element={<EditInscription />} ></Route>
                     </Routes> 
                   }
                   </Paper>
