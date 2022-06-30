@@ -48,7 +48,8 @@ const AddInscription = () => {
   const [Reload, SetReload] = React.useState(0);
   const [levelSelect, setLevelSelect] = React.useState(null)
   const [listOfSecctions, setListOfSecctions] = React.useState([])
-  const [clearField, setClearField] = React.useState(0)
+  const [clearFieldEstudent, setClearFieldEstudent] = React.useState(0)
+  const [clearFieldSection, setClearFieldSection] = React.useState(0)
   const [disableButtonSave, setDisableButtonSave] = React.useState(true)
   const [statusCcircularProgress, setStatusCcircularProgress] = React.useState(false)
   const [message  , setMessage] = React.useState('')
@@ -197,12 +198,11 @@ return (
     <h4 id="child-modal-title">Nueva Inscripción</h4>
     <Stack direction="row" spacing={2} justifyContent="space-between" className={classes.selectFamily}>
       <Autocomplete
-        // key={clearField.profession}
         noOptionsText={'Sin Opciones'}
         options={listOfFamilies}
         onChange={(event, newValue) => {
           setListOfRepresentatives([])
-          setClearField(clearField + 1)
+          setClearFieldEstudent(clearFieldEstudent + 1)
           setEndDate({ ...endDate, stuId: '', famId: (newValue !== null) ? newValue.famId : '' })
           setSelectedFamily(newValue)
         }}
@@ -218,7 +218,7 @@ return (
     {(selectedFamily) ?
       <>
         <ListRepresentative listOfRepresentatives={listOfRepresentatives} />
-        <Estudent clearField={clearField} listOfSecctions={listOfSecctions} setListOfSecctions={setListOfSecctions} levelSelect={levelSelect} setLevelSelect={setLevelSelect} endDate={endDate} setEndDate={setEndDate} perLevelSec={perLevelSec} nonEnrolledStudents={nonEnrolledStudents} />
+        <Estudent clearFieldSection={clearFieldSection} setClearFieldSection={setClearFieldSection} clearFieldEstudent={clearFieldEstudent} listOfSecctions={listOfSecctions} setListOfSecctions={setListOfSecctions} levelSelect={levelSelect} setLevelSelect={setLevelSelect} endDate={endDate} setEndDate={setEndDate} perLevelSec={perLevelSec} nonEnrolledStudents={nonEnrolledStudents} />
         <Observation mode={mode} endDate={endDate} setEndDate={setEndDate} />
       </>
 

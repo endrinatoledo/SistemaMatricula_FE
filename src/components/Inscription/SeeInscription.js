@@ -112,7 +112,7 @@ const SeeInscription = () => {
    
         </Stack>
         <ListRepresentative listOfRepresentatives={listOfRepresentatives} />
-        <SeeEstudent levelSecc={levelSecc}  listOfStudents={listOfStudents} dataStudent={dataStudent}/>
+        <SeeEstudent mode={mode} levelSecc={levelSecc}  listOfStudents={listOfStudents} dataStudent={dataStudent}/>
         <Observation mode={mode} insObservation={insObservation}/>
         </>
         

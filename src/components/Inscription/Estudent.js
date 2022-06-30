@@ -24,7 +24,7 @@ const UseStyles = makeStyles({
     }
   });
 
-const Estudent = ({clearField,listOfSecctions, setListOfSecctions,levelSelect, setLevelSelect,endDate, setEndDate,perLevelSec,nonEnrolledStudents}) => {  
+const Estudent = ({clearFieldSection, setClearFieldSection,clearFieldEstudent,listOfSecctions, setListOfSecctions,levelSelect, setLevelSelect,endDate, setEndDate,perLevelSec,nonEnrolledStudents}) => {  
 
   
   const classes = UseStyles();
@@ -57,7 +57,7 @@ const Estudent = ({clearField,listOfSecctions, setListOfSecctions,levelSelect, s
         <Stack direction="row" spacing={2}  justifyContent="flex-start" className={classes.styleStudent}>
             <Autocomplete
                 className={classes.textfield}
-                key={clearField}
+                key={clearFieldEstudent}
                 noOptionsText={'Sin Opciones'}
                 options={nonEnrolledStudents}
                 onChange={(event, newValue) => {
@@ -75,7 +75,9 @@ const Estudent = ({clearField,listOfSecctions, setListOfSecctions,levelSelect, s
                 noOptionsText={'Sin Opciones'}
                 options={perLevelSec}
                 onChange={(event, newValue) => {
-                  setLevelSelect((newValue !== null)? newValue.level.levId : '')          
+                  setLevelSelect((newValue !== null)? newValue.level.levId : '')      
+                  setEndDate({...endDate, plsId :''})   
+                  setClearFieldSection(clearFieldSection + 1) 
                   }}
                 getOptionLabel={(option) => option.level.levName}  
                 sx={{ width: '25%' }} 
@@ -87,7 +89,7 @@ const Estudent = ({clearField,listOfSecctions, setListOfSecctions,levelSelect, s
 
                 {(levelSelect !== '' && levelSelect !== null && levelSelect !== undefined )? 
                   <Autocomplete
-                  
+                  key={clearFieldSection}
                   noOptionsText={'Sin Opciones'}
                   options={listOfSecctions}
                   onChange={(event, newValue) => {
