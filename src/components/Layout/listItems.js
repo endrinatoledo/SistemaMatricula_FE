@@ -15,6 +15,7 @@ import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded
 import GridOnRoundedIcon from '@mui/icons-material/GridOnRounded';
 import PaymentRoundedIcon from '@mui/icons-material/PaymentRounded';
 import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
+import ListRoundedIcon from '@mui/icons-material/ListRounded';
 
 
 export const CollectionListItems = () => {
@@ -170,13 +171,13 @@ export const PeopleListItems = () => {
             </ListItemButton>
           </List>
         </NavLink>
-        <NavLink to='/escolaridad'>
+        <NavLink to='/conceptosdefactura'>
         <List component="div" disablePadding>
             <ListItemButton sx={{ pl: 2 }}>
               <ListItemIcon>
-                <SchoolRoundedIcon />
+                <ListRoundedIcon />
               </ListItemIcon>
-              <ListItemText primary="Escolaridad" />
+              <ListItemText primary="Con. Factu" />
             </ListItemButton>
           </List>
            </NavLink>

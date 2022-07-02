@@ -5,7 +5,7 @@ import FilterList from '@material-ui/icons/FilterList';
 const { standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 
-const PaymentMethodsList = () => {
+const InvoiceConceptsList = () => {
   
     const [Reload, SetReload] = React.useState(0);
     const [dataSource, setDataSource] = React.useState([])
@@ -15,22 +15,24 @@ const PaymentMethodsList = () => {
     const [filtering, setFiltering] = React.useState(false)
 
   const columns = [
-    { title: 'Nombre', field: 'payName',
-    headerStyle:{ paddingLeft:'30%'},
-    validate:rowData=>(rowData.payName === undefined || rowData.payName === '')?"Requerido":true },
-    { title: 'Estatus', field: 'payStatus', 
-    cellStyle:{paddingLeft:'5%'},
-    headerStyle:{paddingLeft:'5%'}, width: 200, 
-    lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.payStatus === undefined)?"Requerido":true }
+    { title: 'Nombre', field: 'icoName',
+    headerStyle:{ paddingLeft:'5%'},
+    validate:rowData=>(rowData.icoName === undefined || rowData.icoName === '')?"Requerido":true },
+    { title: 'Descripción', field: 'icoDescription',
+    headerStyle:{ paddingLeft:'5%'},
+    validate:rowData=>(rowData.icoDescription === undefined || rowData.icoDescription === '')?"Requerido":true },
+    { title: 'Estatus', field: 'icoStatus', cellStyle:{ textAlign:'center'},
+    headerStyle:{paddingLeft:'10%'}, 
+    lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.icoStatus === undefined)?"Requerido":true }
 
   ];
 
   const fillTable = async () => {
 
     try{
-      const resultPaymentM = (await AxiosInstance.get("/paymentmethod/")).data
-      if(resultPaymentM.ok === true){
-        setDataSource(resultPaymentM.data)
+      const resultInvoiceConcepts = (await AxiosInstance.get("/invoiceConcepts/")).data
+      if(resultInvoiceConcepts.ok === true){
+        setDataSource(resultInvoiceConcepts.data)
       }
     }catch{
       setMessage('Error de Conexion')
@@ -41,16 +43,12 @@ const PaymentMethodsList = () => {
 
 
 React.useEffect(() => {  
-    fillTable()
-        // const statusTag={}
-        // StatusTag.map(row=>statusTag[row.id]=row.title)
-        // setStatus(statusTag)
-    
+    fillTable()    
     }, [Reload]);
 
   return (
     <>
-    <MaterialTable title={'Métodos de Pago'}
+    <MaterialTable title={'Conceptos de Factura'}
     data={dataSource} 
     columns={columns}
     actions={[
@@ -79,7 +77,7 @@ React.useEffect(() => {
      editable={{
          onRowAdd: (newRow) => new Promise((resolve, reject)=>{
 
-          AxiosInstance.post(`/paymentmethod/`,newRow)
+          AxiosInstance.post(`/invoiceConcepts/`,newRow)
           .then(resp=>{
             setTimeout(() => {
               if(resp.data.ok === true){
@@ -110,7 +108,7 @@ React.useEffect(() => {
           }),
         //  onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
 
-        //   AxiosInstance.delete(`/paymentmethod/${selectRow.payId}`)
+        //   AxiosInstance.delete(`/invoiceConcepts/${selectRow.icoId}`)
         //   .then(resp=>{
         //     setTimeout(() => {
         //       if(resp.data.ok === true){
@@ -137,7 +135,7 @@ React.useEffect(() => {
         // }),
 
          onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
-            AxiosInstance.put(`/paymentmethod/${newRow.payId}`,newRow)
+            AxiosInstance.put(`/invoiceConcepts/${newRow.icoId}`,newRow)
             .then(resp=>{
               setTimeout(() => {
                 if(resp.data.ok === true){
@@ -167,12 +165,10 @@ React.useEffect(() => {
     {(alertModal) ? 
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null}
-
       
     </>
     
-
   )
 }
 
-export default PaymentMethodsList
+export default InvoiceConceptsList
