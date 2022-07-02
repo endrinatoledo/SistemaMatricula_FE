@@ -6,9 +6,11 @@ import Button from '@mui/material/Button';
 import { NavLink } from 'react-router-dom'
 import { makeStyles } from '@mui/styles';
 import { useParams } from 'react-router-dom';
+import LoadingButtons from '../commonComponents/LoadingButton';
 import ListRepresentative from './ListRepresentative';
 import SeeEstudent from './SeeEstudent';
 import Observation from './Observation';
+import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 
 const AxiosInstance = require("../utils/request").default;
 
@@ -53,6 +55,10 @@ const EditInscription = () => {
     const [sectionSelect, setSectionSelect] = React.useState(null)
     const [listOfSecctions, setListOfSecctions] = React.useState([])
     const [clearFieldSection, setClearFieldSection] = React.useState(0)
+    const [statusCcircularProgress  , setStatusCcircularProgress] = React.useState(false)
+    const [message  , setMessage] = React.useState('')
+    const [alertType, setAlertType] = React.useState('');
+    const [alertModal, setAlertModal] = React.useState(false)
     const mode = 'edit'
 
   const classes = UseStyles();
@@ -125,6 +131,43 @@ const EditInscription = () => {
         })
     }
 }
+const updateInscription = async () => {
+
+    setStatusCcircularProgress(true)
+    try{
+       
+      const data = (await AxiosInstance.put(`/inscriptions/${endDate.insId}`,endDate)).data
+      
+      console.log('data',data)
+
+      setTimeout(() => {
+        setStatusCcircularProgress(false)
+        
+        if(data.message === 'Inscripción ya se encuentra registrada'){
+          setMessage(data.message)
+          setAlertType('error')
+          setAlertModal(true)            
+        }else 
+        if(data.message === 'Inscripción actualizada con éxito'){
+            setMessage(data.message)
+            setAlertType('success')
+            setAlertModal(true)    
+            window.location = '/inscriptions';   
+        }else{
+            setStatusCcircularProgress(false)
+            setAlertModal(true)  
+            setMessage('Error al Actualizar Inscripción')
+            setAlertType('error')
+        }
+
+      }, 2000);
+    }catch{
+          setStatusCcircularProgress(false)
+          setMessage('Error al actualizar inscripción')
+          setAlertType('error')
+          setAlertModal(true)   
+    }
+};
 
   React.useEffect(() => {  
 
@@ -174,7 +217,7 @@ React.useEffect(() => {
         </Stack>
         <ListRepresentative listOfRepresentatives={listOfRepresentatives} />
         <SeeEstudent levelSelect2={levelSelect2} setLevelSelect2={setLevelSelect2} sectionSelect={sectionSelect} setSectionSelect={setSectionSelect} clearFieldSection={clearFieldSection} setClearFieldSection={setClearFieldSection} endDate={endDate} setEndDate={setEndDate} listOfSecctions={listOfSecctions} setListOfSecctions={setListOfSecctions} levelSelect={levelSelect} setLevelSelect={setLevelSelect} perLevelSec={perLevelSec} mode={mode} levelSecc={levelSecc}  listOfStudents={listOfStudents} dataStudent={dataStudent}/>
-        {/* <Observation mode={mode} insObservation={insObservation}/> */}
+        <Observation mode={mode} endDate={endDate} setEndDate={setEndDate} />
         </>
         
     : null
@@ -184,8 +227,20 @@ React.useEffect(() => {
           <NavLink to='/inscriptions' >
             <Button variant="outlined" color="error">Cerrar</Button>
           </NavLink>
+
+          {(endDate !== null) ?  
+            (statusCcircularProgress)?
+                  <LoadingButtons message={'Actualizando'} />
+              : 
+                  <Button variant="contained"onClick={updateInscription} disabled={(endDate.plsId !== '') ? false : true} color="success">Actualizar</Button>
+            : null
+          }
         </Stack> 
 
+        {(alertModal) ? 
+        <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
+      : null} 
+     
   </Box>
   )
 }

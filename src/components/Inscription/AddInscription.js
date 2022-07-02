@@ -64,7 +64,7 @@ const AddInscription = () => {
 
     try {
       const result = (await AxiosInstance.post("/inscriptions",endDate)).data
-      console.log('************',result)
+
       setTimeout(() => {
         setStatusCcircularProgress(false)
       if(result.message === 'Inscripción creada con éxito'){
@@ -205,7 +205,7 @@ return (
           setClearFieldEstudent(clearFieldEstudent + 1)
           setEndDate({ ...endDate, stuId: '', famId: (newValue !== null) ? newValue.famId : '' })
           setSelectedFamily(newValue)
-        }}
+        }}   
         getOptionLabel={(option) => option.famName}
         sx={{ width: '40%' }}
         id="clear-on-escape"
