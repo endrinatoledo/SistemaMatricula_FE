@@ -2,6 +2,8 @@ import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import FilterList from '@material-ui/icons/FilterList';
+import {NavLink} from 'react-router-dom'
+import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 const { standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 
@@ -46,15 +48,22 @@ React.useEffect(() => {
 
   return (
     <>
-    <MaterialTable title={'Períodos'}
+    <MaterialTable title={'Periodos E.'}
      data={dataSource} 
      columns={columns}
      actions={[
       { icon: () => <FilterList />,
         tooltip: "Activar Filtros",
         onClick : ()=> setFiltering(!filtering),
-        isFreeAction: true }
-    ]}
+        isFreeAction: true },
+        {
+          icon: () => <NavLink to='/agregarperiodo' ><AddBoxRoundedIcon /></NavLink>,
+          tooltip: 'Nuevo Periodo',
+          isFreeAction: true,
+          onClick: (event, rowData) => {
+            }
+        }
+    ]}    
      options={{
         width:300,
         actionsCellStyle:{paddingLeft:50,paddingRight:50},

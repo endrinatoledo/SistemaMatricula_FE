@@ -36,6 +36,7 @@ import AddInscription from '../Inscription/AddInscription';
 import SeeInscription from '../Inscription/SeeInscription';
 import EditInscription from '../Inscription/EditInscription';
 import InvoiceConceptsList from '../InvoiceConcepts/InvoiceConceptsList'
+import AddPeriod from '../Periods/AddPeriod';
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -169,6 +170,7 @@ const Dashboard= () => {
                       <Route path="/roles"element={<RolesList />} ></Route>
                       <Route path="/secciones"element={<SectionsList />} ></Route>
                       <Route path="/periodos"element={<PeriodsList />} ></Route>
+                      <Route path="/agregarperiodo"element={<AddPeriod />} ></Route>
                       <Route path="/tasas"element={<ExchangeRatesList />} ></Route>
                       <Route path="/configurarfamilia"element={<AddFamily />} ></Route>
                       <Route path="/detallefamilia/:famid"element={<SeeFamily />} ></Route>
