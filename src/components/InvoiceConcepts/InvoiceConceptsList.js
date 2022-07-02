@@ -41,7 +41,6 @@ const InvoiceConceptsList = () => {
   }
 }
 
-
 React.useEffect(() => {  
     fillTable()    
     }, [Reload]);

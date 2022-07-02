@@ -71,21 +71,12 @@ const InscriptionList = () => {
           icon: () => <EditRoundedIcon />,
           tooltip: 'Editar Inscripción',
           onClick: (event, rowData) => {
-            // setTitleModalHeader('Editar Representante')
-            // setSelectedRepresentative(rowData)
-            // setEditRepresentative(true)
-            // setOpenModal(true)
             window.location = `editarinscripcion/${rowData.id}`;
           }
         },{
           icon: () => <VisibilityRoundedIcon />,
           tooltip: 'Ver Detalles',
           onClick: (event, rowData) => {
-
-            // setTitleModalHeader('Detalles del Inscripcion ' + rowData.repFirstName + ' ' + rowData.repSurname)
-            // setSelectedRepresentative(rowData)
-            // setSeeRepresentativeDetails(true)
-            // setOpenModal(true)
             window.location = `verinscripcion/${rowData.id}`;
           }
         },
@@ -94,9 +85,6 @@ const InscriptionList = () => {
             tooltip: 'Nueva Inscripción',
             isFreeAction: true,
             onClick: (event, rowData) => {
-                // setTitleModalHeader('Nuevo Representante')
-                // setSelectedRepresentative(rowData)
-                // setOpenModal(true)
               }
         },
         
