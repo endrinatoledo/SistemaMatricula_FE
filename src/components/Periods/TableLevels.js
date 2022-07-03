@@ -44,11 +44,10 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
 
       const asignarValorCheck = (rows,section) =>{
 
-
         // console.log('rows ',rows)
         // console.log('section',section)
 
-        const result = levelsMap.map(element =>{
+        const result = levelsMap.filter(element =>{
           if(element.levName === rows.levName && section === 'a'){
               return element.a
           }else 
