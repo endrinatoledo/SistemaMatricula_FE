@@ -137,8 +137,6 @@ const updateInscription = async () => {
     try{
        
       const data = (await AxiosInstance.put(`/inscriptions/${endDate.insId}`,endDate)).data
-      
-      console.log('data',data)
 
       setTimeout(() => {
         setStatusCcircularProgress(false)

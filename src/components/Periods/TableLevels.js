@@ -44,22 +44,28 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
 
       const asignarValorCheck = (rows,section) =>{
 
+
+        // console.log('rows ',rows)
+        // console.log('section',section)
+
         const result = levelsMap.map(element =>{
-          if(rows.levId === element.levId){
-            // console.log('entro aqui y ',element)
-              if(section === 'A'){
-                // console.log('entro aca y ',element)
-                // console.log('rows ',rows)
-                // console.log('section',section)
-                return element.A
-                // return true
-                //  setLevelsMap({...levelsMap, A: !element.A})
-              }else{
-                return false
-              }
-              
+          if(element.levName === rows.levName && section === 'a'){
+              return element.a
+          }else 
+          if(element.levName === rows.levName && section === 'b'){
+            return element.b
+          }else 
+          if(element.levName === rows.levName && section === 'c'){
+            return element.c
+          }else 
+          if(element.levName === rows.levName && section === 'd'){
+            return element.d
           }
-        })
+        
+        }
+         
+        )
+        return result[0]
 
       }
       console.log('levelsMap',levelsMap)
@@ -74,36 +80,20 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
         console.log('event',event.target.checked)
         console.log('onclic ',event.target.name)
         const updatedOSArray = levelsMap.map(element =>
-          (element.levName === arrayDeCadenas[0] && (arrayDeCadenas[1] === 'a')
-            ?  { ...element, a: !element.a }     
-            :
-            element
+          (element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'a')
+            ?  { ...element, a: event.target.checked }     
+            : (element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'b')
+              ?  { ...element, b: event.target.checked }     
+              :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'c')
+                ?  { ...element, c: event.target.checked }     
+                :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'd')
+                  ?  { ...element, d: event.target.checked }     
+                  :
+                  element          
+        )
 
-            // (arrayDeCadenas[1] === 'A')? { ...element, A: true } : 
-            // (arrayDeCadenas[1] === 'B')? { ...element, B: true } : null
-          
-        ))
-          // if(element.levName === arrayDeCadenas[0]){
-          //   if(arrayDeCadenas[1] === 'A'){
-          //     return { ...element, A: !element.A }
-          //   }else if(arrayDeCadenas[1] === 'B'){
-          //     return { ...element, B: !element.B }
-          //   }else if(arrayDeCadenas[1] === 'C'){
-          //     return { ...element, C: !element.C }
-          //   }else if(arrayDeCadenas[1] === 'D'){
-          //     return { ...element, D: !element.D }
-          //   }
-          // }else{
-          //   return element
-          // }
-
-          
-
-        // console.log('event',event.target.checked)
-        // console.log('onclic ',event.target.name)
-        console.log('updatedOSArray',updatedOSArray)
-        // console.log('event',event)
-        // setChecked(event.target.checked);
+        setLevelsMap(updatedOSArray)
+        // console.log('level',levelsMap)
 
       };
 
