@@ -118,12 +118,12 @@ const AddPeriod = () => {
 
         allSections.map((section) =>{
 
-          Object.defineProperty(objetct, section.secName, {
+          Object.defineProperty(objetct, (section.secName).toLowerCase(), {
             // get: function() { return section.secName; },
-            value: 'hola',
+            value: false,
             writable: true,
             enumerable:true, //permite que se agregue a las columnas
-            configurable: false,
+            configurable: true,
           });
         })
 
