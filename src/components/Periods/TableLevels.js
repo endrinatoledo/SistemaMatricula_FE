@@ -44,9 +44,6 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
 
       const asignarValorCheck = (rows,section) =>{
 
-        // console.log('rows ',rows)
-        // console.log('section',section)
-
         const result = levelsMap.filter(element =>{
           if(element.levName === rows.levName && section === 'a'){
               return element.a
@@ -59,6 +56,33 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
           }else 
           if(element.levName === rows.levName && section === 'd'){
             return element.d
+          }else 
+          if(element.levName === rows.levName && section === 'e'){
+            return element.e
+          }else 
+          if(element.levName === rows.levName && section === 'f'){
+            return element.f
+          }else 
+          if(element.levName === rows.levName && section === 'g'){
+            return element.g
+          }else 
+          if(element.levName === rows.levName && section === 'h'){
+            return element.h
+          }else 
+          if(element.levName === rows.levName && section === 'i'){
+            return element.i
+          }else 
+          if(element.levName === rows.levName && section === 'j'){
+            return element.j
+          }else 
+          if(element.levName === rows.levName && section === 'k'){
+            return element.k
+          }else 
+          if(element.levName === rows.levName && section === 'l'){
+            return element.l
+          }else 
+          if(element.levName === rows.levName && section === 'm'){
+            return element.m
           }
         
         }
@@ -87,6 +111,24 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
                 ?  { ...element, c: event.target.checked }     
                 :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'd')
                   ?  { ...element, d: event.target.checked }     
+                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'e')
+                  ?  { ...element, e: event.target.checked }     
+                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'f')
+                  ?  { ...element, f: event.target.checked }     
+                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'g')
+                  ?  { ...element, g: event.target.checked }     
+                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'h')
+                  ?  { ...element, h: event.target.checked }     
+                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'i')
+                  ?  { ...element, i: event.target.checked }     
+                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'j')
+                  ?  { ...element, j: event.target.checked }     
+                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'k')
+                  ?  { ...element, k: event.target.checked }     
+                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'l')
+                  ?  { ...element, l: event.target.checked }     
+                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'm')
+                  ?  { ...element, m: event.target.checked }     
                   :
                   element          
         )
