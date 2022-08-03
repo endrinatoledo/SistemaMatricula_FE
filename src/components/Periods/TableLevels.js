@@ -1,8 +1,8 @@
 import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
-import GridOnRoundedIcon from '@mui/icons-material/GridOnRounded';
+import Button from '@mui/material/Button';
+import LoadingButtons from '../commonComponents/LoadingButton';
 import Checkbox from '@mui/material/Checkbox';
-import ModalSections from './ModalSections';
 import { makeStyles } from '@mui/styles';
 
 const UseStyles = makeStyles({
@@ -29,18 +29,14 @@ const UseStyles = makeStyles({
 
 const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allLevels, setAllLevels,allSections, setAllSections}) => {
 
-    const [openModalSections, setOpenModalSection] = React.useState(false);
     const [nameColumnStructure, setNameColumnStructure] = React.useState([])
     const [columns, setColumns] = React.useState([])
     const [checked, setChecked] = React.useState(true)
     const [checkedNameColumns, setCheckedNameColumns] = React.useState(
       {A: false, B: false}
       )
-    // const columns = columnStructure();
+
       const classes = UseStyles();
-
-      
-
 
       const asignarValorCheck = (rows,section) =>{
 
@@ -84,12 +80,9 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
           if(element.levName === rows.levName && section === 'm'){
             return element.m
           }
-        
-        }
-         
+        }         
         )
         return result[0]
-
       }
       console.log('levelsMap',levelsMap)
 
@@ -132,26 +125,18 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
                   :
                   element          
         )
-
         setLevelsMap(updatedOSArray)
-        // console.log('level',levelsMap)
 
       };
 
       const componentRadio = (rows,section) =>{
 
-        // console.log('esto llego', rows)
-        // console.log('esto section', section)
         return(
           <Checkbox
             // value={}
             name={`${rows.levName}-${section}`}
             checked={asignarValorCheck(rows,section)} //aqui va de forma indifivual su valor
             onChange={handleChange}
-            onClick= {(event, rowData) => {      
-                      // console.log('onclic ',event)
-                      // console.log('onclic ',event.target.name)
-            }}
             inputProps={{ 'aria-label': 'controlled' }}
           />
         )
@@ -216,45 +201,28 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
     <>
     {(columns.length > 0) ? 
     <>
-            <MaterialTable title={'Seleccionar Niveles'}
-        
-        data={allLevels} 
-        columns={columns}
-        // actions={[
-        //     {
-        //       icon: () => <GridOnRoundedIcon />,
-        //       tooltip: 'Seleccionar Secciones',
-        //       position: 'row',
-        //       onClick: (event, rowData) => {
-        //         setOpenModalSection(!openModalSections)
-
-        //         console.log('rowData',rowData)
-        //         }
-        //     }
-        // ]}    
-        options={{
+        <MaterialTable title={'Seleccionar Niveles'}
+          data={allLevels} 
+          columns={columns}  
+          options={{
             width:300,
             actionsCellStyle:{paddingLeft:50,paddingRight:50},
-            headerStyle: {
-              backgroundColor: "#007bff",
-              color: "#FFF",
-              fontWeight:'normal',
-              fontSize:18,
-            },
-            // selection: true,            
-            search:false,
-            actionsColumnIndex:-1,
-            addRowPosition:'first'
-        }}
-        onSelectionChange={rows => {
-            setPeriodObject({...periodObject, selectedPeriods:rows})
-        }}
-        />
-        {
-          (openModalSections) ? 
-            <ModalSections levelsMap={levelsMap} setLevelsMap={setLevelsMap} allSections={allSections} openModalSections={openModalSections} setOpenModalSection={setOpenModalSection} />
-          : null
-        }
+              headerStyle: {
+                backgroundColor: "#007bff",
+                color: "#FFF",
+                fontWeight:'normal',
+                fontSize:18,
+              },
+              // selection: true,            
+              search:false,
+              actionsColumnIndex:-1,
+              addRowPosition:'first',
+              paging:false
+          }}
+          onSelectionChange={rows => {
+              setPeriodObject({...periodObject, selectedPeriods:rows})
+          }}
+        />        
     </>: null }
 
     </>

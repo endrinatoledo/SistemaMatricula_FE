@@ -179,7 +179,6 @@ React.useEffect(() => {
         width:300,
         actionsCellStyle:{paddingLeft:50,paddingRight:50},
         headerStyle: {
-          
           backgroundColor: "#007bff",
           color: "#FFF",
           fontWeight:'normal',

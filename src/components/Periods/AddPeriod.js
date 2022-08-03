@@ -16,7 +16,8 @@ const AxiosInstance = require("../utils/request").default;
 const UseStyles = makeStyles({
     period: {
         marginTop: '2%',
-        marginLeft: '4%'
+        marginLeft: '4%',
+        marginBottom : '2%'
     },
     representatives: {
       marginLeft: '4%',
@@ -39,22 +40,58 @@ const AddPeriod = () => {
 
     const [Reload, SetReload] = React.useState(0);
     const [buttonI, setButtonI] = React.useState(true)
-    const [periodObject, setPeriodObject] = React.useState(
-      {startYear : 0, inputStartYear : false, 
-        selectedPeriods:[], selectedSecctions:[]}
-      )
+    
     const [message  , setMessage] = React.useState('')
     const [alertType, setAlertType] = React.useState('');
     const [alertModal, setAlertModal] = React.useState(false)
+    const [showTable, setShowTable] = React.useState(false)
     const [allLevels, setAllLevels] = React.useState([]) //carga el listado de niveles
     const [allSections, setAllSections] = React.useState([])//carga el listado de secciones
     const [levelsMap, setLevelsMap] = React.useState([]) //descartado: DE NIVELES MAPEADOS
+    const [statusCcircularProgress, setStatusCcircularProgress] = React.useState(false)
+    const [periodObject, setPeriodObject] = React.useState(
+      {startYear : 0, inputStartYear : false, 
+        selectedPeriods:[], selectedSecctions:[], data:levelsMap}
+      )
     const mode = 'add'
     const classes = UseStyles();
 
+    console.log('levelsMapppppppp',levelsMap) 
 
+  
+    const saveNewPeriod = async () => {
+      setStatusCcircularProgress(true)
+  
+      console.log('esto llegoooooooooooooo',periodObject)
 
-    console.log('levelsMap',levelsMap) 
+      try {
+        const result = (await AxiosInstance.post("/periods",periodObject))
+  
+        console.log('result',result)
+        setTimeout(() => {
+          setStatusCcircularProgress(false)
+        if(result.data.message === 'Periodo creado con éxito'){
+          setMessage(result.data.message)
+          setAlertType('success')
+          setAlertModal(true) 
+          window.location = '/inscriptions';
+  
+        }else if(result.message === 'Error al crear Periodo'){
+            setMessage(result.message)
+            setAlertType('error')
+            setAlertModal(true) 
+        }else{
+          setMessage(result.message)
+          setAlertType('error')
+          setAlertModal(true)
+        }
+      }, 1000);
+      } catch (error) {
+  
+    }
+  
+  }
+
     const searchPeriod = async () => {
         try{
           const data = (await AxiosInstance.get(`/periods/startYear/${periodObject.startYear}`)).data
@@ -66,8 +103,10 @@ const AddPeriod = () => {
             setAlertType('error')
             setAlertModal(true)
             setPeriodObject({...periodObject, inputStartYear : false})
+            setShowTable(false)
           } else
           if(data.message === 'Periodo no registrado'){
+            setShowTable(true)
             console.log('llego',data.message)
             setPeriodObject({...periodObject, inputStartYear : true})
           }
@@ -110,7 +149,6 @@ const AddPeriod = () => {
 
       let result = []
       allLevels.map(level =>{
-        // console.log('aqui el nivel', level)
         let objetct = {
           levId: level.levId,
           levName : level.levName
@@ -175,7 +213,7 @@ const AddPeriod = () => {
         </Stack>
 
         {
-            (buttonI && allLevels.length > 0 && allSections.length > 0)?
+            (showTable && allLevels.length > 0 && allSections.length > 0)?
                 <>
                     <TableLevels levelsMap={levelsMap} setLevelsMap={setLevelsMap} periodObject={periodObject} setPeriodObject={setPeriodObject} allLevels={allLevels} setAllLevels={setAllLevels} 
                     allSections={allSections} setAllSections={setAllSections}/>
@@ -184,7 +222,25 @@ const AddPeriod = () => {
         }
         {(alertModal) ? 
             <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
-        : null}   
+        : null} 
+        {
+          (statusCcircularProgress) ?
+           <Stack spacing={2} className={classes.stack} alignItems="flex-end" direction="row" justifyContent="center">
+              <LoadingButtons message={'Guardando'} />
+           </Stack>
+           : 
+           <Stack spacing={2} className={classes.stack} alignItems="flex-end" direction="row" justifyContent="center">
+              <NavLink to='/periodos' >
+                <Button variant="outlined" 
+                color="error">Cancelar</Button>
+              </NavLink>
+              <Button variant="contained" 
+              // disabled={disableButtonSave} 
+              onClick={saveNewPeriod} 
+              color="success">Guardar</Button>
+            
+           </Stack>
+        }  
 
     </Box>
   )
