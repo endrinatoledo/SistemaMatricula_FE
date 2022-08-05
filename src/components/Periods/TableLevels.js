@@ -84,7 +84,6 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
         )
         return result[0]
       }
-      console.log('levelsMap',levelsMap)
 
       const handleChange = (event) => {
 
@@ -167,10 +166,10 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
         // } )
         // var newArray = result.filter((item) => item !== null);
         
-        const newArray =  [
-          { title: 'Nombre del Nivel', field: 'levName'},
-          { title: 'A', field: 'a', render:(rows)=>componentRadio(rows,'a')},
-          { title: 'B', field: 'b', render:(rows)=>componentRadio(rows,'b')},
+        const newArray =  [ 
+          { title: 'Nombre del Nivel', field: 'levName',width:'auto',headerStyle:{width:300, marginLeft:'10px',marginRight:'10px'},},
+          { title: 'A', field: 'a',width:'auto', render:(rows)=>componentRadio(rows,'a')},
+          { title: 'B', field: 'b',width:'auto', render:(rows)=>componentRadio(rows,'b')},
           { title: 'C', field: 'c', render:(rows)=>componentRadio(rows,'c')},
           { title: 'D', field: 'd', render:(rows)=>componentRadio(rows,'d')},
           { title: 'E', field: 'e', render:(rows)=>componentRadio(rows,'e')},

@@ -50,24 +50,17 @@ const AddPeriod = () => {
     const [levelsMap, setLevelsMap] = React.useState([]) //descartado: DE NIVELES MAPEADOS
     const [statusCcircularProgress, setStatusCcircularProgress] = React.useState(false)
     const [periodObject, setPeriodObject] = React.useState(
-      {startYear : 0, inputStartYear : false, 
-        selectedPeriods:[], selectedSecctions:[], data:levelsMap}
+      {startYear : 0, inputStartYear : false}
       )
     const mode = 'add'
     const classes = UseStyles();
-
-    console.log('levelsMapppppppp',levelsMap) 
-
   
     const saveNewPeriod = async () => {
-      setStatusCcircularProgress(true)
-  
-      console.log('esto llegoooooooooooooo',periodObject)
+      // setStatusCcircularProgress(true)
 
       try {
-        const result = (await AxiosInstance.post("/periods",periodObject))
+        const result = (await AxiosInstance.post("/periodLevelSection",periodObject))
   
-        console.log('result',result)
         setTimeout(() => {
           setStatusCcircularProgress(false)
         if(result.data.message === 'Periodo creado con éxito'){
@@ -83,8 +76,8 @@ const AddPeriod = () => {
         }else{
           setMessage(result.message)
           setAlertType('error')
-          setAlertModal(true)
-        }
+          setAlertModal(true) 
+        } 
       }, 1000);
       } catch (error) {
   
@@ -98,7 +91,7 @@ const AddPeriod = () => {
 
           
           if(data.message === 'Periodo registrado'){
-            console.log('llegoooooo',data.message)
+
             setMessage(data.message)
             setAlertType('error')
             setAlertModal(true)
@@ -107,7 +100,7 @@ const AddPeriod = () => {
           } else
           if(data.message === 'Periodo no registrado'){
             setShowTable(true)
-            console.log('llego',data.message)
+
             setPeriodObject({...periodObject, inputStartYear : true})
           }
           
@@ -164,12 +157,8 @@ const AddPeriod = () => {
             configurable: true,
           });
         })
-
         result.push(objetct)
-        
       })
-
-      // console.log('result.........',result)
       setLevelsMap(result)
   }
 
@@ -181,6 +170,10 @@ const AddPeriod = () => {
     React.useEffect(() => {  
       MapSelectionOfLevelsAndSections()
     }, [allLevels]);
+
+    React.useEffect(()=>{
+      setPeriodObject({...periodObject, data: levelsMap})
+    },[levelsMap])
 
   return (
     <Box>
@@ -199,7 +192,7 @@ const AddPeriod = () => {
                 // helperText={errorMessage}
                 // error={orfRepIdentificationNumber}
                 onChange={e => {
-                    console.log('e.target.value',e.target.value)
+
                     setPeriodObject({...periodObject,startYear : e.target.value ? e.target.value : 0})
                     if(e.target.value.length < 4 ){setButtonI(true)}else{setButtonI(false)}
                 }
