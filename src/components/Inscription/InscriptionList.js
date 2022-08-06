@@ -6,6 +6,7 @@ import FilterList from '@material-ui/icons/FilterList';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
+import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 const AxiosInstance = require("../utils/request").default;
 const InscriptionList = () => {
 
@@ -78,6 +79,12 @@ const InscriptionList = () => {
           tooltip: 'Ver Detalles',
           onClick: (event, rowData) => {
             window.location = `verinscripcion/${rowData.id}`;
+          }
+        },{
+          icon: () => <AssignmentRoundedIcon />,
+          tooltip: 'Plan de pago',
+          onClick: (event, rowData) => {
+            window.location = `plandepago/${rowData.id}`;
           }
         },
         {

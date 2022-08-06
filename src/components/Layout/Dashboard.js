@@ -37,6 +37,8 @@ import SeeInscription from '../Inscription/SeeInscription';
 import EditInscription from '../Inscription/EditInscription';
 import InvoiceConceptsList from '../InvoiceConcepts/InvoiceConceptsList'
 import AddPeriod from '../Periods/AddPeriod';
+import PaymentScheme from '../Inscription/PaymentScheme';
+
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -179,6 +181,8 @@ const Dashboard= () => {
                       <Route path="/addinscription"element={<AddInscription />} ></Route>
                       <Route path="/verinscripcion/:insid"element={<SeeInscription />} ></Route>
                       <Route path="/editarinscripcion/:insid"element={<EditInscription />} ></Route>
+                      <Route path="/plandepago/:insid"element={<PaymentScheme />} ></Route>
+                      
                     </Routes> 
                   }
                   </Paper>

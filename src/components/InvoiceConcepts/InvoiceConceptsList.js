@@ -37,7 +37,7 @@ const InvoiceConceptsList = () => {
     }catch{
       setMessage('Error de Conexion')
       setAlertModal(true)
-      
+    
   }
 }
 
@@ -105,33 +105,33 @@ React.useEffect(() => {
             }, 2000);
           });
           }),
-        //  onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
+         onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
 
-        //   AxiosInstance.delete(`/invoiceConcepts/${selectRow.icoId}`)
-        //   .then(resp=>{
-        //     setTimeout(() => {
-        //       if(resp.data.ok === true){
-        //         setAlertType("success")
-        //       }else{
-        //         setAlertType("error")
-        //       }
-        //       setMessage(resp.data.message)
-        //       setAlertModal(true)
-        //       fillTable()
-        //       resolve()
-        //     }, 2000);
+          AxiosInstance.delete(`/invoiceConcepts/${selectRow.icoId}`)
+          .then(resp=>{
+            setTimeout(() => {
+              if(resp.data.ok === true){
+                setAlertType("success")
+              }else{
+                setAlertType("error")
+              }
+              setMessage(resp.data.message)
+              setAlertModal(true)
+              fillTable()
+              resolve()
+            }, 2000);
             
-        //   }).catch((err) => {
-        //     setTimeout(() => {
-        //       setMessage(standardMessages.connectionError)
-        //       setAlertType("error")
-        //       setAlertModal(true)
-        //       fillTable()
-        //       reject()
-        //     }, 2000);
-        //   });
+          }).catch((err) => {
+            setTimeout(() => {
+              setMessage(standardMessages.connectionError)
+              setAlertType("error")
+              setAlertModal(true)
+              fillTable()
+              reject()
+            }, 2000);
+          });
 
-        // }),
+        }),
 
          onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
             AxiosInstance.put(`/invoiceConcepts/${newRow.icoId}`,newRow)
