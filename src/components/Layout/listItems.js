@@ -17,6 +17,7 @@ import PaymentRoundedIcon from '@mui/icons-material/PaymentRounded';
 import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
 import ListRoundedIcon from '@mui/icons-material/ListRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 
 export const CollectionListItems = () => {
@@ -28,6 +29,16 @@ export const CollectionListItems = () => {
           Cobranza
         </ListSubheader>
       </List>
+      <NavLink to='/pagos'>
+        <List component="div" disablePadding>
+          <ListItemButton sx={{ pl: 2 }} >
+              <ListItemIcon>
+                <MonetizationOnIcon />
+              </ListItemIcon>
+              <ListItemText primary="Pagos" />
+            </ListItemButton>
+          </List>
+        </NavLink>
       <NavLink to='/conceptosdefactura'>
         <List component="div" disablePadding>
           <ListItemButton sx={{ pl: 2 }} >

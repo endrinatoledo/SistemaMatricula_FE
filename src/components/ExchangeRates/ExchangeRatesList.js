@@ -17,7 +17,7 @@ const ExchangeRatesList = () => {
 
   const columns = [
     { title: 'Fecha', field: 'excDate',type:'date', headerStyle:{paddingLeft:'15%'},cellStyle:{paddingLeft:'14%'}, validate:rowData=>(rowData.excDate === undefined || rowData.excDate === '')?"Requerido":true},
-    { title: 'Monto en Bolívares',type:'float', field: 'excAmount', width: 400,cellStyle:{paddingRight:0},validate:rowData=>(rowData.excAmount === undefined || rowData.excAmount === '')?"Requerido":true },
+    { title: 'Monto en Bolívares',type:'currency', field: 'excAmount', width: 400,cellStyle:{paddingRight:0},validate:rowData=>(rowData.excAmount === undefined || rowData.excAmount === '')?"Requerido":true },
     { title: 'Turno', field: 'excShift',cellStyle:{paddingLeft:'5%'},headerStyle:{paddingLeft:'5%',}, width: 200,  lookup: {'Mañana': 'Mañana', 'Tarde':'Tarde'}, validate:rowData=>(rowData.excShift === undefined)?"Requerido":true }
 
   ];

@@ -38,6 +38,9 @@ import EditInscription from '../Inscription/EditInscription';
 import InvoiceConceptsList from '../InvoiceConcepts/InvoiceConceptsList'
 import AddPeriod from '../Periods/AddPeriod';
 import PaymentScheme from '../Inscription/PaymentScheme';
+import PaymentsList from '../Payments/PaymentsList';
+import AddPayment from '../Payments/AddPayment';
+import SeePayment from '../Payments/SeePayment';
 
 const drawerWidth = 240;
 
@@ -182,6 +185,9 @@ const Dashboard= () => {
                       <Route path="/verinscripcion/:insid"element={<SeeInscription />} ></Route>
                       <Route path="/editarinscripcion/:insid"element={<EditInscription />} ></Route>
                       <Route path="/plandepago/:insid"element={<PaymentScheme />} ></Route>
+                      <Route path="/pagos"element={<PaymentsList />} ></Route>
+                      <Route path="/registrarpago"element={<AddPayment />} ></Route>
+                      <Route path="/detallepago/:paymId"element={<SeePayment />} ></Route>
                       
                     </Routes> 
                   }
