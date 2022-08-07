@@ -7,7 +7,6 @@ const AxiosInstance = require("../utils/request").default;
 
 const UserList = () => {
   
-    const [Reload, SetReload] = React.useState(0);
     const [dataSource, setDataSource] = React.useState([])
     const [alertModal, setAlertModal] = React.useState(false)
     const [message, setMessage] = React.useState()
