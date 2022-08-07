@@ -2,6 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import SearchRepresentative from './SearchRepresentative'
 import PaymentMethodTable from './PaymentMethodTable'
+import TabsPayments from './TabsPayments'
 
 const AddPayment = () => {
 
@@ -20,6 +21,7 @@ const AddPayment = () => {
                 {(representativeFound) ?
                     <>
                         <PaymentMethodTable />
+                        <TabsPayments />
                     </>
                     : null}
             </Box>
