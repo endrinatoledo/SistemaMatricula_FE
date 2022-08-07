@@ -169,7 +169,7 @@ const PaymentScheme = () => {
           }),
           onRowDelete: (selectRow) => new Promise((resolve, reject) => {
 
-            AxiosInstance.delete(`/roles/${selectRow.rolId}`)
+            AxiosInstance.delete(`/studentPaymentScheme/inscription/${selectRow.spsId}`)
               .then(resp => {
                 setTimeout(() => {
                   if (resp.data.ok === true) {
