@@ -21,7 +21,7 @@ const AddPayment = () => {
                 {(representativeFound) ?
                     <>
                         <PaymentMethodTable />
-                        <TabsPayments />
+                        <TabsPayments representativeData={representativeData}/>
                     </>
                     : null}
             </Box>
