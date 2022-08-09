@@ -1,14 +1,9 @@
 import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import IconButton from '@mui/material/IconButton';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
-import Button from '@mui/material/Button';
 import JoinRightRoundedIcon from '@mui/icons-material/JoinRightRounded';
 const AxiosInstance = require("../utils/request").default;
-const TableRepresentative = ({renderStatus, setRenderStatus,repStuData,family,mode,listRepresentative, setListRepresentative, representativesData,setRepresentativesData}) => {
+const TableRepresentative = ({renderStatus, setRenderStatus,repStuData,family,mode,listRepresentative, setListRepresentative, representativesData,setRepresentativesData,listRepresentativeEdit, setListRepresentativeEdit}) => {
 
     const columns = [
         { title: 'Tipo', field: 'repIdType', width: 70, cellStyle:{maginLeft:'3%'}},
@@ -19,14 +14,19 @@ const TableRepresentative = ({renderStatus, setRenderStatus,repStuData,family,mo
         { title: 'Estatus',width: 70, field: 'statusRepSt',lookup: {1: 'Activo', 2:'Inactivo'}},
       ];
 
-      if(representativesData !== null){
+      if(representativesData !== null && mode === 'add'){
         setListRepresentative(representativesData)
       }
 
       function deleteItemRepresentative(rowData){
+        if(mode === 'add'){
           const newArray = listRepresentative.filter((item) => item.repId !== rowData.repId)
           setListRepresentative(newArray)
           setRepresentativesData(newArray)
+        }else{
+          
+        }
+          
       }
 
       const updateStatusRepresentative = async (rowData) =>{
@@ -40,10 +40,14 @@ const TableRepresentative = ({renderStatus, setRenderStatus,repStuData,family,mo
 
       }
 
+      React.useEffect(() => {
+
+      }, [listRepresentativeEdit.length]);
+
   return (
     <>
         <MaterialTable title={'Listado'}
-            data={listRepresentative} 
+            data={mode === 'edit' ? listRepresentativeEdit : listRepresentative} 
             columns={columns}
             actions={[
               (mode === 'add')? 

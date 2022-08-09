@@ -42,6 +42,8 @@ const EditFamily = () => {
   const [studentsData, setStudentsData] = React.useState([])
   const [repStuData, setRepStuData] = React.useState({})
   const [renderStatus, setRenderStatus] = React.useState(0)
+  const [listRepresentativeEdit, setListRepresentativeEdit] = React.useState([])
+
 
   const mode = 'edit'
 
@@ -57,6 +59,7 @@ const EditFamily = () => {
         setRepresentativesData(resultFamilies.data.representatives)
         setStudentsData(resultFamilies.data.students)
         setRepStuData(resultFamilies.data.representativeStudent)
+        if(listRepresentativeEdit.length === 0) setListRepresentativeEdit(resultFamilies.data.representatives)
         setToShow(toShow + 1)
       }
     } catch {
@@ -148,9 +151,9 @@ const EditFamily = () => {
       {(toShow > 0) ? 
       <>
         <FamilyData familyName={familyName} setFamilyName={setFamilyName} familyData={familyData} setFamilyData={setFamilyData}/>
-        <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} />
-        <TableRepresentative renderStatus={renderStatus} setRenderStatus={setRenderStatus} repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData} setRepresentativesData={setRepresentativesData}/>
-        <SearchStudent listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
+        <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} mode={mode} listRepresentativeEdit={listRepresentativeEdit} setListRepresentativeEdit={setListRepresentativeEdit}/>
+        <TableRepresentative renderStatus={renderStatus} setRenderStatus={setRenderStatus} repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData} setRepresentativesData={setRepresentativesData} listRepresentativeEdit={listRepresentativeEdit} setListRepresentativeEdit={setListRepresentativeEdit} />
+        <SearchStudent listStudent={listStudent} setListStudent={setListStudent} mode={mode}></SearchStudent>
         <TableStudent mode={mode} renderStatus={renderStatus} setRenderStatus={setRenderStatus} listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData} setStudentsData={setStudentsData}></TableStudent>
     
               {

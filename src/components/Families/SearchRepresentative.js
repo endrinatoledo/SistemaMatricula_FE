@@ -30,7 +30,7 @@ const UseStyles = makeStyles({
       label : "Pasaporte"}
   ]
 
-const SearchRepresentative = ({listRepresentative,setListRepresentative}) => {
+const SearchRepresentative = ({listRepresentative,setListRepresentative, mode,listRepresentativeEdit, setListRepresentativeEdit}) => {
     const classes = UseStyles();
     const [identification, setIdentification] = React.useState({repIdType:null, repIdentificationNumber: ''})
     const [buttonI, setButtonI] = React.useState(true)
@@ -55,7 +55,13 @@ const SearchRepresentative = ({listRepresentative,setListRepresentative}) => {
           const data = (await AxiosInstance.post("/representatives/byIdentification",identification)).data
 
           if(data.data === 'registrado'){
-            setListRepresentative(listRepresentative.concat([data.result]))
+            if(mode === 'edit'){
+              
+              setListRepresentativeEdit(listRepresentativeEdit.concat([data.result]))
+            }else{
+              setListRepresentative(listRepresentative.concat([data.result]))
+            }
+            
             // setKeyIdentification(keyIdentification + 1)
             setIdentification({repIdType:null, repIdentificationNumber: ''})
           } 

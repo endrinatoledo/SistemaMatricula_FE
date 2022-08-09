@@ -34,6 +34,7 @@ const AddFamily = () => {
   const [statusCcircularProgress  , setStatusCcircularProgress] = React.useState(false)
   const [alertType, setAlertType] = React.useState('');
   const [alertModal, setAlertModal] = React.useState(false)
+  const [listRepresentativeEdit, setListRepresentativeEdit] = React.useState([])
   const familyData = null
   const representativesData = null
   const studentsData = null
@@ -120,8 +121,8 @@ const AddFamily = () => {
       <h4 id="child-modal-title">Agregar Familia </h4>
       
         <FamilyData familyName={familyName} setFamilyName={setFamilyName} familyData={familyData}/>
-        <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative}/>
-        <TableRepresentative renderStatus={renderStatus} setRenderStatus={setRenderStatus}  repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData}/>
+        <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative}  mode={mode} listRepresentativeEdit={listRepresentativeEdit} setListRepresentativeEdit={setListRepresentativeEdit}/>
+        <TableRepresentative renderStatus={renderStatus} setRenderStatus={setRenderStatus}  repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData}  listRepresentativeEdit={listRepresentativeEdit} setListRepresentativeEdit={setListRepresentativeEdit}/>
         <SearchStudent listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
         <TableStudent renderStatus={renderStatus} setRenderStatus={setRenderStatus}  listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData}></TableStudent>
     
