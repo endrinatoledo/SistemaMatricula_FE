@@ -37,6 +37,7 @@ const PaymentScheme = () => {
   const [alertModal, setAlertModal] = React.useState(false)
   const [alertType, setAlertType] = React.useState('');
   const [paySchConData, setPaySchConData] = React.useState([]);
+  const [plsId, setPlsId] = React.useState(null)
   
   const classes = UseStyles();
 
@@ -55,6 +56,7 @@ const PaymentScheme = () => {
 
       if (resultInscrption.ok === true) {
         setStudent(resultInscrption.data.student)
+        setPlsId(resultInscrption.data.plsId)
       }
     } catch {
       console.log('error al consultar inscripcion por Id')
@@ -137,8 +139,7 @@ const PaymentScheme = () => {
         }}
         editable={{
           onRowAdd: (newRow) => new Promise((resolve, reject) => {
-            console.log('--------------------------------------',newRow)
-            AxiosInstance.post(`/studentPaymentScheme/`, {insId: insid, icoId: newRow.icoId})
+            AxiosInstance.post(`/studentPaymentScheme/`, {insId: insid, icoId: newRow.icoId, plsId:plsId})
               .then(resp => {
                 setTimeout(() => {
                   if (resp.data.ok === true) {
