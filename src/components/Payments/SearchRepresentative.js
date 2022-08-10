@@ -86,7 +86,7 @@ const SearchRepresentative = ({ representativeFound, setRepresentativeFound, ide
     <>
       <Box className={classes.box}>
         <Typography className={classes.typography} color="text.secondary" gutterBottom variant="h6" component="div">
-          Representantes
+          Representante
         </Typography>
         <Divider variant="middle" />
         <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
@@ -124,19 +124,8 @@ const SearchRepresentative = ({ representativeFound, setRepresentativeFound, ide
 
             }
           />
-          {(representativeFound) ?
-            <>
-              <Typography className={classes.typography} color="text.secondary" gutterBottom variant="h6" component="div">
-                {`${representativeData.repFirstName} ${representativeData.repSurname}`}
-              </Typography>
-
-            </>
-            : null}
-
         </Stack>
-
       </Box>
-
     </>
   )
 }

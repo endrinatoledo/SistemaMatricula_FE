@@ -25,12 +25,11 @@ const UseStyles = makeStyles({
   }
 });
 
-const PaymentMethodTable = () => {
+const PaymentMethodTable = ({exchangeRate}) => {
   const classes = UseStyles();
   const [payMetLookup, setPayMetLookup] = React.useState([])
   const [payments, setPayments] = React.useState([])
   const [reload, setReload] = React.useState(0)
-  const [exchangeRate, setExchangeRate] = React.useState({})
   const [totalAmount, setTotalAmount] = React.useState(0)
 
   const columns = [
@@ -55,19 +54,7 @@ const PaymentMethodTable = () => {
     }
   }
 
-  const latestExchangeRate = async () => {
 
-    try {
-      const response = (await AxiosInstance.get("/exchangeRate/lastest/exchangeRates")).data
-      if (response.ok === true) {
-        setExchangeRate(response.data)
-      }
-    } catch {
-      //       setMessage('Error de Conexion al consultar roles')
-      //       setAlertModal(true)
-
-    }
-  }
 
   const addAmounts = async () => {
 
@@ -77,7 +64,6 @@ const PaymentMethodTable = () => {
 
   React.useEffect(() => {
     allPaymentMehodActives()
-    latestExchangeRate()
   }, [reload]);
 
   React.useEffect(() => {
@@ -89,7 +75,6 @@ const PaymentMethodTable = () => {
   return (
     <>
       <Typography className={classes.typography} color="text.secondary" gutterBottom variant="h7" component="div">
-        Tasa US$: {`${exchangeRate.excDate} / Bs.${Intl.NumberFormat('en-IN', { minimumFractionDigits: 2 }).format(exchangeRate.excAmount)}`}
       </Typography>
       <MaterialTable title={`Monto Total: $${totalAmount}`}
         data={payments}
