@@ -44,13 +44,13 @@ export default function Login() {
       MessageFlash()
 
     }else{
-      const validatedEmail = await ValidateEmail({email})
-      if (!validatedEmail){
+      // const validatedEmail = await ValidateEmail({email})
+      // if (!validatedEmail){
 
-        setMessage('Formato de correo incorrecto') 
-        MessageFlash()
+      //   setMessage('Formato de correo incorrecto') 
+      //   MessageFlash()
 
-      }else{
+      // }else{
 
         AxiosInstance.post('/access/', {email, password})
         .then( response  =>{
@@ -72,7 +72,7 @@ export default function Login() {
             MessageFlash()
           }
         })
-      }
+      // }
     }  
   };
 
