@@ -42,10 +42,9 @@ const AddPayment = () => {
     const classes = UseStyles();
 
     const getFamilyByRepId = async () => {
-
+        console.log('se activo getFamilyByRepId')
         try {
             const resultFamiles = (await AxiosInstance.get(`/representativeStudent/family/representativeId/${representativeData.repId}`)).data
-
             if (resultFamiles.ok === true) {
                 setFamilies(resultFamiles.data)
                 setOpenModal(true)
@@ -55,13 +54,36 @@ const AddPayment = () => {
                 setAlertModal(true)
             }
         } catch {
-            console.log('error al consultar periodo activo')
+            setMessage('Error**')
+            setAlertType("error")
+            setAlertModal(true)
+        }
+    }
 
+    const getStudentPaymentSchemaFamId = async () => {
+        try {
+            console.log('#######################')
+            const stuPaySchRes = (await AxiosInstance.get(`/studentPaymentScheme/inscription/family/${selectedFamily.famId}`)).data
+            console.log('#######################',stuPaySchRes)
+            
+            if (stuPaySchRes.ok === true) {
+                setFamilies(stuPaySchRes.data)
+                setOpenModal(true)
+            } else {
+                setMessage(stuPaySchRes.message)
+                setAlertType("error")
+                setAlertModal(true)
+            }
+        } catch {
+            console.log('aquiiii errorrrr')
+            setMessage('Error**')
+            setAlertType("error")
+            setAlertModal(true)
         }
     }
 
     const latestExchangeRate = async () => {
-
+        console.log('se activo latestExchangeRate')
         try {
           const response = (await AxiosInstance.get("/exchangeRate/lastest/exchangeRates")).data
           if (response.ok === true) {
@@ -70,10 +92,15 @@ const AddPayment = () => {
         } catch {
                 setMessage('Error de Conexion al consultar tasa del día')
                 setAlertModal(true)
-    
         }
       }
 
+    //   React.useEffect(() => {
+    //     if (selectedFamily !== null) {
+    //         console.log('se activo yt entro')
+    //         getStudentPaymentSchemaFamId()
+    //     }
+    // }, [selectedFamily])  
 
     React.useEffect(() => {
         if (representativeData.repId !== undefined) {
@@ -89,7 +116,7 @@ const AddPayment = () => {
     return (
         <>
             <Box>
-                <SearchRepresentative representativeFound={representativeFound}
+                <SearchRepresentative setSelectedFamily={setSelectedFamily} representativeFound={representativeFound}
                     setRepresentativeFound={setRepresentativeFound} identification={identification}
                     setIdentification={setIdentification} representativeData={representativeData}
                     setRepresentativeData={setRepresentativeData} />
@@ -107,8 +134,8 @@ const AddPayment = () => {
                     <div>Nombre: {`${representativeData.repFirstName} ${representativeData.repSurname}`}</div>
                     <div>Familia: {`${selectedFamily.families.famName}`}</div>
                     <div>Tasa US$: {`${exchangeRate.excDate} / Bs.${Intl.NumberFormat('en-IN', { minimumFractionDigits: 2 }).format(exchangeRate.excAmount)}`}</div>
-
                 </Typography>
+
                     <PaymentMethodTable exchangeRate={exchangeRate}/>
                     <TabsPayments representativeData={representativeData}/>
                 </>

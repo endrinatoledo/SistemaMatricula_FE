@@ -42,7 +42,7 @@ const IdentificationType = [
   }
 ]
 
-const SearchRepresentative = ({ representativeFound, setRepresentativeFound, identification, setIdentification, representativeData, setRepresentativeData }) => {
+const SearchRepresentative = ({setSelectedFamily, representativeFound, setRepresentativeFound, identification, setIdentification, representativeData, setRepresentativeData }) => {
   const classes = UseStyles();
 
   const labelType = (value) => {
@@ -79,6 +79,7 @@ const SearchRepresentative = ({ representativeFound, setRepresentativeFound, ide
 
     setIdentification({ repIdType: null, repIdentificationNumber: '' })
     setRepresentativeFound(false)
+    setSelectedFamily(null)
 
   }
 
