@@ -47,9 +47,9 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
     const [orfRepDateOfBirth, setOrfRepDateOfBirth] = React.useState(false)
     const [orfRepSex, setOrfRepSex] = React.useState(false)
     const [orfRepAddresse, setOrfRepAddress] = React.useState(false)
-    const [orfRepCivilStatus , setOrfRepCivilStatus ] = React.useState(false)
+    // const [orfRepCivilStatus , setOrfRepCivilStatus ] = React.useState(false)
     const [orfRepPhones, setOrfPhones] = React.useState(false)
-    const [orfRepEmail , setOrfRepEmail ] = React.useState(false)
+    // const [orfRepEmail , setOrfRepEmail ] = React.useState(false)
     const [orfStatus, setOrfStatus] = React.useState(false)
     const [orfRepBond , setOrfRepBond ] = React.useState(false)
     const [orfFamId  , setOrfFamId] = React.useState(false)
@@ -119,20 +119,20 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
       emptyForm = true
     }else{ setOrfRepAddress(false) }
 
-    if(representativeObject.repCivilStatus === null || representativeObject.repCivilStatus === ''){
-      setOrfRepCivilStatus(true) ;
-      emptyForm = true
-    }else{ setOrfRepCivilStatus(false) }
+    // if(representativeObject.repCivilStatus === null || representativeObject.repCivilStatus === ''){
+    //   setOrfRepCivilStatus(true) ;
+    //   emptyForm = true
+    // }else{ setOrfRepCivilStatus(false) }
 
     if(representativeObject.repPhones === null || representativeObject.repPhones === ''){
       setOrfPhones(true) ;
       emptyForm = true
     }else{ setOrfPhones(false) }
 
-    if(representativeObject.repEmail === null || representativeObject.repEmail === '' || ValidateEmail(representativeObject.repEmail)  === false){
-      setOrfRepEmail(true) ;
-      emptyForm = true
-    }else{ setOrfRepEmail(false) }
+    // if( ValidateEmail(representativeObject.repEmail) === false){
+    //   setOrfRepEmail(true) ;
+    //   emptyForm = true
+    // }else{ setOrfRepEmail(false) }
 
     if((editRepresentative) && (representativeObject.repStatus === null || representativeObject.repStatus === '')){
       setOrfStatus(true) ;
@@ -259,8 +259,10 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
             editRepresentative={editRepresentative} selectedRepresentative={selectedRepresentative}
             orfRepFirstName = {orfRepFirstName} orfRepSurname={orfRepSurname}
             orfRepDateOfBirth = {orfRepDateOfBirth} orfRepSex ={orfRepSex}          
-            orfRepAddresse = {orfRepAddresse} orfRepCivilStatus = {orfRepCivilStatus}
-            orfRepPhones = {orfRepPhones} orfRepEmail ={orfRepEmail} 
+            orfRepAddresse = {orfRepAddresse} 
+            // orfRepCivilStatus = {orfRepCivilStatus}
+            orfRepPhones = {orfRepPhones}
+            //  orfRepEmail ={orfRepEmail} 
             orfStatus = {orfStatus} orfRepBond = {orfRepBond} orfFamId = {orfFamId}
             clearField={clearField} setClearField={setClearField} defaultValue={defaultValue} 
             setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject}/>

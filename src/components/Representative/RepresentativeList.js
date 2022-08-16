@@ -30,7 +30,9 @@ const RepresentativeList = () => {
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
     const defaultValue = React.useRef(null)
-    const [clearField, setClearField] = React.useState({sex:0,civil:100,profession:200,country:300,federalEntity:400,bond:500,family:600,status:700})
+    const [clearField, setClearField] = React.useState({sex:0,
+      // civil:100,
+      profession:200,country:300,federalEntity:400,bond:500,family:600,status:700})
     const [valueForm, setValueForm] = React.useState({})
     const [statusCcircularProgress  , setStatusCcircularProgress] = React.useState(false)
     const [identificationValidation  , setIdentificationValidation] = React.useState(false)
@@ -44,7 +46,7 @@ const RepresentativeList = () => {
         repDateOfBirth         : '',
         repSex                 : null,
         repAddress             : '',
-        repCivilStatus         : null,
+        // repCivilStatus         : null,
         professions            : null,
         proId                  : null,
         repPhones              : '',
@@ -79,7 +81,7 @@ const RepresentativeList = () => {
     setStatusCcircularProgress(false)
     setClearField(
       { sex:(clearField.sex + 1),
-        civil:(clearField.civil + 1),
+        // civil:(clearField.civil + 1),
         profession:(clearField.profession + 1),
         country:(clearField.country + 1),
         federalEntity:(clearField.federalEntity + 1),
@@ -98,7 +100,7 @@ const RepresentativeList = () => {
         repDateOfBirth         : '',
         repSex                 : '',
         repAddress             : '',
-        repCivilStatus         : '',
+        // repCivilStatus         : '',
         proId                  : '',
         repPhones              : '',
         repEmail               : '',

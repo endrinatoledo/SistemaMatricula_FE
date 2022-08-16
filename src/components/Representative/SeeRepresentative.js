@@ -123,7 +123,7 @@ const SeeRepresentative = ({selectedRepresentative}) => {
                   readOnly: true,
                 }}
                 />
-                <TextField
+                {/* <TextField
                 
                 value={selectedRepresentative.repCivilStatus}
                 id="repCivilStatus"
@@ -132,7 +132,7 @@ const SeeRepresentative = ({selectedRepresentative}) => {
                 InputProps={{
                   readOnly: true,
                 }}
-                />
+                /> */}
                 <TextField
                 id="professions"
                 value={selectedRepresentative.professions.proName}

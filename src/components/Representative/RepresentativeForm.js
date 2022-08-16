@@ -67,8 +67,10 @@ const UseStyles = makeStyles({
 
   const requiredField = 'Campo Requerido';
 
-const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,
-  orfRepPhones,orfRepEmail, 
+const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, 
+  // orfRepCivilStatus,
+  orfRepPhones,
+  // orfRepEmail, 
   orfStatus,orfRepBond,orfFamId, clearField,setClearField, defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
@@ -293,7 +295,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 sx={{ width: '20%' }} 
                  id="clear-on-escape"
                 />
-                <Autocomplete 
+                {/* <Autocomplete 
                 options={selectMaritalStatus}
                 renderInput={(params) =>(
                   <TextField {...params}
@@ -311,7 +313,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 noOptionsText={'Sin Opciones'}
                 sx={{ width: '20%' }} 
                  id="clear-on-escape"
-                />
+                /> */}
                 
 
               <Autocomplete
@@ -405,13 +407,12 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
 
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
                 <TextField
-                required
                 value={(editRepresentative) ? selectedRepresentative.repEmail :representativeObject.repEmail}
                 id="repEmail"
                 label="Correo"
                 variant="standard"
-                helperText={(representativeObject.repEmail === null)? requiredField :(ValidateEmail(representativeObject.repEmail) === false)? 'Error en formato' : '' }
-                error={orfRepEmail}
+                // helperText={(ValidateEmail(representativeObject.repEmail) === false)? 'Error en formato' : '' }
+                // error={orfRepEmail}
                 onChange={e => {
                   setSelectedRepresentative({...selectedRepresentative, repEmail: e.target.value ? e.target.value : ''})
                   setRepresentativeObject({...representativeObject, repEmail : e.target.value ? e.target.value : ''}) 
