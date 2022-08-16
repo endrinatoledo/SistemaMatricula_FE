@@ -62,10 +62,9 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
     
   }
   const closeModal =() =>{
+    cleanRepresentativeObject()
     setSeeRepresentativeDetails(false)
     setOpenModal(false)
-    cleanRepresentativeObject()
-    
   }
 
   
@@ -75,9 +74,13 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
     if(userResponse === 'yes'){
       
       cleanRepresentativeObject()
-      setModalCancel(false)
-      setOpenModal(false);
-      setEditRepresentative(false);
+      setTimeout(() => {
+        setModalCancel(false)
+        setOpenModal(false);
+        setEditRepresentative(false);
+      },1000)
+
+      
     }else 
     if(userResponse === 'no'){
       setModalCancel(false)

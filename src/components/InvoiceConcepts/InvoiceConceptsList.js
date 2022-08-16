@@ -19,8 +19,7 @@ const InvoiceConceptsList = () => {
     headerStyle:{ paddingLeft:'5%'},
     validate:rowData=>(rowData.icoName === undefined || rowData.icoName === '')?"Requerido":true },
     { title: 'Descripción', field: 'icoDescription',
-    headerStyle:{ paddingLeft:'5%'},
-    validate:rowData=>(rowData.icoDescription === undefined || rowData.icoDescription === '')?"Requerido":true },
+    headerStyle:{ paddingLeft:'5%'} },
     { title: 'Estatus', field: 'icoStatus', cellStyle:{ textAlign:'center'},
     headerStyle:{paddingLeft:'10%'}, 
     lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.icoStatus === undefined)?"Requerido":true }

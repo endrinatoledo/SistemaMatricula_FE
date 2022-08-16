@@ -294,6 +294,37 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 sx={{ width: '20%' }} 
                  id="clear-on-escape"
                 />
+                <TextField
+                value={(editRepresentative) ? selectedRepresentative.repEmail :representativeObject.repEmail}
+                id="repEmail"
+                label="Correo"
+                variant="standard"
+                // helperText={(ValidateEmail(representativeObject.repEmail) === false)? 'Error en formato' : '' }
+                // error={orfRepEmail}
+                onChange={e => {
+                  setSelectedRepresentative({...selectedRepresentative, repEmail: e.target.value ? e.target.value : ''})
+                  setRepresentativeObject({...representativeObject, repEmail : e.target.value ? e.target.value : ''}) 
+                }   }
+                />
+                <Autocomplete 
+                options={selectBond}
+                renderInput={(params) =>(
+                  <TextField {...params}
+                      helperText={(representativeObject.repBond === null ||representativeObject.repBond === '')? requiredField : '' }
+                      error={orfRepBond} label="Vínculo" variant="standard" />
+                )}
+                value={(editRepresentative) ? labelBond(selectedRepresentative.repBond) : labelBond(representativeObject.repBond) }
+                getOptionLabel={(option) => option.label}
+                onChange={(event, newValue) => {
+                  setRepresentativeObject({...representativeObject, repBond : newValue.value ? newValue.value : null})          
+                  setSelectedRepresentative({...selectedRepresentative, repBond : newValue.value ? newValue.value : selectedRepresentative.repBond})
+                }}
+                required
+                key={clearField.bond}
+                noOptionsText={'Sin Opciones'}
+                sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                />
                 {/* <Autocomplete 
                 options={selectMaritalStatus}
                 renderInput={(params) =>(
@@ -405,39 +436,10 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
     </Stack>
 
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
-                <TextField
-                value={(editRepresentative) ? selectedRepresentative.repEmail :representativeObject.repEmail}
-                id="repEmail"
-                label="Correo"
-                variant="standard"
-                // helperText={(ValidateEmail(representativeObject.repEmail) === false)? 'Error en formato' : '' }
-                // error={orfRepEmail}
-                onChange={e => {
-                  setSelectedRepresentative({...selectedRepresentative, repEmail: e.target.value ? e.target.value : ''})
-                  setRepresentativeObject({...representativeObject, repEmail : e.target.value ? e.target.value : ''}) 
-                }   }
-                />
                 
                 
-                <Autocomplete 
-                options={selectBond}
-                renderInput={(params) =>(
-                  <TextField {...params}
-                      helperText={(representativeObject.repBond === null ||representativeObject.repBond === '')? requiredField : '' }
-                      error={orfRepBond} label="Vínculo" variant="standard" />
-                )}
-                value={(editRepresentative) ? labelBond(selectedRepresentative.repBond) : labelBond(representativeObject.repBond) }
-                getOptionLabel={(option) => option.label}
-                onChange={(event, newValue) => {
-                  setRepresentativeObject({...representativeObject, repBond : newValue.value ? newValue.value : null})          
-                  setSelectedRepresentative({...selectedRepresentative, repBond : newValue.value ? newValue.value : selectedRepresentative.repBond})
-                }}
-                required
-                key={clearField.bond}
-                noOptionsText={'Sin Opciones'}
-                sx={{ width: '20%' }} 
-                 id="clear-on-escape"
-                />
+                
+                
                 <Autocomplete 
                 options={selectStatus}
                 renderInput={(params) =>(
