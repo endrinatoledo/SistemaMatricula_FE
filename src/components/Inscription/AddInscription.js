@@ -92,7 +92,7 @@ const AddInscription = () => {
 
 const enableButton = () => {
 
-  if (endDate.plsId !== '' && endDate.famId !== '' && endDate.insObservation !== '' && endDate.stuId !== '' && endDate.perId !== '') {
+  if (endDate.plsId !== '' && endDate.famId !== '' && endDate.stuId !== '' && endDate.perId !== '') {
     setDisableButtonSave(false)
   } else {
     setDisableButtonSave(true)
