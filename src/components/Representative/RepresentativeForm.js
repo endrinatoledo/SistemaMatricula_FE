@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import ValidateEmail from '../commonComponents/ValidateEmail';
+// import ValidateEmail from '../commonComponents/ValidateEmail';
 
 const AxiosInstance = require("../utils/request").default;
 
@@ -67,10 +67,9 @@ const UseStyles = makeStyles({
 
   const requiredField = 'Campo Requerido';
 
-const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, 
-  // orfRepCivilStatus,
-  orfRepPhones,
-  // orfRepEmail, 
+const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,
+   orfRepSex,orfRepAddresse,   orfRepPhones,
+  // orfRepCivilStatus,orfRepDateOfBirth, orfRepEmail, 
   orfStatus,orfRepBond,orfFamId, clearField,setClearField, defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
@@ -260,7 +259,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
     </Stack>
 
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
-                <TextField
+                {/* <TextField
                 required
                 inputRef={defaultValue}
                 type='date'
@@ -275,7 +274,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 onChange={e => {
                     setRepresentativeObject({...representativeObject, repDateOfBirth : e.target.value ? e.target.value : ''})          
                 }   }
-                />
+                /> */}
                 <Autocomplete 
                 options={selectSex}
                 renderInput={(params) =>(

@@ -44,7 +44,7 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
     const [orfRepFirstName, setOrfRepFirstName] = React.useState(false)
     const [orfRepSurname, setOrfRepSurname] = React.useState(false)
     const [orfRepIdentificationNumber, setOrfRepIdentificationNumber] = React.useState(false)
-    const [orfRepDateOfBirth, setOrfRepDateOfBirth] = React.useState(false)
+    // const [orfRepDateOfBirth, setOrfRepDateOfBirth] = React.useState(false)
     const [orfRepSex, setOrfRepSex] = React.useState(false)
     const [orfRepAddresse, setOrfRepAddress] = React.useState(false)
     // const [orfRepCivilStatus , setOrfRepCivilStatus ] = React.useState(false)
@@ -104,10 +104,10 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
       emptyForm = true
     }else{ setOrfRepSurname(false) }
 
-    if(representativeObject.repDateOfBirth === null || representativeObject.repDateOfBirth === ''){
-      setOrfRepDateOfBirth(true) ;
-      emptyForm = true
-    }else{ setOrfRepDateOfBirth(false) }
+    // if(representativeObject.repDateOfBirth === null || representativeObject.repDateOfBirth === ''){
+    //   setOrfRepDateOfBirth(true) ;
+    //   emptyForm = true
+    // }else{ setOrfRepDateOfBirth(false) }
 
     if(representativeObject.repSex === null || representativeObject.repSex === ''){
       setOrfRepSex(true) ;
@@ -258,7 +258,8 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
             setSelectedRepresentative={setSelectedRepresentative}
             editRepresentative={editRepresentative} selectedRepresentative={selectedRepresentative}
             orfRepFirstName = {orfRepFirstName} orfRepSurname={orfRepSurname}
-            orfRepDateOfBirth = {orfRepDateOfBirth} orfRepSex ={orfRepSex}          
+            // orfRepDateOfBirth = {orfRepDateOfBirth}
+             orfRepSex ={orfRepSex}          
             orfRepAddresse = {orfRepAddresse} 
             // orfRepCivilStatus = {orfRepCivilStatus}
             orfRepPhones = {orfRepPhones}

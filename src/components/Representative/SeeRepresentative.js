@@ -103,7 +103,7 @@ const SeeRepresentative = ({selectedRepresentative}) => {
                 />
     </Stack>
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
-                <TextField
+                {/* <TextField
                 type='date'
                 id="repDateOfBirth"
                 label="Fecha de Nacimiento"
@@ -113,7 +113,7 @@ const SeeRepresentative = ({selectedRepresentative}) => {
                 InputProps={{
                   readOnly: true,
                 }}
-                />
+                /> */}
                 <TextField
                 value={(selectedRepresentative.repSex === 'm')? 'Masculino' : 'Femenino'}
                 id="repSex"
