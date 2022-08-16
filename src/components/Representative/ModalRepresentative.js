@@ -50,7 +50,6 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
     const [orfRepCivilStatus , setOrfRepCivilStatus ] = React.useState(false)
     const [orfRepPhones, setOrfPhones] = React.useState(false)
     const [orfRepEmail , setOrfRepEmail ] = React.useState(false)
-    const [orfCouId  , setOrfCouId] = React.useState(false)
     const [orfStatus, setOrfStatus] = React.useState(false)
     const [orfRepBond , setOrfRepBond ] = React.useState(false)
     const [orfFamId  , setOrfFamId] = React.useState(false)
@@ -134,11 +133,6 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
       setOrfRepEmail(true) ;
       emptyForm = true
     }else{ setOrfRepEmail(false) }
-
-    if(representativeObject.couId === null || representativeObject.couId === ''){
-      setOrfCouId(true) ;
-      emptyForm = true
-    }else{ setOrfCouId(false) }
 
     if((editRepresentative) && (representativeObject.repStatus === null || representativeObject.repStatus === '')){
       setOrfStatus(true) ;
@@ -266,8 +260,7 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
             orfRepFirstName = {orfRepFirstName} orfRepSurname={orfRepSurname}
             orfRepDateOfBirth = {orfRepDateOfBirth} orfRepSex ={orfRepSex}          
             orfRepAddresse = {orfRepAddresse} orfRepCivilStatus = {orfRepCivilStatus}
-             orfRepPhones = {orfRepPhones}
-            orfRepEmail ={orfRepEmail} orfCouId = {orfCouId}
+            orfRepPhones = {orfRepPhones} orfRepEmail ={orfRepEmail} 
             orfStatus = {orfStatus} orfRepBond = {orfRepBond} orfFamId = {orfFamId}
             clearField={clearField} setClearField={setClearField} defaultValue={defaultValue} 
             setRepresentativeObject={setRepresentativeObject} representativeObject={representativeObject}/>

@@ -144,7 +144,7 @@ const SeeRepresentative = ({selectedRepresentative}) => {
                 />
     </Stack>
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
-                <TextField
+                {/* <TextField
                 id="countries"
                 label="País"
                 variant="standard"
@@ -162,7 +162,7 @@ const SeeRepresentative = ({selectedRepresentative}) => {
                 InputProps={{
                   readOnly: true,
                 }}
-                />
+                /> */}
                 <TextField
                 
                 value={selectedRepresentative.repAddress}
@@ -170,6 +170,16 @@ const SeeRepresentative = ({selectedRepresentative}) => {
                 label="Dirección"
                 variant="standard"
                 sx={{ width: '47%' }}
+                InputProps={{
+                  readOnly: true,
+                }}
+                />
+                <TextField
+                sx={{ width: '47%' }}
+                value={selectedRepresentative.repPhones}
+                id="repPhones"
+                label="Teléfono"
+                variant="standard"
                 InputProps={{
                   readOnly: true,
                 }}
@@ -186,15 +196,7 @@ const SeeRepresentative = ({selectedRepresentative}) => {
                   readOnly: true,
                 }}
                 />
-                <TextField
-                value={selectedRepresentative.repPhones}
-                id="repPhones"
-                label="Teléfono"
-                variant="standard"
-                InputProps={{
-                  readOnly: true,
-                }}
-                />
+                
                 <TextField
                 value={selectedRepresentative.repBond}
                 id="repBond"

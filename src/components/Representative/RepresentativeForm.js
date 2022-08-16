@@ -68,7 +68,8 @@ const UseStyles = makeStyles({
   const requiredField = 'Campo Requerido';
 
 const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,
-  orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField,setClearField, defaultValue, setRepresentativeObject, representativeObject}) => {
+  orfRepPhones,orfRepEmail, 
+  orfStatus,orfRepBond,orfFamId, clearField,setClearField, defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
     const [listOfProfessions, setListOfProfessions] = React.useState([])
@@ -333,7 +334,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
     </Stack>
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
     
-    <Autocomplete
+    {/* <Autocomplete
                 key={clearField.country}
                 noOptionsText={'Sin Opciones'}
                 options={listOfCountries}
@@ -352,9 +353,9 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                    helperText={(representativeObject.couId === null ||representativeObject.couId === '')? requiredField : '' }
                    error={orfCouId}
                    label="País" variant="standard" />
-                 )}/>
+                 )}/> */}
 
-              <Autocomplete
+              {/* <Autocomplete
                 key={clearField.federalEntity}
                 disabled={( representativeObject.couId !== 232)? true : false}
                 noOptionsText={'Sin Opciones'}
@@ -370,7 +371,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                  clearOnEscape
                  renderInput={(params) => (
                   <TextField {...params} label="Estado" variant="standard" />
-                 )}/>
+                 )}/> */}
 
                 <TextField
                   sx={{ width: '47%' }}
@@ -386,6 +387,20 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                     setRepresentativeObject({...representativeObject, repAddress : e.target.value ? e.target.value : ''}) 
                   }   }
                 />   
+                <TextField
+                sx={{ width: '47%' }}
+                required
+                value={(editRepresentative) ? selectedRepresentative.repPhones :representativeObject.repPhones}
+                id="repPhones"
+                label="Teléfono"
+                variant="standard"
+                helperText={(representativeObject.repPhones === null ||representativeObject.repPhones === '')? requiredField : '' }
+                  error={orfRepPhones}
+                  onChange={e => {
+                    setSelectedRepresentative({...selectedRepresentative, repPhones: e.target.value ? e.target.value : ''})
+                    setRepresentativeObject({...representativeObject, repPhones : e.target.value ? e.target.value : ''}) 
+                  }   }
+                />
     </Stack>
 
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
@@ -403,18 +418,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 }   }
                 />
                 
-                <TextField
-                required
-                value={(editRepresentative) ? selectedRepresentative.repPhones :representativeObject.repPhones}
-                id="repPhones"
-                label="Teléfono"
-                variant="standard"
-                helperText={(representativeObject.repPhones === null ||representativeObject.repPhones === '')? requiredField : '' }
-                  error={orfRepPhones}
-                  onChange={e => {
-                    setRepresentativeObject({...representativeObject, repPhones : e.target.value ? e.target.value : ''}) 
-                  }   }
-                />
+                
                 <Autocomplete 
                 options={selectBond}
                 renderInput={(params) =>(
