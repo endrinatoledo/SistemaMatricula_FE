@@ -67,7 +67,8 @@ const UseStyles = makeStyles({
 
   const requiredField = 'Campo Requerido';
 
-const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,orfProId, orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField,setClearField, defaultValue, setRepresentativeObject, representativeObject}) => {
+const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,
+  orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField,setClearField, defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
     const [listOfProfessions, setListOfProfessions] = React.useState([])
@@ -327,8 +328,6 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                  clearOnEscape
                  renderInput={(params) => (
                    <TextField {...params} 
-                   helperText={(representativeObject.proId === null ||representativeObject.proId === '')? requiredField : '' }
-                   error={orfProId}
                    label="Profesión" variant="standard" />
                  )}/>
     </Stack>

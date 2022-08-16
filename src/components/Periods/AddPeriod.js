@@ -109,7 +109,7 @@ const AddPeriod = () => {
           setMessage(result.data.message)
           setAlertType('success')
           setAlertModal(true)
-          window.location = '/inscriptions';
+          window.location = '/periodos';
 
         } else if (result.message === 'Error al crear Periodo') {
           setMessage(result.message)
