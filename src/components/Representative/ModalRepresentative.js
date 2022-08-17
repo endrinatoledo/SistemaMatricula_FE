@@ -298,7 +298,7 @@ const ModalRepresentative = ({ setSeeRepresentativeDetails, seeRepresentativeDet
                   <>
                     <Button variant="outlined" onClick={cleanRepresentativeObject} >Limpiar</Button>
                     <Button variant="contained"onClick={saveRepresentative} color="success">Guardar</Button>
-                  </>
+                  </>  
                 }
              </>
              

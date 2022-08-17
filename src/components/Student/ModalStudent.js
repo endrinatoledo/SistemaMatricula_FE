@@ -84,10 +84,10 @@ const ModalStudent = ({ setSeeStudentDetails, seeStudentDetails, fillTable,setSe
 
     let emptyForm = false
 
-    if(studentObject.stuIdentificationNumber === null || studentObject.stuIdentificationNumber === ''){
-      setOrfStuIdentificationNumber(true) ;
-      emptyForm = true
-    }else{ setOrfStuIdentificationNumber(false) }
+    // if(studentObject.stuIdentificationNumber === null || studentObject.stuIdentificationNumber === ''){
+    //   setOrfStuIdentificationNumber(true) ;
+    //   emptyForm = true
+    // }else{ setOrfStuIdentificationNumber(false) }
 
     if(studentObject.stuFirstName === null || studentObject.stuFirstName === ''){
       setOrfStuFirstName(true) ;
@@ -130,20 +130,21 @@ const ModalStudent = ({ setSeeStudentDetails, seeStudentDetails, fillTable,setSe
 
   const saveStudent = async () => {
 
-    console.log('llego aqui')
     const emptyForm = await validateRequiredFields()
-    console.log('emptyForm',emptyForm)
+
     if(!emptyForm) {
       setStatusCcircularProgress(true)
       try{
-        console.log('paso')
+
         const data = (await AxiosInstance.post("/students/",studentObject)).data
-        console.log('data',data)
+
         setTimeout(() => {
           setStatusCcircularProgress(false)
           
           if(data.message === 'Identificación ya se encuentra registrada'){
-
+            setMessage(data.message)
+            setAlertType('error')
+            setAlertModal(true)
           }else 
           if(data.message === 'Estudiante creado con éxito'){
               setMessage(data.message)
@@ -231,7 +232,7 @@ const ModalStudent = ({ setSeeStudentDetails, seeStudentDetails, fillTable,setSe
           :
           <>
               <ValidateIdentification editStudent={editStudent} setOrfStuIdentificationNumber={setOrfStuIdentificationNumber} setIdentificationValidation={setIdentificationValidation} identificationValidation={identificationValidation} orfStuIdentificationNumber={orfStuIdentificationNumber} setStudentObject={setStudentObject} studentObject={studentObject} />
-              {(identificationValidation || editStudent) ? 
+            
             <StudentForm 
             setSelectedStudent={setSelectedStudent}
             editStudent={editStudent} selectedStudent={selectedStudent}
@@ -240,9 +241,7 @@ const ModalStudent = ({ setSeeStudentDetails, seeStudentDetails, fillTable,setSe
             orfCouId = {orfCouId} orfStatus = {orfStatus} orfFamId = {orfFamId}
             clearField={clearField} setClearField={setClearField} defaultValue={defaultValue} 
             setStudentObject={setStudentObject} studentObject={studentObject}/>
-            : null
-
-          }
+            
           </>
           }
        
