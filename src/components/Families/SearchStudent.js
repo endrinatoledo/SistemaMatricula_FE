@@ -8,6 +8,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
+import ModalSelectStudent from './ModalSelectStudent';
 const AxiosInstance = require("../utils/request").default;
 const UseStyles = makeStyles({
     typography: {
@@ -38,6 +39,8 @@ const SearchStudent = ({listStudent,setListStudent}) => {
     const [message  , setMessage] = React.useState('')
     const [alertType, setAlertType] = React.useState('');
     const [alertModal, setAlertModal] = React.useState(false)
+    const [selectStudentModal, setSelectStudentModal] = React.useState(false)
+    const [selectStudentData, setSelectStudentData] = React.useState([])
 
     const labelType = (value) =>{
         if(value !== null){
@@ -68,6 +71,9 @@ const SearchStudent = ({listStudent,setListStudent}) => {
             if(data.result.length === 1){
               setListStudent(listStudent.concat([data.result[0]]))
               setIdentification({stuIdType:null, stuIdentificationNumber: '', stuFirstName:'',stuSecondName:'',stuSurname:'',stuSecondSurname:''})
+            }else{
+              setSelectStudentData(data.result)
+              setSelectStudentModal(true)
             }
             
           } else{
@@ -122,8 +128,6 @@ const SearchStudent = ({listStudent,setListStudent}) => {
                 id="stuIdentificationNumber"
                 label="Identificación"
                 variant="standard"
-                // helperText={errorMessage}
-                // error={orfstuIdentificationNumber}
                 onChange={e => {
                     setIdentification({...identification, stuIdentificationNumber : e.target.value ? e.target.value : ''})          
                       if(e.target.value.length < 6 ){setButtonI(true)}else{setButtonI(false)}
@@ -168,9 +172,12 @@ const SearchStudent = ({listStudent,setListStudent}) => {
                 />
          </Stack>
     </Box>
-    {(alertModal) ? 
-        <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
+    {(alertModal) 
+      ? <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null} 
+      {(selectStudentModal)
+      ? <ModalSelectStudent selectStudentModal={selectStudentModal} setSelectStudentModal={setSelectStudentModal} selectStudentData={selectStudentData} /> 
+      : null}
     </>
   )
 }
