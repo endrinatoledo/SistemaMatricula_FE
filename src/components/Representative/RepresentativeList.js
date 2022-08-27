@@ -83,10 +83,10 @@ const RepresentativeList = () => {
       { sex:(clearField.sex + 1),
         // civil:(clearField.civil + 1),
         profession:(clearField.profession + 1),
-        country:(clearField.country + 1),
-        federalEntity:(clearField.federalEntity + 1),
+        // country:(clearField.country + 1),
+        // federalEntity:(clearField.federalEntity + 1),
         bond:(clearField.bond + 1),
-        family:(clearField.family + 1),
+        // family:(clearField.family + 1),
         status:(clearField.status + 1)
       })
     
@@ -104,15 +104,15 @@ const RepresentativeList = () => {
         proId                  : '',
         repPhones              : '',
         repEmail               : '',
-        couId                  : '',
-        fedId                  : '',
-        repPhoto               : '',
+        // couId                  : '',
+        // fedId                  : '',
+        // repPhoto               : '',
         repStatus              : '',
         repBond                : '',
-        famId                  : '',
+        // famId                  : '',
       })
 
-      if (identificationValidation && openModal){defaultValue.current.value = ""}
+      // if (identificationValidation && openModal){defaultValue.current.value = ""}
 
   }
 
