@@ -2,10 +2,9 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Stack from '@mui/material/Stack';
 
 const style = {
     flexGrow: 1,
@@ -25,7 +24,7 @@ const style = {
     pb: 3,
 };
 
-const ModalSelectStudent = ({ selectStudentModal, setSelectStudentModal, selectStudentData }) => {
+const ModalSelectStudent = ({setIdentification, listStudent,setListStudent, selectStudentModal, setSelectStudentModal, selectStudentData }) => {
 
     const handleClose = () => setSelectStudentModal(false);
 
@@ -43,27 +42,24 @@ const ModalSelectStudent = ({ selectStudentModal, setSelectStudentModal, selectS
                         Se encontraron {selectStudentData.length} resultados, por favor seleccione uno:
                     </Typography>
                     <div>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Estudiantes</InputLabel>
-                            <Autocomplete
+                    <Stack direction="row" spacing={2}  justifyContent="space-between">
+                    <Autocomplete
                                 fullWidth
                                 options={selectStudentData}
                                 renderInput={(params) => (
                                     <TextField {...params} />
                                 )}
-                                // value={(editRepresentative) ? labelBond(selectedRepresentative.repBond) : labelBond(representativeObject.repBond) }
-                                getOptionLabel={(option) => `${option.stuFirstName} ${option.stuSecondName} ${option.stuSurname} ${option.stuSecondSurname}`}
+                                getOptionLabel={(option) => `Nombre Completo: ${option.stuFirstName} ${option.stuSecondName} ${option.stuSurname} ${option.stuSecondSurname}, Fecha Nacimiento: ${option.stuDateOfBirth}`}
                                 onChange={(event, newValue) => {
-                                    //   setRepresentativeObject({...representativeObject, repBond : newValue.value ? newValue.value : null})          
+                                    setListStudent(listStudent.concat([newValue]))
+                                    setIdentification({stuIdType:null, stuIdentificationNumber: '', stuFirstName:'',stuSecondName:'',stuSurname:'',stuSecondSurname:''})
+                                    setSelectStudentModal(false)
                                 }}
                                 required
                                 noOptionsText={'Sin Opciones'}
-                                sx={{ width: '20%' }}
                                 id="clear-on-escape"
                             />
-
-
-                        </FormControl>
+                    </Stack>
                     </div>
                 </Box>
             </Modal>

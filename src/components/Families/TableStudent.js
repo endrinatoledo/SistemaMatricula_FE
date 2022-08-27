@@ -11,7 +11,8 @@ const TableStudent = ({mode,renderStatus, setRenderStatus,listStudent, setListSt
         { title: 'Identificación', field: 'stuIdentificationNumber'},
         { title: 'Primer Nombre', field: 'stuFirstName'},
         { title: 'Primer Apellido', field: 'stuSurname' },   
-        { title: 'Estatus',width: 70, field: 'statusRepSt',lookup: {1: 'Activo', 2:'Inactivo'}}     
+        { title: 'Fecha', field: 'stuDateOfBirth',type:'date'},
+        { title: 'Estatus',width: 70, field: 'stuStatus',lookup: {1: 'Activo', 2:'Inactivo'}}     
       ];
 
       if(studentsData !== null){

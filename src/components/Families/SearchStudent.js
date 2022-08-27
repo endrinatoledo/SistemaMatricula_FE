@@ -173,10 +173,10 @@ const SearchStudent = ({listStudent,setListStudent}) => {
          </Stack>
     </Box>
     {(alertModal) 
-      ? <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
+      ? <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/>  
       : null} 
       {(selectStudentModal)
-      ? <ModalSelectStudent selectStudentModal={selectStudentModal} setSelectStudentModal={setSelectStudentModal} selectStudentData={selectStudentData} /> 
+      ? <ModalSelectStudent setIdentification={setIdentification} listStudent={listStudent} setListStudent={setListStudent} selectStudentModal={selectStudentModal} setSelectStudentModal={setSelectStudentModal} selectStudentData={selectStudentData} /> 
       : null}
     </>
   )
