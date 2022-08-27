@@ -15,7 +15,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import {PeopleListItems, ConfigListItems,CollectionListItems, EnrollmentListItems}  from './listItems';
+import {PeopleListItems,ReportsListItems, ConfigListItems,CollectionListItems, EnrollmentListItems}  from './listItems';
 import Copyright from './Copyright';
 import Logout from './Logout';
 import UserList from '../Users/UserList';
@@ -41,6 +41,8 @@ import PaymentScheme from '../Inscription/PaymentScheme';
 import PaymentsList from '../Payments/PaymentsList';
 import AddPayment from '../Payments/AddPayment';
 import SeePayment from '../Payments/SeePayment';
+import CollectionReports from '../Reports/CollectionReports';
+import EnrollmentReports from '../Reports/EnrollmentReports'
 
 const drawerWidth = 240;
 
@@ -140,6 +142,8 @@ const Dashboard= () => {
                 <Divider sx={{ my: 1 }} />
                 <PeopleListItems  />
                 <Divider sx={{ my: 1 }} />
+                <ReportsListItems />
+                <Divider sx={{ my: 1 }} />
                 <ConfigListItems />
             </List>
           </Drawer>
@@ -188,7 +192,8 @@ const Dashboard= () => {
                       <Route path="/pagos"element={<PaymentsList />} ></Route>
                       <Route path="/registrarpago"element={<AddPayment />} ></Route>
                       <Route path="/detallepago/:paymId"element={<SeePayment />} ></Route>
-                      
+                      <Route path="/reportescobranza"element={<CollectionReports />} ></Route>
+                      <Route path="/reportesmatricula"element={<EnrollmentReports />} ></Route>
                     </Routes> 
                   }
                   </Paper>

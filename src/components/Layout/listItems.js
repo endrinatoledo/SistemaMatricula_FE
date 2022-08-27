@@ -18,6 +18,8 @@ import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
 import ListRoundedIcon from '@mui/icons-material/ListRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import RequestPageRoundedIcon from '@mui/icons-material/RequestPageRounded';
+import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 
 
 export const CollectionListItems = () => {
@@ -133,6 +135,39 @@ export const PeopleListItems = () => {
     )
   }
   
+  export const ReportsListItems = () => {
+
+    return (     
+      <Fragment>
+        <List component="div" disablePadding>
+          <ListSubheader  inset>
+            Reportes
+          </ListSubheader>
+        </List>
+        <NavLink to='/reportesmatricula'>
+          <List component="div" disablePadding>
+            <ListItemButton sx={{ pl: 2 }} >
+                <ListItemIcon>
+                  <DescriptionRoundedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Matricula" />
+              </ListItemButton>
+            </List>
+          </NavLink>
+        <NavLink to='/reportescobranza'>
+          <List component="div" disablePadding>
+            <ListItemButton sx={{ pl: 2 }} >
+                <ListItemIcon>
+                  <RequestPageRoundedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Cobranza" />
+              </ListItemButton>
+            </List>
+          </NavLink>
+  
+      </Fragment>
+    )
+  }
 
   export const ConfigListItems = ({selected, setSelected}) => {
 

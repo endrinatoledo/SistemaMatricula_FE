@@ -97,9 +97,14 @@ const EditFamily = () => {
         window.location = '/familias';
 
       }else if(result.message === 'Error de conexión'){
+        setMessage(result.message)
+        setAlertType('error')
+        setAlertModal(true) 
 
       }else{
-
+        setMessage('Error al actualizar Familia')
+        setAlertType('error')
+        setAlertModal(true) 
       }
     }, 2000);
     } catch (error) {
