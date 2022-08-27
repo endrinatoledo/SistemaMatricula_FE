@@ -52,7 +52,9 @@ const EnrollmentReports = () => {
     const [alertModal, setAlertModal] = React.useState(false)
     const [periodSelected, setPeriodSelected] = React.useState(null)
     const [levelSelected, setLevelSelected] = React.useState(null)
+    const [sectionSelected, setSectionSelected] = React.useState(null)
     const [reportTypeSelected, setReportTypeSelected] = React.useState(null)
+    const [searchButton, setSearchButton] = React.useState(true)
 
     const reportType = [
         { id: 1, title: 'Listado de Alumnos por Gradro y Sección' },
@@ -105,6 +107,11 @@ const EnrollmentReports = () => {
         }
     }
 
+    const searchReport = () =>{
+        const url = ``
+
+    } 
+
     React.useEffect(() => {
         getAllPeriod()
     }, [0]);
@@ -113,6 +120,21 @@ const EnrollmentReports = () => {
             getPeriodLevelSectionByPerId()
         }
     }, [periodSelected]);
+    React.useEffect(() => {
+        if(reportTypeSelected?.id === 1 || reportTypeSelected === null){
+            setSearchButton(true)
+        }else{
+            setSearchButton(false)
+        }
+    }, [reportTypeSelected]);
+
+    React.useEffect(() => {
+        if(reportTypeSelected?.id === 1 && levelSelected === null ){
+            setSearchButton(true)
+        }else{
+            setSearchButton(false)
+        }
+    }, [levelSelected]);
 
     return (
         <>
@@ -126,10 +148,7 @@ const EnrollmentReports = () => {
                             <Autocomplete
                                 options={listPeriods}
                                 renderInput={(params) => (
-                                    <TextField {...params} variant="standard" label="Periodo"
-                                    //   helperText={(representativeObject.repStatus === null ||representativeObject.repStatus === '')? requiredField : '' }
-                                    //   error={orfStatus} 
-                                    />
+                                    <TextField {...params} variant="standard" label="Periodo" />
                                 )}
                                 value={periodSelected}
                                 getOptionLabel={(option) => `${option.perStartYear} - ${option.perEndYear}`}
@@ -137,7 +156,6 @@ const EnrollmentReports = () => {
                                     setPeriodSelected(newValue)
                                 }}
                                 required
-                                // key={clearField.status}
                                 noOptionsText={'Sin Opciones'}
                                 sx={{ width: '20%' }}
                                 id="clear-on-escape"
@@ -145,10 +163,7 @@ const EnrollmentReports = () => {
                             <Autocomplete
                                 options={reportType}
                                 renderInput={(params) => (
-                                    <TextField {...params} variant="standard" label="Tipo de Reporte"
-                                    //   helperText={(representativeObject.repStatus === null ||representativeObject.repStatus === '')? requiredField : '' }
-                                    //   error={orfStatus} 
-                                    />
+                                    <TextField {...params} variant="standard" label="Tipo de Reporte" />
                                 )}
                                 value={reportTypeSelected}
                                 getOptionLabel={(option) => `${option.title}`}
@@ -156,13 +171,14 @@ const EnrollmentReports = () => {
                                     setReportTypeSelected(newValue)
                                     }}
                                 required
-                                // key={clearField.status}
+                            
                                 noOptionsText={'Sin Opciones'}
                                 sx={{ width: '40%' }}
                                 id="clear-on-escape"
                             />
                             <Button variant="outlined" size="small"
-                            // onClick={() => searchIdentification()}
+                            disabled={searchButton}
+                            onClick={() => searchReport()}
                             >Buscar</Button>
                         </Stack>
 
@@ -172,10 +188,7 @@ const EnrollmentReports = () => {
                             <Autocomplete
                                     options={listLevels}
                                     renderInput={(params) => (
-                                        <TextField {...params} variant="standard" label="Grados"
-                                        //   helperText={(representativeObject.repStatus === null ||representativeObject.repStatus === '')? requiredField : '' }
-                                        //   error={orfStatus} 
-                                        />
+                                        <TextField {...params} variant="standard" label="Grados" />
                                     )}
                                      value={levelSelected}
                                      getOptionLabel={(option) => `${option.level.levName}`}
@@ -185,7 +198,6 @@ const EnrollmentReports = () => {
                                         setListSections(newValue.sections)
                                     }}
                                     required
-                                    // key={clearField.status}
                                     noOptionsText={'Sin Opciones'}
                                     sx={{ width: '20%' }}
                                     id="clear-on-escape"
@@ -193,20 +205,14 @@ const EnrollmentReports = () => {
                                 <Autocomplete
                                     options={listSections}
                                     renderInput={(params) => (
-                                        <TextField {...params} variant="standard" label="Secciones"
-                                        //   helperText={(representativeObject.repStatus === null ||representativeObject.repStatus === '')? requiredField : '' }
-                                        //   error={orfStatus} 
-                                        />
+                                        <TextField {...params} variant="standard" label="Secciones" />
                                     )}
-                                    // value={sectti }
-                                    // getOptionLabel={(option) => `${option.perStartYear} - ${option.perEndYear}`}
+                                    value={sectionSelected}
                                     getOptionLabel={(option) => `${option.section.secName}`}
                                     onChange={(event, newValue) => {
-                                        // console.log('periodo seleccionado',newValue)
-                                        // setPeriodSelected(newValue.perId)
+                                        setSectionSelected(newValue)
                                     }}
                                     required
-                                    // key={clearField.status}
                                     noOptionsText={'Sin Opciones'}
                                     sx={{ width: '20%' }}
                                     id="clear-on-escape"
