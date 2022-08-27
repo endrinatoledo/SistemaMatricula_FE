@@ -51,7 +51,9 @@ const EnrollmentReports = () => {
     const [alertType, setAlertType] = React.useState('');
     const [alertModal, setAlertModal] = React.useState(false)
     const [periodSelected, setPeriodSelected] = React.useState(null)
+    const [levelSelected, setLevelSelected] = React.useState(null)
     const [reportTypeSelected, setReportTypeSelected] = React.useState(null)
+
     const reportType = [
         { id: 1, title: 'Listado de Alumnos por Gradro y Sección' },
         { id: 2, title: 'Estadística' }, // grado, cantidad total de alumnos, cantidad de niñas, cant de niños
@@ -64,7 +66,8 @@ const EnrollmentReports = () => {
 
             if (resultPeriods.ok === true && resultPeriods.data) {
                 setListPeriods(resultPeriods.data)
-            } else {
+            } 
+            else {
                 setMessage('Error al consultar Periodos')
                 setAlertType('error')
                 setAlertModal(true)
@@ -80,10 +83,11 @@ const EnrollmentReports = () => {
 
         try {
             const resultPeriodLevelSection = (await AxiosInstance.get(`/periodLevelSection/period/${periodSelected.perId}`)).data
-            console.log('resultPeriodLevelSection',resultPeriodLevelSection)
-            if (resultPeriodLevelSection.ok === true && resultPeriodLevelSection.data) {
-                if(resultPeriodLevelSection.data.length > 0){
-
+            
+            if (resultPeriodLevelSection.ok === true ) {
+                if(resultPeriodLevelSection.data !== undefined){
+                    console.log('resultPeriodLevelSection.data.levels',resultPeriodLevelSection.data.levels)
+                    setListLevels(resultPeriodLevelSection.data.levels)
                 }else{
                     setMessage('No hay grados ni secciones asociados a un periodo')
                     setAlertType('error')
@@ -149,11 +153,8 @@ const EnrollmentReports = () => {
                                 value={reportTypeSelected}
                                 getOptionLabel={(option) => `${option.title}`}
                                 onChange={(event, newValue) => {
-                                    console.log('tipo de reporte seleccionado', newValue)
                                     setReportTypeSelected(newValue)
-                                    //   setRepresentativeObject({...representativeObject, repStatus : newValue.value ? newValue.value : null})          
-                                    //   setSelectedRepresentative({...selectedRepresentative, repStatus : newValue.value ? newValue.value : selectedRepresentative.repStatus})
-                                }}
+                                    }}
                                 required
                                 // key={clearField.status}
                                 noOptionsText={'Sin Opciones'}
@@ -176,11 +177,12 @@ const EnrollmentReports = () => {
                                         //   error={orfStatus} 
                                         />
                                     )}
-                                    // value={(editRepresentative) ? labelStatus(selectedRepresentative.repStatus) : labelStatus(representativeObject.repStatus) }
-                                    // getOptionLabel={(option) => `${option.perStartYear} - ${option.perEndYear}`}
+                                     value={levelSelected}
+                                     getOptionLabel={(option) => `${option.level.levName}`}
                                     onChange={(event, newValue) => {
-                                        // console.log('periodo seleccionado',newValue)
-                                        // setPeriodSelected(newValue.perId)
+                                        console.log('grado seleccionado',newValue)
+                                        setLevelSelected(newValue)
+                                        setListSections(newValue.sections)
                                     }}
                                     required
                                     // key={clearField.status}
@@ -196,8 +198,9 @@ const EnrollmentReports = () => {
                                         //   error={orfStatus} 
                                         />
                                     )}
-                                    // value={(editRepresentative) ? labelStatus(selectedRepresentative.repStatus) : labelStatus(representativeObject.repStatus) }
+                                    // value={sectti }
                                     // getOptionLabel={(option) => `${option.perStartYear} - ${option.perEndYear}`}
+                                    getOptionLabel={(option) => `${option.section.secName}`}
                                     onChange={(event, newValue) => {
                                         // console.log('periodo seleccionado',newValue)
                                         // setPeriodSelected(newValue.perId)
