@@ -2,9 +2,14 @@ import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
 import JoinRightRoundedIcon from '@mui/icons-material/JoinRightRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 const AxiosInstance = require("../utils/request").default;
 
 const TableStudent = ({mode,renderStatus, setRenderStatus,listStudent, setListStudent, studentsData,setStudentsData}) => {
+
+    const [message  , setMessage] = React.useState('')
+    const [alertType, setAlertType] = React.useState('');
+    const [alertModal, setAlertModal] = React.useState(false)
 
     const columns = [
         { title: 'Tipo', field: 'stuIdType', cellStyle:{paddingLeft:'2%'}},
@@ -12,7 +17,7 @@ const TableStudent = ({mode,renderStatus, setRenderStatus,listStudent, setListSt
         { title: 'Primer Nombre', field: 'stuFirstName'},
         { title: 'Primer Apellido', field: 'stuSurname' },   
         { title: 'Fecha', field: 'stuDateOfBirth',type:'date'},
-        { title: 'Estatus',width: 70, field: 'stuStatus',lookup: {1: 'Activo', 2:'Inactivo'}}     
+        { title: 'Estatus',width: 70, field: 'stuStatus',lookup: {1: 'Activo', 2:'Inactivo'}}   
       ];
 
       if(studentsData !== null){
@@ -31,7 +36,10 @@ const TableStudent = ({mode,renderStatus, setRenderStatus,listStudent, setListSt
         const result = (await AxiosInstance.put(`/representativeStudent/status/student/${rowData.famId}`,rowData)).data
         setRenderStatus(renderStatus + 1)
       } catch (error) {
-        console.log('entro por error')
+        setMessage('Error al actualizar el estatus del estudiante')
+        setAlertType('error')
+        setAlertModal(true) 
+        console.log('Error al actualizar el estatus del estudiante',error)
       }
 
     }
@@ -70,6 +78,9 @@ const TableStudent = ({mode,renderStatus, setRenderStatus,listStudent, setListSt
             }}
 
    />
+   {(alertModal) ? 
+        <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
+      : null} 
     </>
   )
 }

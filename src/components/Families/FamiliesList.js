@@ -47,7 +47,8 @@ const FamiliesList = () => {
         setDataSource(resultFamilies.data)
       }
     }catch{
-      setMessage('Error de Conexion')
+      setAlertType('error')
+      setMessage('Error de Conexión al consultar listado de familia')
       setAlertModal(true)
       
   }

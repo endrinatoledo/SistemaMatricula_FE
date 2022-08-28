@@ -88,9 +88,10 @@ const EditFamily = () => {
     }
     try {
       const result = (await AxiosInstance.put(`/representativeStudent/${family}`,objData)).data
+
       setTimeout(() => {
         setStatusCcircularProgress(false)
-      if(result.message === 'Familia creada con éxito'){
+      if(result.message === 'Familia actualizada con éxito'){
         setMessage(result.message)
         setAlertType('success')
         setAlertModal(true) 
@@ -108,7 +109,9 @@ const EditFamily = () => {
       }
     }, 2000);
     } catch (error) {
-      
+        setMessage('Error al actualizar Familia')
+        setAlertType('error')
+        setAlertModal(true) 
     }
 
   }

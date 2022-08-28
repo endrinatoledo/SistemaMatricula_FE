@@ -1,14 +1,14 @@
 import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import IconButton from '@mui/material/IconButton';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
-import Button from '@mui/material/Button';
+import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import JoinRightRoundedIcon from '@mui/icons-material/JoinRightRounded';
 const AxiosInstance = require("../utils/request").default;
 const TableRepresentative = ({renderStatus, setRenderStatus,repStuData,family,mode,listRepresentative, setListRepresentative, representativesData,setRepresentativesData}) => {
+
+    const [message  , setMessage] = React.useState('')
+    const [alertType, setAlertType] = React.useState('');
+    const [alertModal, setAlertModal] = React.useState(false)
 
     const columns = [
         { title: 'Tipo', field: 'repIdType', width: 70, cellStyle:{maginLeft:'3%'}},
@@ -35,6 +35,9 @@ const TableRepresentative = ({renderStatus, setRenderStatus,repStuData,family,mo
           const result = (await AxiosInstance.put(`/representativeStudent/status/representative/${rowData.famId}`,rowData)).data
           setRenderStatus(renderStatus + 1)
         } catch (error) {
+          setMessage('Error al actualizar el estatus del estudiante')
+          setAlertType('error')
+          setAlertModal(true) 
           console.log('entro por error')
         }
 
@@ -83,6 +86,9 @@ const TableRepresentative = ({renderStatus, setRenderStatus,repStuData,family,mo
                 // })
             }}
    />
+   {(alertModal) ? 
+        <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
+      : null}
     </>
   )
 }
