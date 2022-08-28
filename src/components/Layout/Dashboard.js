@@ -43,6 +43,8 @@ import AddPayment from '../Payments/AddPayment';
 import SeePayment from '../Payments/SeePayment';
 import CollectionReports from '../Reports/CollectionReports';
 import EnrollmentReports from '../Reports/EnrollmentReports'
+import SeePeriod from '../Periods/SeePeriod';
+import EditPeriod from '../Periods/EditPeriod';
 
 const drawerWidth = 240;
 
@@ -194,6 +196,8 @@ const Dashboard= () => {
                       <Route path="/detallepago/:paymId"element={<SeePayment />} ></Route>
                       <Route path="/reportescobranza"element={<CollectionReports />} ></Route>
                       <Route path="/reportesmatricula"element={<EnrollmentReports />} ></Route>
+                      <Route path="/verperiodo"element={<SeePeriod />} ></Route>  
+                      <Route path="/editarperiodo"element={<EditPeriod />} ></Route>                                 
                     </Routes> 
                   }
                   </Paper>

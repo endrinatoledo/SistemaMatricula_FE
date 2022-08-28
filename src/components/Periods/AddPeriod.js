@@ -32,8 +32,6 @@ const UseStyles = makeStyles({
   stack: {
     marginTop: '5%'
   },
-
-
 });
 
 const AddPeriod = () => {
@@ -69,24 +67,6 @@ const AddPeriod = () => {
         } else if (element.c === true) {
           res = true
         } else if (element.d === true) {
-          res = true
-        } else if (element.e === true) {
-          res = true
-        } else if (element.f === true) {
-          res = true
-        } else if (element.g === true) {
-          res = true
-        } else if (element.h === true) {
-          res = true
-        } else if (element.i === true) {
-          res = true
-        } else if (element.j === true) {
-          res = true
-        } else if (element.k === true) {
-          res = true
-        } else if (element.l === true) {
-          res = true
-        } else if (element.m === true) {
           res = true
         }
       });
@@ -135,8 +115,6 @@ const AddPeriod = () => {
   const searchPeriod = async () => {
     try {
       const data = (await AxiosInstance.get(`/periods/startYear/${periodObject.startYear}`)).data
-
-
       if (data.message === 'Periodo registrado') {
 
         setMessage(data.message)

@@ -55,30 +55,6 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
           }else 
           if(element.levName === rows.levName && section === 'e'){
             return element.e
-          }else 
-          if(element.levName === rows.levName && section === 'f'){
-            return element.f
-          }else 
-          if(element.levName === rows.levName && section === 'g'){
-            return element.g
-          }else 
-          if(element.levName === rows.levName && section === 'h'){
-            return element.h
-          }else 
-          if(element.levName === rows.levName && section === 'i'){
-            return element.i
-          }else 
-          if(element.levName === rows.levName && section === 'j'){
-            return element.j
-          }else 
-          if(element.levName === rows.levName && section === 'k'){
-            return element.k
-          }else 
-          if(element.levName === rows.levName && section === 'l'){
-            return element.l
-          }else 
-          if(element.levName === rows.levName && section === 'm'){
-            return element.m
           }
         }         
         )
@@ -105,24 +81,7 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
                   ?  { ...element, d: event.target.checked }     
                   :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'e')
                   ?  { ...element, e: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'f')
-                  ?  { ...element, f: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'g')
-                  ?  { ...element, g: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'h')
-                  ?  { ...element, h: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'i')
-                  ?  { ...element, i: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'j')
-                  ?  { ...element, j: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'k')
-                  ?  { ...element, k: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'l')
-                  ?  { ...element, l: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'm')
-                  ?  { ...element, m: event.target.checked }     
-                  :
-                  element          
+                  :element          
         )
         setLevelsMap(updatedOSArray)
 
@@ -173,29 +132,15 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
           { title: 'C', field: 'c', render:(rows)=>componentRadio(rows,'c')},
           { title: 'D', field: 'd', render:(rows)=>componentRadio(rows,'d')},
           { title: 'E', field: 'e', render:(rows)=>componentRadio(rows,'e')},
-          { title: 'F', field: 'f', render:(rows)=>componentRadio(rows,'f')},
-          { title: 'G', field: 'g', render:(rows)=>componentRadio(rows,'g')},
-          { title: 'H', field: 'h', render:(rows)=>componentRadio(rows,'h')},
-          { title: 'I', field: 'i', render:(rows)=>componentRadio(rows,'i')},
-          { title: 'J', field: 'j', render:(rows)=>componentRadio(rows,'j')},
-          { title: 'K', field: 'k', render:(rows)=>componentRadio(rows,'k')},
-          { title: 'L', field: 'l', render:(rows)=>componentRadio(rows,'l')},
-          { title: 'M', field: 'm', render:(rows)=>componentRadio(rows,'m')}
          ]
-
         setColumns(newArray) 
-
       }
 
       React.useEffect(() => {  
         if(levelsMap.length > 0){
           columnStructure()
         }
-        
         }, [levelsMap]);
-
-      
-
   return (
     <>
     {(columns.length > 0) ? 
