@@ -68,6 +68,8 @@ const AddPeriod = () => {
           res = true
         } else if (element.d === true) {
           res = true
+        } else if (element.e === true) {
+          res = true
         }
       });
 
@@ -131,7 +133,9 @@ const AddPeriod = () => {
 
     } catch {
       console.log('***no')
-      // setConnErr(true)
+        setMessage('Error de conexión al validar periodo')
+        setAlertType('error')
+        setAlertModal(true)
     }
 
   }
