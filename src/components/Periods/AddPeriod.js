@@ -211,25 +211,18 @@ const AddPeriod = () => {
           required
           type={'number'}
           disabled={periodObject.inputStartYear}
-          // InputProps={{ readOnly: periodObject.inputStartYear }}
-          // key={keyIdentification}
           id="period"
           label="Agregar Año Inicio"
           variant="standard"
-          // helperText={errorMessage}
-          // error={orfRepIdentificationNumber}
           onChange={e => {
-
             setPeriodObject({ ...periodObject, startYear: e.target.value ? e.target.value : 0 })
             if (e.target.value.length < 4) { setButtonI(true) } else { setButtonI(false) }
           }
           }
         />
         <Button variant="outlined" size="small"
-          disabled={buttonI}
-          onClick={() => searchPeriod()}
+          disabled={buttonI} onClick={() => searchPeriod()}
         >Validar Periodo</Button>
-
       </Stack>
 
       {

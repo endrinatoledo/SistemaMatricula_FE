@@ -70,7 +70,29 @@ const TableLevels = ({mode, levelsMap, setLevelsMap,periodObject, setPeriodObjec
 
         console.log('event',event.target.checked)
         console.log('onclic ',event.target.name)
+        // console.log('levelsMap ',levelsMap)
+
+        for (let index = 0; index < levelsMap.length; index++) {
+          const element = levelsMap[index];
+          console.log('element.levName',element.levName);
+          console.log('arrayDeCadenas0',arrayDeCadenas[0]);
+          console.log('arrayDeCadenas1',arrayDeCadenas[1]);
+          (element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'a')
+            ?  console.log('entro aqui a',arrayDeCadenas)    
+            : (element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'b')
+              ?  console.log('entro aqui b',arrayDeCadenas)      
+              :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'c')
+                ?  console.log('entro aqui c',arrayDeCadenas)       
+                :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'd')
+                  ?  console.log('entro aqui d',arrayDeCadenas)      
+                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'e')
+                  ?  console.log('entro aqui c',arrayDeCadenas)       
+                  :console.log('ninguno',arrayDeCadenas)    
+          
+        }
+
         const updatedOSArray = levelsMap.map(element =>
+          
           (element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'a')
             ?  { ...element, a: event.target.checked }     
             : (element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'b')
@@ -83,6 +105,8 @@ const TableLevels = ({mode, levelsMap, setLevelsMap,periodObject, setPeriodObjec
                   ?  { ...element, e: event.target.checked }     
                   :element          
         )
+
+        console.log('//////////updatedOSArray/////////',updatedOSArray) 
         setLevelsMap(updatedOSArray)
 
       };
@@ -102,6 +126,16 @@ const TableLevels = ({mode, levelsMap, setLevelsMap,periodObject, setPeriodObjec
       }
 
       const columnStructure = () =>{
+        const newArray =  [ 
+          { title: 'Nombre del Nivel', field: 'levName',width:'auto',headerStyle:{width:300, marginLeft:'10px',marginRight:'10px'},},
+          { title: 'A', field: 'a',width:'auto', render:(rows)=>componentRadio(rows,'a')},
+          { title: 'B', field: 'b',width:'auto', render:(rows)=>componentRadio(rows,'b')},
+          { title: 'C', field: 'c', render:(rows)=>componentRadio(rows,'c')},
+          { title: 'D', field: 'd', render:(rows)=>componentRadio(rows,'d')},
+          { title: 'E', field: 'e', render:(rows)=>componentRadio(rows,'e')},
+         ]
+        setColumns(newArray) 
+
 
         //lOGICA DINAMICA
         // const columnsName = Object.keys(levelsMap[0])
@@ -125,15 +159,7 @@ const TableLevels = ({mode, levelsMap, setLevelsMap,periodObject, setPeriodObjec
         // } )
         // var newArray = result.filter((item) => item !== null);
         
-        const newArray =  [ 
-          { title: 'Nombre del Nivel', field: 'levName',width:'auto',headerStyle:{width:300, marginLeft:'10px',marginRight:'10px'},},
-          { title: 'A', field: 'a',width:'auto', render:(rows)=>componentRadio(rows,'a')},
-          { title: 'B', field: 'b',width:'auto', render:(rows)=>componentRadio(rows,'b')},
-          { title: 'C', field: 'c', render:(rows)=>componentRadio(rows,'c')},
-          { title: 'D', field: 'd', render:(rows)=>componentRadio(rows,'d')},
-          { title: 'E', field: 'e', render:(rows)=>componentRadio(rows,'e')},
-         ]
-        setColumns(newArray) 
+        
       }
 
       React.useEffect(() => {  
@@ -169,6 +195,7 @@ const TableLevels = ({mode, levelsMap, setLevelsMap,periodObject, setPeriodObjec
               paging:false
           }}
           onSelectionChange={rows => {
+            console.log('rows',rows)
               setPeriodObject({...periodObject, selectedPeriods:rows})
           }}
         />        

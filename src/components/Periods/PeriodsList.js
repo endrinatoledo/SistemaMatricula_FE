@@ -64,22 +64,22 @@ React.useEffect(() => {
           isFreeAction: true,
           onClick: (event, rowData) => {
             }
-        },{
-          icon: () =><VisibilityRoundedIcon />,
-          tooltip: 'Ver Detalles',
-          onClick: (event, rowData) => {
-            console.log('&&&&&&verrrrrr&&&&&&&&&&',rowData)
-            window.location = `verperiodo/${rowData.perId}`;
-          }
-        },{
-          icon: () =><EditRoundedIcon />,
-          tooltip: 'Editar Periodo',
-          onClick: (event, rowData) => {
-            console.log('&&&&&&&&editar&&&&&&&&',rowData)
-            window.location = `editarperiodo/${rowData.perId}`;
-
-          }
         }
+        // ,{
+        //   icon: () =><VisibilityRoundedIcon />,
+        //   tooltip: 'Ver Detalles',
+        //   onClick: (event, rowData) => {
+        //     console.log('&&&&&&verrrrrr&&&&&&&&&&',rowData)
+        //     window.location = `verperiodo/${rowData.perId}`;
+        //   }
+        // },{
+        //   icon: () =><EditRoundedIcon />,
+        //   tooltip: 'Editar Periodo',
+        //   onClick: (event, rowData) => {
+        //     console.log('&&&&&&&&editar&&&&&&&&',rowData)
+        //     window.location = `editarperiodo/${rowData.perId}`;
+        //   }
+        // }
     ]}    
      options={{
         width:300,

@@ -33,8 +33,6 @@ const UseStyles = makeStyles({
 });
 
 const EditPeriod = () => {
-
-  console.log('llego aquiiiii')
   let { perid } = useParams();
   const [period, setPeriod] = React.useState(perid)
   const [periodData, setPeriodData] = React.useState(null)
@@ -51,6 +49,8 @@ const EditPeriod = () => {
   let conteoMapUpdate = 0
 
   const valueMap = () =>{
+    conteoMapUpdate = conteoMapUpdate+1
+    console.log('??????????',conteoMapUpdate)
     let perLevSecList2 = perLevSecList.periodLevelSection
     let levelsMap2 = levelsMap   
 
@@ -202,7 +202,9 @@ const EditPeriod = () => {
 
   React.useEffect(() => {
     conteoMapUpdate = conteoMapUpdate + 1
+    console.log('conteoMapUpdate',conteoMapUpdate)
     if(conteoMapUpdate === 1 && levelsMap.length > 0){
+      console.log('entro a conteoMapUpdate', conteoMapUpdate)
       valueMap()
     }
   }, [levelsMap]);
