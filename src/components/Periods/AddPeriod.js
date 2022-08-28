@@ -2,8 +2,6 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import LoadingButtons from '../commonComponents/LoadingButton';
 import { NavLink } from 'react-router-dom'
@@ -237,7 +235,7 @@ const AddPeriod = () => {
       {
         (showTable && allLevels.length > 0 && allSections.length > 0) ?
           <>
-            <TableLevels levelsMap={levelsMap} setLevelsMap={setLevelsMap} periodObject={periodObject} setPeriodObject={setPeriodObject} allLevels={allLevels} setAllLevels={setAllLevels}
+            <TableLevels mode={mode} levelsMap={levelsMap} setLevelsMap={setLevelsMap} periodObject={periodObject} setPeriodObject={setPeriodObject} allLevels={allLevels} setAllLevels={setAllLevels}
               allSections={allSections} setAllSections={setAllSections} />
           </>
           : null

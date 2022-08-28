@@ -65,24 +65,19 @@ React.useEffect(() => {
           onClick: (event, rowData) => {
             }
         },{
-          icon: () =><NavLink to='/verperiodo' ><VisibilityRoundedIcon /></NavLink>,
+          icon: () =><VisibilityRoundedIcon />,
           tooltip: 'Ver Detalles',
           onClick: (event, rowData) => {
             console.log('&&&&&&verrrrrr&&&&&&&&&&',rowData)
-            // setTitleModalHeader('Detalles del Representante ' + rowData.repFirstName + ' ' + rowData.repSurname)
-            // setSelectedRepresentative(rowData)
-            // setSeeRepresentativeDetails(true)
-            // setOpenModal(true)
+            window.location = `verperiodo/${rowData.perId}`;
           }
         },{
-          icon: () =><NavLink to='/editarperiodo' ><EditRoundedIcon /></NavLink>,
-          tooltip: 'Ver Detalles',
+          icon: () =><EditRoundedIcon />,
+          tooltip: 'Editar Periodo',
           onClick: (event, rowData) => {
             console.log('&&&&&&&&editar&&&&&&&&',rowData)
-            // setTitleModalHeader('Detalles del Representante ' + rowData.repFirstName + ' ' + rowData.repSurname)
-            // setSelectedRepresentative(rowData)
-            // setSeeRepresentativeDetails(true)
-            // setOpenModal(true)
+            window.location = `editarperiodo/${rowData.perId}`;
+
           }
         }
     ]}    

@@ -27,7 +27,7 @@ const UseStyles = makeStyles({
 
 });
 
-const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allLevels, setAllLevels,allSections, setAllSections}) => {
+const TableLevels = ({mode, levelsMap, setLevelsMap,periodObject, setPeriodObject,allLevels, setAllLevels,allSections, setAllSections}) => {
 
     const [nameColumnStructure, setNameColumnStructure] = React.useState([])
     const [columns, setColumns] = React.useState([])
@@ -141,6 +141,11 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
           columnStructure()
         }
         }, [levelsMap]);
+        React.useEffect(() => {  
+          if(mode === 'edit'){
+            columnStructure()
+          }
+          }, [0]);
   return (
     <>
     {(columns.length > 0) ? 

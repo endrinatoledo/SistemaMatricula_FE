@@ -196,8 +196,8 @@ const Dashboard= () => {
                       <Route path="/detallepago/:paymId"element={<SeePayment />} ></Route>
                       <Route path="/reportescobranza"element={<CollectionReports />} ></Route>
                       <Route path="/reportesmatricula"element={<EnrollmentReports />} ></Route>
-                      <Route path="/verperiodo"element={<SeePeriod />} ></Route>  
-                      <Route path="/editarperiodo"element={<EditPeriod />} ></Route>                                 
+                      <Route path="/verperiodo/:perid"element={<SeePeriod />} ></Route>  
+                      <Route path="/editarperiodo/:perid"element={<EditPeriod />} ></Route>                                 
                     </Routes> 
                   }
                   </Paper>
