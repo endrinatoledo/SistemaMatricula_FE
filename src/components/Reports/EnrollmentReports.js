@@ -107,8 +107,27 @@ const EnrollmentReports = () => {
         }
     }
 
-    const searchReport = () =>{
-        const url = ``
+    const searchReport = async () =>{
+        let url = ``
+        let data = {
+            periodo : periodSelected,
+            level: null,
+            section: null
+        }
+        if (reportTypeSelected.id === 1){
+            url = `/reports/levelsection`
+            data.level =  levelSelected.level;
+            data.section = sectionSelected.section;
+        }else
+        if(reportTypeSelected.id === 2){
+            url = `/reports/statistics`
+        }else
+        if(reportTypeSelected.id === 3){
+            url = `/reports/familypayroll`
+        }        
+
+        const result = (await AxiosInstance.post(url,data)).data
+        console.log('result',result)
 
     } 
 
@@ -124,6 +143,8 @@ const EnrollmentReports = () => {
         if(reportTypeSelected?.id === 1 || reportTypeSelected === null){
             setSearchButton(true)
         }else{
+            setLevelSelected(null)
+            setSectionSelected(null)
             setSearchButton(false)
         }
     }, [reportTypeSelected]);
