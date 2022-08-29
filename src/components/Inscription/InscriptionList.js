@@ -17,7 +17,7 @@ const InscriptionList = () => {
 
 
     const columns = [
-        { title: 'Identificación', field: 'identification',filtering:true},
+        { title: 'Identificaciónn', aling: 'center', field: 'identification',filtering:true},
         { title: 'Nombres', field: 'names',filtering:true},
         { title: 'Apellidos', field: 'lastNames',filtering:true},
         { title: 'Periodo', field: 'period',filtering:true},
@@ -29,14 +29,14 @@ const InscriptionList = () => {
 
         try{
           const resultInscripcion = (await AxiosInstance.get("/inscriptions/")).data
-
+          console.log('resultInscripcion',resultInscripcion)
           if(resultInscripcion.data.length > 0){
             const data = resultInscripcion.data
             let result = []
             data.forEach( item => {
                 result.push({
                     id : item.insId,
-                    identification : `${item.student.stuIdType}-${item.student.stuIdentificationNumber}`,
+                    identification : `${(item.student.stuIdType)?item.student.stuIdType:''}-${(item.student.stuIdentificationNumber)?item.student.stuIdentificationNumber:''}`,
                     names : `${item.student.stuFirstName} ${item.student.stuSecondSurname}`,
                     lastNames : `${item.student.stuSurname} ${item.student.stuSecondSurname}`,
                     period : `${item.period.perStartYear}-${item.period.perEndYear}`,

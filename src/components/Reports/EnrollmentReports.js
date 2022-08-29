@@ -117,7 +117,10 @@ const EnrollmentReports = () => {
         if (reportTypeSelected.id === 1){
             url = `/reports/levelsection`
             data.level =  levelSelected.level;
-            data.section = sectionSelected.section;
+            if(sectionSelected !== null){
+                data.section = sectionSelected.section;
+            }
+            
         }else
         if(reportTypeSelected.id === 2){
             url = `/reports/statistics`
