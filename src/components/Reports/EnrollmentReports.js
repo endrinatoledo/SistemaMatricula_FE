@@ -6,6 +6,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { makeStyles } from '@mui/styles';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Button from '@mui/material/Button';
+import TableReport from './TableReport';
 const AxiosInstance = require("../utils/request").default;
 
 const UseStyles = makeStyles({
@@ -55,6 +56,10 @@ const EnrollmentReports = () => {
     const [sectionSelected, setSectionSelected] = React.useState(null)
     const [reportTypeSelected, setReportTypeSelected] = React.useState(null)
     const [searchButton, setSearchButton] = React.useState(true)
+    const [dataReporte, setDataReport] = React.useState([])
+    const [columns, setColumns] = React.useState([])
+    const [seeTable, setSeeTable]= React.useState(false)
+    const [excelStructure, setExcelStructure]= React.useState({})
 
     const reportType = [
         { id: 1, title: 'Listado de Alumnos por Gradro y Sección' },
@@ -88,7 +93,6 @@ const EnrollmentReports = () => {
             
             if (resultPeriodLevelSection.ok === true ) {
                 if(resultPeriodLevelSection.data !== undefined){
-                    console.log('resultPeriodLevelSection.data.levels',resultPeriodLevelSection.data.levels)
                     setListLevels(resultPeriodLevelSection.data.levels)
                 }else{
                     setMessage('No hay grados ni secciones asociados a un periodo')
@@ -107,7 +111,31 @@ const EnrollmentReports = () => {
         }
     }
 
+    const tableColumns = (reportTypeSelected) => {
+
+        if(reportTypeSelected.id === 1){
+            setColumns([
+                { title: 'Primer Nombre', field: 'stuFirstName'},
+                { title: 'Segundo Nombre', field: 'stuSecondName'},
+                { title: 'Primer Apellido', field: 'stuSurname'},
+                { title: 'Segundo Apellido', field: 'stuSecondSurname' },        
+                { title: 'Tipo identificación', field: 'stuIdType'},
+                { title: 'Identificación', field: 'stuIdentificationNumber'},
+                { title: 'Fecha N.', field: 'stuDateOfBirth'},
+                { title: 'Sexo', field: 'stuSex' },        
+                { title: 'Grado', field: 'levelName'},
+                { title: 'Sección', field: 'sectionName'},
+            ])
+            setExcelStructure({
+                fileName : 'ReporteDeEstudiantesPorGradoySeccion.xlsx',
+                columns:[["Primer Nombre", "Segundo Nombre", "Primer Apellido","Segundo Apellido", "Tipo identificación","Identificación", "Fecha N.","Sexo", "Grado", "Sección"]],
+                sheetName: "Estudiantes"
+            })
+        }
+    }
+
     const searchReport = async () =>{
+        tableColumns(reportTypeSelected)
         let url = ``
         let data = {
             periodo : periodSelected,
@@ -115,6 +143,7 @@ const EnrollmentReports = () => {
             section: null
         }
         if (reportTypeSelected.id === 1){
+            
             url = `/reports/levelsection`
             data.level =  levelSelected.level;
             if(sectionSelected !== null){
@@ -130,13 +159,24 @@ const EnrollmentReports = () => {
         }        
 
         const result = (await AxiosInstance.post(url,data)).data
-        console.log('result',result)
+
+        if(result.ok === true){
+            setDataReport(result.data)
+            // setSeeTable(true)
+        }else{
+            setMessage(result.message)
+            setAlertType('error')
+            setAlertModal(true)
+        }
 
     } 
 
     React.useEffect(() => {
         getAllPeriod()
     }, [0]);
+    React.useEffect(() => {
+        if(dataReporte.length > 0)  {setSeeTable(true)}
+    }, [dataReporte]);
     React.useEffect(() => {
         if(periodSelected !== null){
             getPeriodLevelSectionByPerId()
@@ -217,7 +257,6 @@ const EnrollmentReports = () => {
                                      value={levelSelected}
                                      getOptionLabel={(option) => `${option.level.levName}`}
                                     onChange={(event, newValue) => {
-                                        console.log('grado seleccionado',newValue)
                                         setLevelSelected(newValue)
                                         setListSections(newValue.sections)
                                     }}
@@ -254,6 +293,9 @@ const EnrollmentReports = () => {
             {(alertModal) ?
                 <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
                 : null}
+            {(seeTable)
+            ? <TableReport columns={columns} dataReporte={dataReporte} excelStructure={excelStructure}/>
+            : null}    
         </>
     )
 }
