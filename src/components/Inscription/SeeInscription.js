@@ -70,7 +70,6 @@ const SeeInscription = () => {
     try {
       const resultFamilies = (await AxiosInstance.get(`/representativeStudent/byFam/${family.famId}`)).data
       if (resultFamilies.ok === true) {
-        console.log('resultFamilies',resultFamilies.data)
         setListOfRepresentatives(resultFamilies.data.representatives)
         setListOfStudents(resultFamilies.data.students)
       }
