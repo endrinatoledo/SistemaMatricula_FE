@@ -132,6 +132,19 @@ const EnrollmentReports = () => {
                 sheetName: "Estudiantes"
             })
         }
+        if(reportTypeSelected.id === 2){
+            setColumns([
+                { title: 'Grado', field: 'levName'},
+                { title: 'Estudiantes', field: 'students'},
+                { title: 'Varones', field: 'boys'},
+                { title: 'Hembras', field: 'girls' },        
+            ])
+            setExcelStructure({
+                fileName : 'EstadisticaDeEstudiantes.xlsx',
+                columns:[["Grado", "Estudiantes", "Varones","Hembras"]],
+                sheetName: "Estadística de Estudiantes"
+            })
+        }
 
         if(reportTypeSelected.id === 3){
             setColumns([
