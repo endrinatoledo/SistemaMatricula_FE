@@ -8,7 +8,7 @@ import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Button from '@mui/material/Button';
 import TableReport from './TableReport';
 const AxiosInstance = require("../utils/request").default;
-
+ 
 const UseStyles = makeStyles({
     stack: {
         marginTop: 40
@@ -132,6 +132,23 @@ const EnrollmentReports = () => {
                 sheetName: "Estudiantes"
             })
         }
+
+        if(reportTypeSelected.id === 3){
+            setColumns([
+                { title: 'Familia', field: 'family'},
+                { title: 'Identificación', field: 'IdentificationRep'},
+                { title: 'Representantes', field: 'representatives'},
+                { title: 'Identificación', field: 'IdentificationStu' },        
+                { title: 'Estudiantes', field: 'students'},      
+                { title: 'Grado', field: 'level'},
+            ])
+            setExcelStructure({
+                fileName : 'ReporteDeNominadeFamilia.xlsx',
+                columns:[["Familia", "Identificación", "Representantes","Identificación", "Estudiantes", "Grado"]],
+                sheetName: "Nomina de Familias"
+            })
+        }
+
     }
 
     const searchReport = async () =>{
@@ -159,7 +176,6 @@ const EnrollmentReports = () => {
         }        
 
         const result = (await AxiosInstance.post(url,data)).data
-
         if(result.ok === true){
             setDataReport(result.data)
             // setSeeTable(true)
@@ -294,7 +310,7 @@ const EnrollmentReports = () => {
                 <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
                 : null}
             {(seeTable)
-            ? <TableReport columns={columns} dataReporte={dataReporte} excelStructure={excelStructure}/>
+            ? <TableReport periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure}/>
             : null}    
         </>
     )

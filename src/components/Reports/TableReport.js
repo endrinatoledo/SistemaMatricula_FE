@@ -8,52 +8,39 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 const DownloadExcel = require('../commonComponents/DownloadExcel').default 
 
-const TableReport = ({columns,dataReporte,excelStructure}) => {
+const TableReport = ({periodSelected,reportTypeSelected,columns,dataReporte,excelStructure}) => {
+
+  const [reportName, setReportName] = React.useState('')
+  
+  const reportNameF = () => {
+    if(reportTypeSelected.id === 1 ){
+      setReportName('Reporte de Estudiantes')
+      return `U.E. Colegio Lourdes, Reporte de Estudiantes - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear}`
+    }else if(reportTypeSelected.id === 2 ){
+      setReportName('Reporte de Estadísticas')
+      return `U.E. Colegio Lourdes, Reporte de Estadísticas - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear}`
+    }else if(reportTypeSelected.id === 3 ){
+      // setReportName('Reporte de Nómina de Asistencia de Familia')
+      // return `U.E. COLEGIO LOURDES \n
+      // Dpto. de Administración\n
+      // Nómina de Asistencia de Familias\n
+      // Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear}\n
+      // `
+      setReportName('Reporte de Nómina de Asistencia de Familia')
+      return `U.E. Colegio Lourdes, Nómina de Asistencia de Familias - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear}`
+    }
+  }
+
+  React.useEffect(() => {
+}, [0]);
+
   return (
     <>
-      <MaterialTable title={'Estudiantes'}
+    <MaterialTable title={reportName}
     
     data={dataReporte} 
     columns={columns}
-//     actions={[
-//      { icon: () => <FilterList />,
-//        tooltip: "Activar Filtros",
-//        onClick : ()=> setFiltering(!filtering),
-//        isFreeAction: true },
-
-//        {
-//          icon: () => <EditRoundedIcon />,
-//          tooltip: 'Editar Estudiante',
-//          onClick: (event, rowData) => {
-//            setTitleModalHeader('Editar Estudiante')
-//            setSelectedStudent(rowData)
-//            setEditStudent(true)
-//            setOpenModal(true)
-//          }
-//        },{
-//          icon: () => <VisibilityRoundedIcon />,
-//          tooltip: 'Ver Detalles',
-//          onClick: (event, rowData) => {
-//            console.log(rowData)
-//            setTitleModalHeader('Detalles del Estudiante ' + rowData.stuFirstName + ' ' + rowData.stuSurname)
-//            setSelectedStudent(rowData)
-//            setSeeStudentDetails(true)
-//            setOpenModal(true)
-//          }
-//        },
-//        {
-//            icon: () => <PersonAddAltRoundedIcon />,
-//            tooltip: 'Agregar Estudiante',
-//            isFreeAction: true,
-//            onClick: (event, rowData) => {
-//                setTitleModalHeader('Nuevo Estudiante')
-//                setSelectedStudent(rowData)
-//                setOpenModal(true)
-//              }
-//        },
-       
-//    ]}
-    options={{
+    options={{ 
        width:300,
        actionsCellStyle:{paddingLeft:50,paddingRight:50},
        headerStyle: {
@@ -63,20 +50,19 @@ const TableReport = ({columns,dataReporte,excelStructure}) => {
          fontSize:18,
        },
        exportMenu: [{
-         label: 'Export PDF',
-         exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte de Estudiantes')
-       }, 
+         label: 'Exportar PDF',
+         exportFunc: (cols, datas) => ExportPdf(cols, datas, reportNameF())
+      }, 
        {
-         label: 'Export EXCEL',
+         label: 'Exportar EXCEL',
          exportFunc: (cols, datas) => DownloadExcel(cols, datas,excelStructure)
        }
      ],
-        // filtering:filtering,
         actionsColumnIndex:-1,
         addRowPosition:'first'
     }}
-
    />
+        
     </>
   )
 }
