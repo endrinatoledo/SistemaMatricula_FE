@@ -20,9 +20,9 @@ const TableStudent = ({mode,renderStatus, setRenderStatus,listStudent, setListSt
         { title: 'Estatus',width: 70, field: 'stuStatus',lookup: {1: 'Activo', 2:'Inactivo'}}   
       ];
 
-      if(studentsData !== null){
-        setListStudent(studentsData)
-      }
+      // if(studentsData !== null){
+      //   setListStudent(studentsData)
+      // }
 
       function deleteItemStudent(rowData){
         const newArray = listStudent.filter((item) => item.stuId !== rowData.stuId)
@@ -44,18 +44,22 @@ const TableStudent = ({mode,renderStatus, setRenderStatus,listStudent, setListSt
 
     }
 
+  //   React.useEffect(() => {  
+  //     // handleClose()
+  // }, [listStudent.length]);
+
   return (
-    <>
+    <>      
         <MaterialTable title={'Listado'}
             data={listStudent} 
             columns={columns}
             actions={[
-              (mode === 'add')? 
+              // (mode === 'add')? 
                 { icon: () => <DeleteOutlineRoundedIcon />,
                   tooltip: "Eliminar de la lista",
                   onClick : (event, rowData)=> deleteItemStudent(rowData)
-                }
-              : 
+                },
+              // : 
                 { 
                   icon: () => <JoinRightRoundedIcon />,
                   tooltip: "Cambiar estatus",

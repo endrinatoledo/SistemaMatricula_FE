@@ -32,7 +32,7 @@ const UseStyles = makeStyles({
       label : "Pasaporte"}
   ]
 
-const SearchStudent = ({listStudent,setListStudent}) => {
+const SearchStudent = ({mode,estudiantesEstaticos,listStudent,setListStudent}) => {
     const classes = UseStyles();
     const [identification, setIdentification] = React.useState({stuIdType:null, stuIdentificationNumber: '', stuFirstName:'',stuSecondName:'',stuSurname:'',stuSecondSurname:''})
     const [buttonI, setButtonI] = React.useState(true)
@@ -65,8 +65,7 @@ const SearchStudent = ({listStudent,setListStudent}) => {
         
         try{
           const data = (await AxiosInstance.post("/students/byIdentification",identification)).data
-
-          console.log('*****************************************',data)
+  
           if(data.data === 'registrado'){
             if(data.result.length === 1){
               setListStudent(listStudent.concat([data.result[0]]))
@@ -101,6 +100,15 @@ const SearchStudent = ({listStudent,setListStudent}) => {
             Estudiantes
         </Typography> 
         <Divider variant="middle" />
+        <div className={classes.TextField}>
+        {(mode =='edit') ?
+            estudiantesEstaticos.map((element) => (
+                <Typography variant="h6" color="text.secondary">
+                   {`${element.stuIdType ? element.stuIdType : ''}-${element.stuIdentificationNumber?element.stuIdentificationNumber : ''} ${element.stuFirstName} ${element.stuSecondName ? element.stuSecondName : ''} ${element.stuSurname} ${element.stuSecondSurname ? element.stuSecondSurname : ''}`}
+                </Typography>
+              ))
+                : null}
+        </div>
         <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
               
         <Autocomplete 

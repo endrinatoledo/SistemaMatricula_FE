@@ -42,9 +42,10 @@ const EditFamily = () => {
   const [studentsData, setStudentsData] = React.useState([])
   const [repStuData, setRepStuData] = React.useState({})
   const [renderStatus, setRenderStatus] = React.useState(0)
+  const [estudiantesEstaticos, setEstudiantesEstaticos] = React.useState(0)
+  let conteoLLamado = 0
 
   const mode = 'edit'
-
   const classes = UseStyles();
 
   const getFamilyById = async () => {
@@ -55,13 +56,16 @@ const EditFamily = () => {
       if (resultFamilies.ok === true) {
         setFamilyData(resultFamilies.data.family)
         setRepresentativesData(resultFamilies.data.representatives)
-        setStudentsData(resultFamilies.data.students)
+        // setStudentsData(resultFamilies.data.students)
+        setEstudiantesEstaticos(resultFamilies.data.students)
         setRepStuData(resultFamilies.data.representativeStudent)
         setToShow(toShow + 1)
       }
     } catch {
-      console.log('error al consutlar')
-
+      console.log('error al consultar familia')
+        setMessage('Error al consultar Familia')
+        setAlertType('error')
+        setAlertModal(true)
     }
   }
 
@@ -91,22 +95,22 @@ const EditFamily = () => {
 
       setTimeout(() => {
         setStatusCcircularProgress(false)
-      if(result.message === 'Familia actualizada con éxito'){
+      if(result.ok == true){
         setMessage(result.message)
         setAlertType('success')
         setAlertModal(true) 
         window.location = '/familias';
 
-      }else if(result.message === 'Error de conexión'){
+      }else if(result.ok === false){
         setMessage(result.message)
         setAlertType('error')
         setAlertModal(true) 
-
-      }else{
-        setMessage('Error al actualizar Familia')
-        setAlertType('error')
-        setAlertModal(true) 
       }
+      // else{
+      //   setMessage('Error al actualizar Familia')
+      //   setAlertType('error')
+      //   setAlertModal(true) 
+      // }
     }, 2000);
     } catch (error) {
         setMessage('Error al actualizar Familia')
@@ -135,6 +139,7 @@ const EditFamily = () => {
     React.useEffect(() => {  
       enableButton()
       }, [listStudent.length])
+
       React.useEffect(() => {  
         enableButton()
         }, [familyName])
@@ -142,13 +147,16 @@ const EditFamily = () => {
     React.useEffect(() => {  
         handleClose()
     }, [userResponse]);
+
     React.useEffect(() => {
-      getFamilyById()
+      if(conteoLLamado === 0){
+        getFamilyById()
+      }
     }, [family]);  
   
-    React.useEffect(() => {
-      getFamilyById()
-    }, [renderStatus]);
+    // React.useEffect(() => {
+    //   getFamilyById()
+    // }, [renderStatus]);
   return (
     <>
     <Box >
@@ -158,7 +166,7 @@ const EditFamily = () => {
         <FamilyData familyName={familyName} setFamilyName={setFamilyName} familyData={familyData} setFamilyData={setFamilyData}/>
         <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} />
         <TableRepresentative renderStatus={renderStatus} setRenderStatus={setRenderStatus} repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData} setRepresentativesData={setRepresentativesData}/>
-        <SearchStudent listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
+        <SearchStudent mode={mode} estudiantesEstaticos={estudiantesEstaticos} listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
         <TableStudent mode={mode} renderStatus={renderStatus} setRenderStatus={setRenderStatus} listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData} setStudentsData={setStudentsData}></TableStudent>
     
               {
