@@ -7,11 +7,13 @@ import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import ModeRoundedIcon from '@mui/icons-material/ModeRounded';
 import {NavLink} from 'react-router-dom'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 const { standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 const StatusInTable = require('../commonComponents/StatusInTable').default
 const DownloadExcel = require('../commonComponents/DownloadExcel').default 
 const ModalConfigureFamily = require('./ModalConfigureFamily').default 
+const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
 
 const FamiliesList = () => {
   
@@ -20,6 +22,9 @@ const FamiliesList = () => {
     const [filtering, setFiltering] = React.useState(false)
     const [selectedFamily, setSelectedFamily] = React.useState()
     const [openModal, setOpenModal] = React.useState(false)
+    const [modalCancel  , setModalCancel] = React.useState(false)
+    const [userResponse  , setUserResponse] = React.useState('')
+    const [famId  , setFamId] = React.useState('')
 
     const excelStructure ={
       fileName : 'ReporteDeFamilias.xlsx',
@@ -29,6 +34,7 @@ const FamiliesList = () => {
     const [alertModal, setAlertModal] = React.useState(false)
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
+    
 
   const columns = [
     { title: 'Código', field: 'families.famCode', editable:false, width: 150,headerStyle:{paddingLeft:'4%'},cellStyle:{paddingLeft:'5%'},},
@@ -53,6 +59,48 @@ const FamiliesList = () => {
       
   }
 }
+const confirmCancelNewRepresentative =() =>{
+  setModalCancel(true)
+}
+const handleClose = () => {
+  if(userResponse === 'yes'){
+    validarFamiliaConInscripcion()
+  }else 
+  if(userResponse === 'no'){
+    setModalCancel(false)
+  }
+};
+
+const validarFamiliaConInscripcion = async () => {
+  try{
+    const resultFamilies = (await AxiosInstance.get("/inscriptions/family/"+Number(famId))).data
+    if(resultFamilies.data.length > 0){
+      setModalCancel(false)
+      setAlertType('error')
+      setMessage('ERROR: familia asociada a inscripción')
+      setAlertModal(true)
+    }else{
+      const eliminarFamilia = (await AxiosInstance.delete("/families/"+famId)).data
+      if(resultFamilies.ok === true){
+        setModalCancel(false)
+        setAlertType('success')
+        setMessage('Familia eliminada satisfactoriamente')
+        setAlertModal(true)
+        fillTable()
+      }else{
+        setModalCancel(false)
+        setAlertType('error')
+        setMessage('Error al eliminar familia')
+        setAlertModal(true)
+      }   
+    }
+  }catch{
+    setAlertType('error')
+    setMessage('Error de Conexión al eliminar registro de familia')
+    setAlertModal(true)
+}
+}
+
 
 React.useEffect(() => {  
     fillTable()
@@ -61,6 +109,10 @@ React.useEffect(() => {
         // setStatus(statusTag)
     
     }, [Reload]);
+
+    React.useEffect(() => {  
+      handleClose()
+  }, [userResponse]);
 
   return (
     <>
@@ -93,6 +145,13 @@ React.useEffect(() => {
         onClick: (event, rowData) => {
           setSelectedFamily(rowData)
           window.location = `detallefamilia/${rowData.famId}`;
+        }
+      },{
+        icon: () => <DeleteOutlineIcon />,
+        tooltip: 'Eliminar Familia',
+        onClick: (event, rowData) => {
+          setFamId(rowData.famId)
+          confirmCancelNewRepresentative()
         }
       }
     ]}
@@ -127,7 +186,9 @@ React.useEffect(() => {
       <ModalConfigureFamily selectedFamily={selectedFamily} openModal={openModal} setOpenModal={setOpenModal}/> 
       : null}  
 
-      
+      {(modalCancel) ? 
+              <ModalAlertCancel  modalCancel={modalCancel} setModalCancel={setModalCancel} message={'¿ Desea eliminar familia ?'} setUserResponse={setUserResponse} /> 
+       : null}
     </>
     
 
