@@ -7,14 +7,21 @@ import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
+import CancelIcon from '@mui/icons-material/Cancel';
+import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
+const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
 const AxiosInstance = require("../utils/request").default;
 const InscriptionList = () => {
 
     const [dataSource, setDataSource] = React.useState([])
     const [filtering, setFiltering] = React.useState(false)
     const [Reload, SetReload] = React.useState(0);
-    
-
+    const [modalCancel  , setModalCancel] = React.useState(false)
+    const [userResponse  , setUserResponse] = React.useState('')
+    const [insData  , setInsData] = React.useState(null)
+    const [alertModal, setAlertModal] = React.useState(false)
+    const [message, setMessage] = React.useState()
+    const [alertType, setAlertType] = React.useState('');
 
     const columns = [
         { title: 'Identificaciónn', aling: 'center', field: 'identification',filtering:true},
@@ -22,14 +29,14 @@ const InscriptionList = () => {
         { title: 'Apellidos', field: 'lastNames',filtering:true},
         { title: 'Periodo', field: 'period',filtering:true},
         { title: 'Nivel', field: 'level',filtering:true },
-        { title: 'Sección', field: 'secction',filtering:true }
+        { title: 'Sección', field: 'secction',filtering:true },
+        { title: 'Estatus', field: 'status',aling: 'center',filtering:true }
       ];
 
       const fillTable = async () => {
 
         try{
           const resultInscripcion = (await AxiosInstance.get("/inscriptions/")).data
-          console.log('resultInscripcion',resultInscripcion)
           if(resultInscripcion.data.length > 0){
             const data = resultInscripcion.data
             let result = []
@@ -42,16 +49,67 @@ const InscriptionList = () => {
                     period : `${item.period.perStartYear}-${item.period.perEndYear}`,
                     level : `${item.periodLevelSectionI.level.levName}`,
                     secction : `${item.periodLevelSectionI.section.secName}`,
+                    status : `${(item.insStatus === 1) ? 'Activa' : 'Anulada'}`,
+                    stuId : item.stuId,
+                    perId : item.perId,
                 })
-                // console.log('este es mi item',item)
             })
             setDataSource(result)
           }
         }catch{
-        //   setMessage('Error de Conexion')
-        //   setAlertModal(true)          
+          setAlertType('error')
+          setMessage('Error al consultar inscripciones')
+          setAlertModal(true)         
       }
     }
+
+    const confirmarAnularInscripcion =() =>{
+      setModalCancel(true)
+    }
+
+    const anularInscripcion = async () => {
+
+      const data = {
+        stuId : insData.stuId,
+        perId : insData.perId,
+        insId : insData.id,
+        insStatus : insData.status
+      }
+
+      try{
+        const resultInscription = (await AxiosInstance.put("/inscriptions/"+Number(insData.id),data)).data
+        
+        if(resultInscription.ok !== true){
+          setModalCancel(false)
+          setAlertType('error')
+          setMessage('Error al anular la inscripción')
+          setAlertModal(true)
+        }else{
+            setModalCancel(false)
+            setAlertType('success')
+            setMessage('Inscripción anulada satisfactoriamente')
+            setAlertModal(true)
+            fillTable()
+        }
+      }catch{
+        setAlertType('error')
+        setMessage('Error de Conexión al eliminar anular inscripción')
+        setAlertModal(true)
+    }
+    }
+
+    const handleClose = () => {
+      if(userResponse === 'yes'){
+        anularInscripcion()
+      }else 
+      if(userResponse === 'no'){
+        setModalCancel(false)
+      }
+    };
+
+    React.useEffect(() => {  
+      handleClose()
+  }, [userResponse]);
 
     React.useEffect(() => {  
         fillTable()    
@@ -87,6 +145,15 @@ const InscriptionList = () => {
             window.location = `plandepago/${rowData.id}`;
           }
         },
+        ,{
+          icon: () => <CancelIcon />,
+          tooltip: 'Anular Inscripción',
+          onClick: (event, rowData) => {
+            console.log('CancelIcon',rowData)
+            setInsData(rowData)
+            confirmarAnularInscripcion()
+          }
+        },
         {
             icon: () => <NavLink to='/addinscription' ><AddBoxRoundedIcon /></NavLink>,
             tooltip: 'Nueva Inscripción',
@@ -108,11 +175,11 @@ const InscriptionList = () => {
         },
         exportMenu: [{
           label: 'Export PDF',
-          exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte de Representantes')
+          exportFunc: (cols, datas) => ExportPdf(cols, datas, 'Reporte de Inscripciones')
         }, 
         {
           label: 'Export EXCEL',
-        //   exportFunc: (cols, datas) => DownloadExcel(cols, datas,excelStructure)
+          // exportFunc: (cols, datas) => DownloadExcel(cols, datas,excelStructure)
         }
       ],
         filtering:filtering,
@@ -121,6 +188,13 @@ const InscriptionList = () => {
      }}
 
     /> 
+    {(alertModal) ? 
+      <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
+      : null}
+
+    {(modalCancel) ? 
+              <ModalAlertCancel  modalCancel={modalCancel} setModalCancel={setModalCancel} message={'¿ Desea anular inscripción ?'} setUserResponse={setUserResponse} /> 
+       : null}
     </>
   )
 }

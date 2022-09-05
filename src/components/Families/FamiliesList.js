@@ -59,7 +59,7 @@ const FamiliesList = () => {
       
   }
 }
-const confirmCancelNewRepresentative =() =>{
+const confirmDeleteRepresentative =() =>{
   setModalCancel(true)
 }
 const handleClose = () => {
@@ -151,7 +151,7 @@ React.useEffect(() => {
         tooltip: 'Eliminar Familia',
         onClick: (event, rowData) => {
           setFamId(rowData.famId)
-          confirmCancelNewRepresentative()
+          confirmDeleteRepresentative()
         }
       }
     ]}
