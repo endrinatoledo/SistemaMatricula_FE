@@ -18,7 +18,7 @@ const ExchangeRatesList = () => {
   const columns = [
     { title: 'Fecha', field: 'excDate',type:'date', headerStyle:{paddingLeft:'15%'},cellStyle:{paddingLeft:'14%'}, validate:rowData=>(rowData.excDate === undefined || rowData.excDate === '')?"Requerido":true},
     { title: 'Monto en Bolívares',type:'currency', field: 'excAmount', width: 400,cellStyle:{paddingRight:0},validate:rowData=>(rowData.excAmount === undefined || rowData.excAmount === '')?"Requerido":true },
-    { title: 'Turno', field: 'excShift',cellStyle:{paddingLeft:'5%'},headerStyle:{paddingLeft:'5%',}, width: 200,  lookup: {'Mañana': 'Mañana', 'Tarde':'Tarde'}, validate:rowData=>(rowData.excShift === undefined)?"Requerido":true }
+    // { title: 'Turno', field: 'excShift',cellStyle:{paddingLeft:'5%'},headerStyle:{paddingLeft:'5%',}, width: 200,  lookup: {'Mañana': 'Mañana', 'Tarde':'Tarde'}, validate:rowData=>(rowData.excShift === undefined)?"Requerido":true }
 
   ];
 
@@ -96,59 +96,59 @@ React.useEffect(() => {
             }, 2000);
           });
           }),
-         onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
-          AxiosInstance.delete(`/exchangeRate/${selectRow.excId}`)
-          .then(resp=>{
-            setTimeout(() => {
-              if(resp.data.ok === true){
-                setAlertType("success")
-              }else{
-                setAlertType("error")
-              }
-              setMessage(resp.data.message)
-              setAlertModal(true)
-              fillTable()
-              resolve()
-            }, 2000);
+        //  onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
+        //   AxiosInstance.delete(`/exchangeRate/${selectRow.excId}`)
+        //   .then(resp=>{
+        //     setTimeout(() => {
+        //       if(resp.data.ok === true){
+        //         setAlertType("success")
+        //       }else{
+        //         setAlertType("error")
+        //       }
+        //       setMessage(resp.data.message)
+        //       setAlertModal(true)
+        //       fillTable()
+        //       resolve()
+        //     }, 2000);
             
-          }).catch((err) => {
-            setTimeout(() => {
-              setMessage(standardMessages.connectionError)
-              setAlertType("error")
-              setAlertModal(true)
-              fillTable()
-              reject()
-            }, 2000);
-          });
+        //   }).catch((err) => {
+        //     setTimeout(() => {
+        //       setMessage(standardMessages.connectionError)
+        //       setAlertType("error")
+        //       setAlertModal(true)
+        //       fillTable()
+        //       reject()
+        //     }, 2000);
+        //   });
 
-        }),
+        // }),
 
-         onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
-            AxiosInstance.put(`/exchangeRate/${newRow.excId}`,newRow)
-            .then(resp=>{
-              setTimeout(() => {
-                if(resp.data.ok === true){
-                  setAlertType("success")
-                }else{
-                  setAlertType("error")
-                }
-                setMessage(resp.data.message)
-                setAlertModal(true)
-                fillTable()
-                resolve()
-              }, 2000);
+        //  onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
+        //     AxiosInstance.put(`/exchangeRate/${newRow.excId}`,newRow)
+        //     .then(resp=>{
+        //       setTimeout(() => {
+        //         if(resp.data.ok === true){
+        //           setAlertType("success")
+        //         }else{
+        //           setAlertType("error")
+        //         }
+        //         setMessage(resp.data.message)
+        //         setAlertModal(true)
+        //         fillTable()
+        //         resolve()
+        //       }, 2000);
               
-            }).catch((err) => {
-              setTimeout(() => {
-                setMessage(standardMessages.connectionError)
-                setAlertType("error")
-                setAlertModal(true)
-                fillTable()
-                reject()
-              }, 2000);
-            });
+        //     }).catch((err) => {
+        //       setTimeout(() => {
+        //         setMessage(standardMessages.connectionError)
+        //         setAlertType("error")
+        //         setAlertModal(true)
+        //         fillTable()
+        //         reject()
+        //       }, 2000);
+        //     });
 
-         })
+        //  })
      }}
     />
     {(alertModal) ? 

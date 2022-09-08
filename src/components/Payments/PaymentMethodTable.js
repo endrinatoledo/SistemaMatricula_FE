@@ -33,9 +33,11 @@ const PaymentMethodTable = ({exchangeRate}) => {
   const [totalAmount, setTotalAmount] = React.useState(0)
 
   const columns = [
-    { title: 'Forma de Pago', field: 'payName', lookup: payMetLookup, width: 400, headerStyle: { paddingLeft: '5%' }, cellStyle: { paddingLeft: '5%' }, validate: rowData => (rowData.payName === undefined || rowData.payName === '') ? "Requerido" : true },
-    { title: 'Monto $', type: "currency", field: 'payAmount', width: 200, aling: 'center', validate: rowData => (rowData.payAmount === undefined || rowData.payAmount === '') ? 'Requerido' : true },
-    { title: 'Monto Bs', field: 'payConvertedAmount', width: 200, editable: false, aling: 'center', render: rowData => (`Bs.${rowData.payConvertedAmount}`) },
+    { title: 'Forma de Pago', aling: 'center',field: 'payName', lookup: payMetLookup, headerStyle: { paddingLeft: '5%' }, cellStyle: { paddingLeft: '5%' }, validate: rowData => (rowData.payName === undefined || rowData.payName === '') ? "Requerido" : true },
+    { title: 'Monto $', type: "currency", field: 'payAmount', aling: 'center', validate: rowData => (rowData.payAmount === undefined || rowData.payAmount === '') ? 'Requerido' : true },
+    { title: 'Monto Bs', field: 'payConvertedAmount', editable: false, aling: 'center', render: rowData => (`Bs.${rowData.payConvertedAmount}`) },
+    { title: 'Referencia', field: 'payReference' },
+    { title: 'Observación', field: 'payDescription', width: 400 },
 
   ];
 
@@ -55,6 +57,24 @@ const PaymentMethodTable = ({exchangeRate}) => {
   }
 
 
+  function trunc (x, posiciones = 0) {
+    var s = x.toString()
+    var l = s.length
+    var decimalLength = s.indexOf('.') + 1
+    if (l - decimalLength <= posiciones){
+      return x
+    }
+    var isNeg  = x < 0
+    var decimal =  x % 1
+    var entera  = isNeg ? Math.ceil(x) : Math.floor(x)
+    var decimalFormated = Math.floor(
+      Math.abs(decimal) * Math.pow(10, posiciones)
+    )
+    var finalNum = entera + 
+      ((decimalFormated / Math.pow(10, posiciones))*(isNeg ? -1 : 1))
+    
+    return finalNum
+  }
 
   const addAmounts = async () => {
 
@@ -69,8 +89,6 @@ const PaymentMethodTable = ({exchangeRate}) => {
   React.useEffect(() => {
     addAmounts()
   }, [payments.length]);
-
-
 
   return (
     <>
@@ -100,7 +118,7 @@ const PaymentMethodTable = ({exchangeRate}) => {
           onRowAdd: (newRow) => new Promise((resolve, reject) => {
             if (newRow) {
               let pay = payments
-              pay.push({ ...newRow, id: payments.length + 1, payConvertedAmount: newRow.payAmount * exchangeRate.excAmount })
+              pay.push({ ...newRow, id: payments.length + 1, payConvertedAmount:trunc((newRow.payAmount * exchangeRate.excAmount),2)})
               setPayments(pay)
               setReload(reload + 1)
               resolve()

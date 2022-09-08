@@ -2,8 +2,6 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import LoadingButtons from '../commonComponents/LoadingButton';
 import { NavLink } from 'react-router-dom'
@@ -32,8 +30,6 @@ const UseStyles = makeStyles({
   stack: {
     marginTop: '5%'
   },
-
-
 });
 
 const AddPeriod = () => {
@@ -72,22 +68,6 @@ const AddPeriod = () => {
           res = true
         } else if (element.e === true) {
           res = true
-        } else if (element.f === true) {
-          res = true
-        } else if (element.g === true) {
-          res = true
-        } else if (element.h === true) {
-          res = true
-        } else if (element.i === true) {
-          res = true
-        } else if (element.j === true) {
-          res = true
-        } else if (element.k === true) {
-          res = true
-        } else if (element.l === true) {
-          res = true
-        } else if (element.m === true) {
-          res = true
         }
       });
 
@@ -109,7 +89,7 @@ const AddPeriod = () => {
           setMessage(result.data.message)
           setAlertType('success')
           setAlertModal(true)
-          window.location = '/inscriptions';
+          window.location = '/periodos';
 
         } else if (result.message === 'Error al crear Periodo') {
           setMessage(result.message)
@@ -135,8 +115,6 @@ const AddPeriod = () => {
   const searchPeriod = async () => {
     try {
       const data = (await AxiosInstance.get(`/periods/startYear/${periodObject.startYear}`)).data
-
-
       if (data.message === 'Periodo registrado') {
 
         setMessage(data.message)
@@ -153,7 +131,9 @@ const AddPeriod = () => {
 
     } catch {
       console.log('***no')
-      // setConnErr(true)
+        setMessage('Error de conexión al validar periodo')
+        setAlertType('error')
+        setAlertModal(true)
     }
 
   }
@@ -231,31 +211,24 @@ const AddPeriod = () => {
           required
           type={'number'}
           disabled={periodObject.inputStartYear}
-          // InputProps={{ readOnly: periodObject.inputStartYear }}
-          // key={keyIdentification}
           id="period"
           label="Agregar Año Inicio"
           variant="standard"
-          // helperText={errorMessage}
-          // error={orfRepIdentificationNumber}
           onChange={e => {
-
             setPeriodObject({ ...periodObject, startYear: e.target.value ? e.target.value : 0 })
             if (e.target.value.length < 4) { setButtonI(true) } else { setButtonI(false) }
           }
           }
         />
         <Button variant="outlined" size="small"
-          disabled={buttonI}
-          onClick={() => searchPeriod()}
+          disabled={buttonI} onClick={() => searchPeriod()}
         >Validar Periodo</Button>
-
       </Stack>
 
       {
         (showTable && allLevels.length > 0 && allSections.length > 0) ?
           <>
-            <TableLevels levelsMap={levelsMap} setLevelsMap={setLevelsMap} periodObject={periodObject} setPeriodObject={setPeriodObject} allLevels={allLevels} setAllLevels={setAllLevels}
+            <TableLevels mode={mode} levelsMap={levelsMap} setLevelsMap={setLevelsMap} periodObject={periodObject} setPeriodObject={setPeriodObject} allLevels={allLevels} setAllLevels={setAllLevels}
               allSections={allSections} setAllSections={setAllSections} />
           </>
           : null

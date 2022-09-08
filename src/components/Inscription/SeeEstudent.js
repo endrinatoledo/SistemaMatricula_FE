@@ -43,7 +43,7 @@ const SeeEstudent = ({levelSelect2, setLevelSelect2,sectionSelect, setSectionSel
            <TextField 
                    className={classes.textfield}
                    InputProps={{ readOnly: true }}
-                   value={`${dataStudent.stuIdType}-${dataStudent.stuIdentificationNumber} - ${dataStudent.stuFirstName} ${dataStudent.stuSurname}`}
+                   value={`${dataStudent.stuIdType ? dataStudent.stuIdType : ''}-${(dataStudent.stuIdentificationNumber) ? dataStudent.stuIdentificationNumber : ''}  ${dataStudent.stuFirstName} ${dataStudent.stuSurname}`}
                    id="stuName"
                    label="Nombre de Estudiante"
                    variant="standard"

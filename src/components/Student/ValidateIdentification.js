@@ -77,7 +77,7 @@ const ValidateIdentification = ({editStudent,setOrfStuIdentificationNumber,setId
     <div>
         <Stack direction="row" spacing={8}  justifyContent="flex-start" className={classes.TextField}>
               <TextField 
-              disabled={(identificationValidation || editStudent)? true :  false}
+              // disabled={(identificationValidation || editStudent)? true :  false}
               sx={{ width: '20%' }} 
               id="stuIdType"
               select
@@ -98,9 +98,8 @@ const ValidateIdentification = ({editStudent,setOrfStuIdentificationNumber,setId
               ))}
                 </TextField>
                 <TextField
-                disabled={(identificationValidation || editStudent)? true :  false}
+                // disabled={(identificationValidation || editStudent)? true :  false}
                 sx={{ width: '20%' }} 
-                required
                 value={studentObject.stuIdentificationNumber}
                 id="stuIdentificationNumber"
                 label="Identificación"
@@ -114,7 +113,9 @@ const ValidateIdentification = ({editStudent,setOrfStuIdentificationNumber,setId
                 
                 }
                 />
-                <Button variant="outlined" disabled={(buttonI || editStudent || identificationValidation? true :  false)} size="small" onClick={() => validate_Identification()}>Validar</Button>
+                <Button variant="outlined" 
+                // disabled={(buttonI || editStudent || identificationValidation? true :  false)} 
+                size="small" onClick={() => validate_Identification()}>Validar</Button>
          </Stack>
         
         </div>

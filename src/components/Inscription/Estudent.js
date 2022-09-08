@@ -63,7 +63,7 @@ const Estudent = ({clearFieldSection, setClearFieldSection,clearFieldEstudent,li
                 onChange={(event, newValue) => {
                   setEndDate({...endDate, stuId : (newValue !== null)? newValue.stuId : ''})        
                   }}
-                getOptionLabel={(option) =>`${option.stuIdType}-${option.stuIdentificationNumber} - ${option.stuFirstName} ${option.stuSurname}`}                
+                getOptionLabel={(option) =>`${(option.stuIdType)?option.stuIdType : ''}-${(option.stuIdentificationNumber)?option.stuIdentificationNumber:''} - ${option.stuFirstName} ${option.stuSurname}`}                
                 sx={{ width: '40%' }} 
                 id="clear-on-escape"
                 clearOnEscape

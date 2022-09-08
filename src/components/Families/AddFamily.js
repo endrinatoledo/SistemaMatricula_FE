@@ -122,8 +122,8 @@ const AddFamily = () => {
         <FamilyData familyName={familyName} setFamilyName={setFamilyName} familyData={familyData}/>
         <SearchRepresentative listRepresentative={listRepresentative} setListRepresentative={setListRepresentative}/>
         <TableRepresentative renderStatus={renderStatus} setRenderStatus={setRenderStatus}  repStuData={repStuData} family={family} mode={mode} listRepresentative={listRepresentative} setListRepresentative={setListRepresentative} representativesData={representativesData}/>
-        <SearchStudent listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
-        <TableStudent renderStatus={renderStatus} setRenderStatus={setRenderStatus}  listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData}></TableStudent>
+        <SearchStudent mode={mode} listStudent={listStudent} setListStudent={setListStudent} ></SearchStudent>
+        <TableStudent mode={mode} renderStatus={renderStatus} setRenderStatus={setRenderStatus}  listStudent={listStudent} setListStudent={setListStudent} studentsData={studentsData}></TableStudent>
     
               {
                 (statusCcircularProgress)?

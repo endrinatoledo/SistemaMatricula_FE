@@ -4,6 +4,8 @@ import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import FilterList from '@material-ui/icons/FilterList';
 import {NavLink} from 'react-router-dom'
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
 const { standardMessages} = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 
@@ -32,7 +34,6 @@ const PeriodsList = () => {
     try{
       const resultPeriods = (await AxiosInstance.get("/periodLevelSection")).data
       if(resultPeriods.ok === true){
-        console.log('periodoooooooo', resultPeriods.data)
         setDataSource(resultPeriods.data)
       }
     }catch{
@@ -64,6 +65,21 @@ React.useEffect(() => {
           onClick: (event, rowData) => {
             }
         }
+        // ,{
+        //   icon: () =><VisibilityRoundedIcon />,
+        //   tooltip: 'Ver Detalles',
+        //   onClick: (event, rowData) => {
+        //     console.log('&&&&&&verrrrrr&&&&&&&&&&',rowData)
+        //     window.location = `verperiodo/${rowData.perId}`;
+        //   }
+        // },{
+        //   icon: () =><EditRoundedIcon />,
+        //   tooltip: 'Editar Periodo',
+        //   onClick: (event, rowData) => {
+        //     console.log('&&&&&&&&editar&&&&&&&&',rowData)
+        //     window.location = `editarperiodo/${rowData.perId}`;
+        //   }
+        // }
     ]}    
      options={{
         width:300,
@@ -78,100 +94,11 @@ React.useEffect(() => {
          actionsColumnIndex:-1,
          addRowPosition:'first'
      }}
-    //  editable={{
-    //      onRowAdd: (newRow) => new Promise((resolve, reject)=>{
 
-    //       AxiosInstance.post(`/periods/`,newRow)
-    //       .then(resp=>{
-    //         setTimeout(() => {
-    //           if(resp.data.ok === true){
-    //             setAlertType("success")
-    //             setMessage(resp.data.message)
-    //             setAlertModal(true)
-    //             fillTable()
-    //             resolve()
-    //           }else{
-    //             setMessage(resp.data.message) 
-    //             setAlertType("error")
-    //             setAlertModal(true)
-    //             reject()
-    //           }
-    //         }, 2000);
-            
-    //       })
-    //       .catch((err) => {
-    //         setTimeout(() => {
-    //           setMessage(standardMessages.connectionError)
-    //           setAlertType("error")
-    //           setAlertModal(true)
-    //           fillTable()
-    //           reject()
-    //         }, 1000);
-    //       });
-    //       }),
-    //      onRowDelete:  (selectRow)=> new Promise((resolve, reject)=>{
-    //       AxiosInstance.delete(`/periods/${selectRow.perId}`)
-    //       .then(resp=>{
-    //         setTimeout(() => {
-    //           if(resp.data.ok === true){
-    //             setAlertType("success")
-    //           }else{
-    //             setAlertType("error")
-    //           }
-    //           setMessage(resp.data.message)
-    //           setAlertModal(true)
-    //           fillTable()
-    //           resolve()
-    //         }, 2000);
-            
-    //       }).catch((err) => {
-    //         setTimeout(() => {
-    //           setMessage(standardMessages.connectionError)
-    //           setAlertType("error")
-    //           setAlertModal(true)
-    //           fillTable()
-    //           reject()
-    //         }, 2000);
-    //       });
-
-    //     }),
-
-    //      onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
-    //         AxiosInstance.put(`/periods/${newRow.perId}`,newRow)
-    //         .then(resp=>{
-    //           setTimeout(() => {
-    //             if(resp.data.ok === true){
-    //               setAlertType("success")
-    //               setMessage(resp.data.message)
-    //               setAlertModal(true)
-    //               fillTable()
-    //               resolve()
-    //             }else{
-    //               setMessage(resp.data.message) 
-    //               setAlertType("error")
-    //               setAlertModal(true)
-    //               reject()
-    //             }
-    //           }, 2000);
-              
-    //         }).catch((err) => {
-    //           setTimeout(() => {
-    //             setMessage(standardMessages.connectionError)
-    //             setAlertType("error")
-    //             setAlertModal(true)
-    //             fillTable()
-    //             reject()
-    //           }, 2000);
-    //         });
-
-    //      })
-    //  }}
     />
     {(alertModal) ? 
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
       : null}
-
-      
     </>
     
 

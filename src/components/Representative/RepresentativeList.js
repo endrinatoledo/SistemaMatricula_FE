@@ -30,7 +30,9 @@ const RepresentativeList = () => {
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
     const defaultValue = React.useRef(null)
-    const [clearField, setClearField] = React.useState({sex:0,civil:100,profession:200,country:300,federalEntity:400,bond:500,family:600,status:700})
+    const [clearField, setClearField] = React.useState({sex:0,
+      // civil:100,
+      profession:200,country:300,federalEntity:400,bond:500,family:600,status:700})
     const [valueForm, setValueForm] = React.useState({})
     const [statusCcircularProgress  , setStatusCcircularProgress] = React.useState(false)
     const [identificationValidation  , setIdentificationValidation] = React.useState(false)
@@ -41,10 +43,10 @@ const RepresentativeList = () => {
         repSecondSurname       : '',
         repIdType              : 'v',
         repIdentificationNumber: '',
-        repDateOfBirth         : '',
+        // repDateOfBirth         : '',
         repSex                 : null,
         repAddress             : '',
-        repCivilStatus         : null,
+        // repCivilStatus         : null,
         professions            : null,
         proId                  : null,
         repPhones              : '',
@@ -68,7 +70,7 @@ const RepresentativeList = () => {
     { title: 'Identificación', field: 'repIdentificationNumber',filtering:true},
     { title: 'Vínculo', field: 'repBond',filtering:true, cellStyle:{paddingLeft:'1%'}},
     { title: 'Sexo', field: 'repSex',headerStyle:{paddingLeft:'1%'},lookup: {'f': 'Femenino', 'm':'Masculino'},filtering:true},
-    { title: 'Fecha', field: 'repDateOfBirth',type:'date', filtering:true},
+    // { title: 'Fecha', field: 'repDateOfBirth',type:'date', filtering:true},
     { title: 'Correo', field: 'repEmail',filtering:true,headerStyle:{paddingLeft:'3%'}},
     { title: 'Estatus', field: 'repStatus',filtering:true, lookup: {1: 'Activo', 2:'Inactivo'}},
     
@@ -79,12 +81,12 @@ const RepresentativeList = () => {
     setStatusCcircularProgress(false)
     setClearField(
       { sex:(clearField.sex + 1),
-        civil:(clearField.civil + 1),
+        // civil:(clearField.civil + 1),
         profession:(clearField.profession + 1),
-        country:(clearField.country + 1),
-        federalEntity:(clearField.federalEntity + 1),
+        // country:(clearField.country + 1),
+        // federalEntity:(clearField.federalEntity + 1),
         bond:(clearField.bond + 1),
-        family:(clearField.family + 1),
+        // family:(clearField.family + 1),
         status:(clearField.status + 1)
       })
     
@@ -95,22 +97,22 @@ const RepresentativeList = () => {
         repSecondSurname       : '',
         repIdType              : 'v',
         repIdentificationNumber: '',
-        repDateOfBirth         : '',
+        // repDateOfBirth         : '',
         repSex                 : '',
         repAddress             : '',
-        repCivilStatus         : '',
+        // repCivilStatus         : '',
         proId                  : '',
         repPhones              : '',
         repEmail               : '',
-        couId                  : '',
-        fedId                  : '',
-        repPhoto               : '',
+        // couId                  : '',
+        // fedId                  : '',
+        // repPhoto               : '',
         repStatus              : '',
         repBond                : '',
-        famId                  : '',
+        // famId                  : '',
       })
 
-      if (identificationValidation && openModal){defaultValue.current.value = ""}
+      // if (identificationValidation && openModal){defaultValue.current.value = ""}
 
   }
 

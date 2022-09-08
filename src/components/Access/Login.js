@@ -44,7 +44,9 @@ export default function Login() {
       MessageFlash()
 
     }else{
-      // const validatedEmail = await ValidateEmail({email})
+
+      const validatedEmail = await ValidateEmail({email})
+
       // if (!validatedEmail){
 
       //   setMessage('Formato de correo incorrecto') 

@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import ValidateEmail from '../commonComponents/ValidateEmail';
+// import ValidateEmail from '../commonComponents/ValidateEmail';
 
 const AxiosInstance = require("../utils/request").default;
 
@@ -67,7 +67,10 @@ const UseStyles = makeStyles({
 
   const requiredField = 'Campo Requerido';
 
-const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,orfRepDateOfBirth, orfRepSex,orfRepAddresse, orfRepCivilStatus,orfProId, orfRepPhones,orfRepEmail, orfCouId,orfStatus,orfRepBond,orfFamId, clearField,setClearField, defaultValue, setRepresentativeObject, representativeObject}) => {
+const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,selectedRepresentative,orfRepFirstName, orfRepSurname,
+   orfRepSex,orfRepAddresse,   orfRepPhones,
+  // orfRepCivilStatus,orfRepDateOfBirth, orfRepEmail, 
+  orfStatus,orfRepBond,orfFamId, clearField,setClearField, defaultValue, setRepresentativeObject, representativeObject}) => {
 
     const [Reload, SetReload] = React.useState(0);
     const [listOfProfessions, setListOfProfessions] = React.useState([])
@@ -256,7 +259,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
     </Stack>
 
     <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
-                <TextField
+                {/* <TextField
                 required
                 inputRef={defaultValue}
                 type='date'
@@ -271,7 +274,7 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 onChange={e => {
                     setRepresentativeObject({...representativeObject, repDateOfBirth : e.target.value ? e.target.value : ''})          
                 }   }
-                />
+                /> */}
                 <Autocomplete 
                 options={selectSex}
                 renderInput={(params) =>(
@@ -291,130 +294,17 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 sx={{ width: '20%' }} 
                  id="clear-on-escape"
                 />
-                <Autocomplete 
-                options={selectMaritalStatus}
-                renderInput={(params) =>(
-                  <TextField {...params}
-                      helperText={(representativeObject.repCivilStatus === null ||representativeObject.repCivilStatus === '')? requiredField : '' }
-                      error={orfRepCivilStatus} label="Estado Civil" variant="standard" />
-                )}
-                value={(editRepresentative) ? labelMaritalStatus(selectedRepresentative.repCivilStatus) : labelMaritalStatus(representativeObject.repCivilStatus) }
-                getOptionLabel={(option) => option.label}
-                onChange={(event, newValue) => {
-                  setRepresentativeObject({...representativeObject, repCivilStatus : (newValue !== null) ? newValue.value : null})          
-                  setSelectedRepresentative({...selectedRepresentative, repCivilStatus : (newValue !== null) ? newValue.value : selectedRepresentative.repCivilStatus})
-                }}
-                required
-                key={clearField.civil}
-                noOptionsText={'Sin Opciones'}
-                sx={{ width: '20%' }} 
-                 id="clear-on-escape"
-                />
-                
-
-              <Autocomplete
-                key={clearField.profession}
-                noOptionsText={'Sin Opciones'}
-                options={listOfProfessions}
-                value={(editRepresentative) ? selectedRepresentative.professions : representativeObject.professions }
-                onChange={(event, newValue) => {
-                    setRepresentativeObject({...representativeObject, proId : (newValue !== null) ? newValue.proId : null, professions: (newValue !== null) ? newValue : null})          
-                    setSelectedRepresentative({...selectedRepresentative, professions : (newValue !== null) ? newValue : selectedRepresentative.professions})
-                  }}
-                  getOptionLabel={(option) => option.proName}                
-                 sx={{ width: '20%' }} 
-                 id="clear-on-escape"
-                 clearOnEscape
-                 renderInput={(params) => (
-                   <TextField {...params} 
-                   helperText={(representativeObject.proId === null ||representativeObject.proId === '')? requiredField : '' }
-                   error={orfProId}
-                   label="Profesión" variant="standard" />
-                 )}/>
-    </Stack>
-    <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
-    
-    <Autocomplete
-                key={clearField.country}
-                noOptionsText={'Sin Opciones'}
-                options={listOfCountries}
-                value={(editRepresentative) ? selectedRepresentative.countries : representativeObject.countries }
-                onChange={(event, newValue) => {
-                  
-                  setRepresentativeObject({...representativeObject,fedId : null, couId : (newValue !== null) ? newValue.couId : null, countries : (newValue !== null) ? newValue : null})          
-                  setSelectedRepresentative({...selectedRepresentative, countries : (newValue !== null) ? newValue : selectedRepresentative.countries})
-                  }}
-                  getOptionLabel={(option) => option.couName}                
-                 sx={{ width: '20%' }} 
-                 id="clear-on-escape"
-                 clearOnEscape
-                 renderInput={(params) => (
-                   <TextField {...params} 
-                   helperText={(representativeObject.couId === null ||representativeObject.couId === '')? requiredField : '' }
-                   error={orfCouId}
-                   label="País" variant="standard" />
-                 )}/>
-
-              <Autocomplete
-                key={clearField.federalEntity}
-                disabled={( representativeObject.couId !== 232)? true : false}
-                noOptionsText={'Sin Opciones'}
-                options={listOfFederalEntities}
-                value={(editRepresentative) ? selectedRepresentative.federalEntity : representativeObject.federalEntity }
-                onChange={(event, newValue) => {
-                  setRepresentativeObject({...representativeObject, fedId : (newValue !== null) ? newValue.fedId : null, federalEntity : (newValue !== null) ? newValue : null})
-                  setSelectedRepresentative({...selectedRepresentative, federalEntity : (newValue !== null) ? newValue : selectedRepresentative.federalEntity})
-                  }}
-                  getOptionLabel={(option) => option.fedName}                
-                 sx={{ width: '20%' }} 
-                 id="clear-on-escape"
-                 clearOnEscape
-                 renderInput={(params) => (
-                  <TextField {...params} label="Estado" variant="standard" />
-                 )}/>
-
                 <TextField
-                  sx={{ width: '47%' }}
-                  required
-                  value={(editRepresentative) ? selectedRepresentative.repAddress :representativeObject.repAddress}
-                  id="repAddress"
-                  label="Dirección"
-                  variant="standard"
-                  helperText={(representativeObject.repAddress === null ||representativeObject.repAddress === '')? requiredField : '' }
-                  error={orfRepAddresse}
-                  onChange={e => {
-                    setSelectedRepresentative({...selectedRepresentative, repAddress: e.target.value ? e.target.value : ''})
-                    setRepresentativeObject({...representativeObject, repAddress : e.target.value ? e.target.value : ''}) 
-                  }   }
-                />   
-    </Stack>
-
-    <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
-                <TextField
-                required
                 value={(editRepresentative) ? selectedRepresentative.repEmail :representativeObject.repEmail}
                 id="repEmail"
                 label="Correo"
                 variant="standard"
-                helperText={(representativeObject.repEmail === null)? requiredField :(ValidateEmail(representativeObject.repEmail) === false)? 'Error en formato' : '' }
-                error={orfRepEmail}
+                // helperText={(ValidateEmail(representativeObject.repEmail) === false)? 'Error en formato' : '' }
+                // error={orfRepEmail}
                 onChange={e => {
                   setSelectedRepresentative({...selectedRepresentative, repEmail: e.target.value ? e.target.value : ''})
                   setRepresentativeObject({...representativeObject, repEmail : e.target.value ? e.target.value : ''}) 
                 }   }
-                />
-                
-                <TextField
-                required
-                value={(editRepresentative) ? selectedRepresentative.repPhones :representativeObject.repPhones}
-                id="repPhones"
-                label="Teléfono"
-                variant="standard"
-                helperText={(representativeObject.repPhones === null ||representativeObject.repPhones === '')? requiredField : '' }
-                  error={orfRepPhones}
-                  onChange={e => {
-                    setRepresentativeObject({...representativeObject, repPhones : e.target.value ? e.target.value : ''}) 
-                  }   }
                 />
                 <Autocomplete 
                 options={selectBond}
@@ -435,6 +325,121 @@ const RepresentativeForm = ({setSelectedRepresentative,editRepresentative,select
                 sx={{ width: '20%' }} 
                  id="clear-on-escape"
                 />
+                {/* <Autocomplete 
+                options={selectMaritalStatus}
+                renderInput={(params) =>(
+                  <TextField {...params}
+                      helperText={(representativeObject.repCivilStatus === null ||representativeObject.repCivilStatus === '')? requiredField : '' }
+                      error={orfRepCivilStatus} label="Estado Civil" variant="standard" />
+                )}
+                value={(editRepresentative) ? labelMaritalStatus(selectedRepresentative.repCivilStatus) : labelMaritalStatus(representativeObject.repCivilStatus) }
+                getOptionLabel={(option) => option.label}
+                onChange={(event, newValue) => {
+                  setRepresentativeObject({...representativeObject, repCivilStatus : (newValue !== null) ? newValue.value : null})          
+                  setSelectedRepresentative({...selectedRepresentative, repCivilStatus : (newValue !== null) ? newValue.value : selectedRepresentative.repCivilStatus})
+                }}
+                required
+                key={clearField.civil}
+                noOptionsText={'Sin Opciones'}
+                sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                /> */}
+                
+
+              <Autocomplete
+                key={clearField.profession}
+                noOptionsText={'Sin Opciones'}
+                options={listOfProfessions}
+                value={(editRepresentative) ? selectedRepresentative.professions : representativeObject.professions }
+                onChange={(event, newValue) => {
+                    setRepresentativeObject({...representativeObject, proId : (newValue !== null) ? newValue.proId : null, professions: (newValue !== null) ? newValue : null})          
+                    setSelectedRepresentative({...selectedRepresentative, professions : (newValue !== null) ? newValue : selectedRepresentative.professions})
+                  }}
+                  getOptionLabel={(option) => option.proName}                
+                 sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                 clearOnEscape
+                 renderInput={(params) => (
+                   <TextField {...params} 
+                   label="Profesión" variant="standard" />
+                 )}/>
+    </Stack>
+    <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
+    
+    {/* <Autocomplete
+                key={clearField.country}
+                noOptionsText={'Sin Opciones'}
+                options={listOfCountries}
+                value={(editRepresentative) ? selectedRepresentative.countries : representativeObject.countries }
+                onChange={(event, newValue) => {
+                  
+                  setRepresentativeObject({...representativeObject,fedId : null, couId : (newValue !== null) ? newValue.couId : null, countries : (newValue !== null) ? newValue : null})          
+                  setSelectedRepresentative({...selectedRepresentative, countries : (newValue !== null) ? newValue : selectedRepresentative.countries})
+                  }}
+                  getOptionLabel={(option) => option.couName}                
+                 sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                 clearOnEscape
+                 renderInput={(params) => (
+                   <TextField {...params} 
+                   helperText={(representativeObject.couId === null ||representativeObject.couId === '')? requiredField : '' }
+                   error={orfCouId}
+                   label="País" variant="standard" />
+                 )}/> */}
+
+              {/* <Autocomplete
+                key={clearField.federalEntity}
+                disabled={( representativeObject.couId !== 232)? true : false}
+                noOptionsText={'Sin Opciones'}
+                options={listOfFederalEntities}
+                value={(editRepresentative) ? selectedRepresentative.federalEntity : representativeObject.federalEntity }
+                onChange={(event, newValue) => {
+                  setRepresentativeObject({...representativeObject, fedId : (newValue !== null) ? newValue.fedId : null, federalEntity : (newValue !== null) ? newValue : null})
+                  setSelectedRepresentative({...selectedRepresentative, federalEntity : (newValue !== null) ? newValue : selectedRepresentative.federalEntity})
+                  }}
+                  getOptionLabel={(option) => option.fedName}                
+                 sx={{ width: '20%' }} 
+                 id="clear-on-escape"
+                 clearOnEscape
+                 renderInput={(params) => (
+                  <TextField {...params} label="Estado" variant="standard" />
+                 )}/> */}
+
+                <TextField
+                  sx={{ width: '47%' }}
+                  required
+                  value={(editRepresentative) ? selectedRepresentative.repAddress :representativeObject.repAddress}
+                  id="repAddress"
+                  label="Dirección"
+                  variant="standard"
+                  helperText={(representativeObject.repAddress === null ||representativeObject.repAddress === '')? requiredField : '' }
+                  error={orfRepAddresse}
+                  onChange={e => {
+                    setSelectedRepresentative({...selectedRepresentative, repAddress: e.target.value ? e.target.value : ''})
+                    setRepresentativeObject({...representativeObject, repAddress : e.target.value ? e.target.value : ''}) 
+                  }   }
+                />   
+                <TextField
+                sx={{ width: '47%' }}
+                required
+                value={(editRepresentative) ? selectedRepresentative.repPhones :representativeObject.repPhones}
+                id="repPhones"
+                label="Teléfono"
+                variant="standard"
+                helperText={(representativeObject.repPhones === null ||representativeObject.repPhones === '')? requiredField : '' }
+                  error={orfRepPhones}
+                  onChange={e => {
+                    setSelectedRepresentative({...selectedRepresentative, repPhones: e.target.value ? e.target.value : ''})
+                    setRepresentativeObject({...representativeObject, repPhones : e.target.value ? e.target.value : ''}) 
+                  }   }
+                />
+    </Stack>
+
+    <Stack direction="row" spacing={2}  justifyContent="space-between" className={classes.TextField}>
+                
+                
+                
+                
                 <Autocomplete 
                 options={selectStatus}
                 renderInput={(params) =>(

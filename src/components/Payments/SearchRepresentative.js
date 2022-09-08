@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 
 const AxiosInstance = require("../utils/request").default;
 const UseStyles = makeStyles({
@@ -42,8 +43,12 @@ const IdentificationType = [
   }
 ]
 
-const SearchRepresentative = ({ representativeFound, setRepresentativeFound, identification, setIdentification, representativeData, setRepresentativeData }) => {
+const SearchRepresentative = ({setSelectedFamily, representativeFound, setRepresentativeFound, identification, setIdentification, representativeData, setRepresentativeData }) => {
   const classes = UseStyles();
+
+  const [alertModal, setAlertModal] = React.useState(false)
+  const [message, setMessage] = React.useState()
+  const [alertType, setAlertType] = React.useState('');
 
   const labelType = (value) => {
     if (value !== null) {
@@ -69,8 +74,9 @@ const SearchRepresentative = ({ representativeFound, setRepresentativeFound, ide
         setRepresentativeData(data.result)
       }
     } catch {
-      console.log('***no')
-      // setConnErr(true)
+        setAlertType("error")
+        setMessage('Error al consultar el representante')
+        setAlertModal(true)
     }
 
   }
@@ -79,6 +85,7 @@ const SearchRepresentative = ({ representativeFound, setRepresentativeFound, ide
 
     setIdentification({ repIdType: null, repIdentificationNumber: '' })
     setRepresentativeFound(false)
+    setSelectedFamily(null)
 
   }
 
@@ -126,6 +133,9 @@ const SearchRepresentative = ({ representativeFound, setRepresentativeFound, ide
           />
         </Stack>
       </Box>
+      {(alertModal) 
+      ? <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
+      : null}
     </>
   )
 }

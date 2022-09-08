@@ -27,7 +27,7 @@ const UseStyles = makeStyles({
 
 });
 
-const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allLevels, setAllLevels,allSections, setAllSections}) => {
+const TableLevels = ({mode, levelsMap, setLevelsMap,periodObject, setPeriodObject,allLevels, setAllLevels,allSections, setAllSections}) => {
 
     const [nameColumnStructure, setNameColumnStructure] = React.useState([])
     const [columns, setColumns] = React.useState([])
@@ -55,30 +55,6 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
           }else 
           if(element.levName === rows.levName && section === 'e'){
             return element.e
-          }else 
-          if(element.levName === rows.levName && section === 'f'){
-            return element.f
-          }else 
-          if(element.levName === rows.levName && section === 'g'){
-            return element.g
-          }else 
-          if(element.levName === rows.levName && section === 'h'){
-            return element.h
-          }else 
-          if(element.levName === rows.levName && section === 'i'){
-            return element.i
-          }else 
-          if(element.levName === rows.levName && section === 'j'){
-            return element.j
-          }else 
-          if(element.levName === rows.levName && section === 'k'){
-            return element.k
-          }else 
-          if(element.levName === rows.levName && section === 'l'){
-            return element.l
-          }else 
-          if(element.levName === rows.levName && section === 'm'){
-            return element.m
           }
         }         
         )
@@ -94,7 +70,29 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
 
         console.log('event',event.target.checked)
         console.log('onclic ',event.target.name)
+        // console.log('levelsMap ',levelsMap)
+
+        for (let index = 0; index < levelsMap.length; index++) {
+          const element = levelsMap[index];
+          console.log('element.levName',element.levName);
+          console.log('arrayDeCadenas0',arrayDeCadenas[0]);
+          console.log('arrayDeCadenas1',arrayDeCadenas[1]);
+          (element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'a')
+            ?  console.log('entro aqui a',arrayDeCadenas)    
+            : (element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'b')
+              ?  console.log('entro aqui b',arrayDeCadenas)      
+              :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'c')
+                ?  console.log('entro aqui c',arrayDeCadenas)       
+                :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'd')
+                  ?  console.log('entro aqui d',arrayDeCadenas)      
+                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'e')
+                  ?  console.log('entro aqui c',arrayDeCadenas)       
+                  :console.log('ninguno',arrayDeCadenas)    
+          
+        }
+
         const updatedOSArray = levelsMap.map(element =>
+          
           (element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'a')
             ?  { ...element, a: event.target.checked }     
             : (element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'b')
@@ -105,25 +103,10 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
                   ?  { ...element, d: event.target.checked }     
                   :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'e')
                   ?  { ...element, e: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'f')
-                  ?  { ...element, f: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'g')
-                  ?  { ...element, g: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'h')
-                  ?  { ...element, h: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'i')
-                  ?  { ...element, i: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'j')
-                  ?  { ...element, j: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'k')
-                  ?  { ...element, k: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'l')
-                  ?  { ...element, l: event.target.checked }     
-                  :(element.levName === arrayDeCadenas[0] && arrayDeCadenas[1] === 'm')
-                  ?  { ...element, m: event.target.checked }     
-                  :
-                  element          
+                  :element          
         )
+
+        console.log('//////////updatedOSArray/////////',updatedOSArray) 
         setLevelsMap(updatedOSArray)
 
       };
@@ -143,6 +126,16 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
       }
 
       const columnStructure = () =>{
+        const newArray =  [ 
+          { title: 'Nombre del Nivel', field: 'levName',width:'auto',headerStyle:{width:300, marginLeft:'10px',marginRight:'10px'},},
+          { title: 'A', field: 'a',width:'auto', render:(rows)=>componentRadio(rows,'a')},
+          { title: 'B', field: 'b',width:'auto', render:(rows)=>componentRadio(rows,'b')},
+          { title: 'C', field: 'c', render:(rows)=>componentRadio(rows,'c')},
+          { title: 'D', field: 'd', render:(rows)=>componentRadio(rows,'d')},
+          { title: 'E', field: 'e', render:(rows)=>componentRadio(rows,'e')},
+         ]
+        setColumns(newArray) 
+
 
         //lOGICA DINAMICA
         // const columnsName = Object.keys(levelsMap[0])
@@ -166,36 +159,19 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
         // } )
         // var newArray = result.filter((item) => item !== null);
         
-        const newArray =  [ 
-          { title: 'Nombre del Nivel', field: 'levName',width:'auto',headerStyle:{width:300, marginLeft:'10px',marginRight:'10px'},},
-          { title: 'A', field: 'a',width:'auto', render:(rows)=>componentRadio(rows,'a')},
-          { title: 'B', field: 'b',width:'auto', render:(rows)=>componentRadio(rows,'b')},
-          { title: 'C', field: 'c', render:(rows)=>componentRadio(rows,'c')},
-          { title: 'D', field: 'd', render:(rows)=>componentRadio(rows,'d')},
-          { title: 'E', field: 'e', render:(rows)=>componentRadio(rows,'e')},
-          { title: 'F', field: 'f', render:(rows)=>componentRadio(rows,'f')},
-          { title: 'G', field: 'g', render:(rows)=>componentRadio(rows,'g')},
-          { title: 'H', field: 'h', render:(rows)=>componentRadio(rows,'h')},
-          { title: 'I', field: 'i', render:(rows)=>componentRadio(rows,'i')},
-          { title: 'J', field: 'j', render:(rows)=>componentRadio(rows,'j')},
-          { title: 'K', field: 'k', render:(rows)=>componentRadio(rows,'k')},
-          { title: 'L', field: 'l', render:(rows)=>componentRadio(rows,'l')},
-          { title: 'M', field: 'm', render:(rows)=>componentRadio(rows,'m')}
-         ]
-
-        setColumns(newArray) 
-
+        
       }
 
       React.useEffect(() => {  
         if(levelsMap.length > 0){
           columnStructure()
         }
-        
         }, [levelsMap]);
-
-      
-
+        React.useEffect(() => {  
+          if(mode === 'edit'){
+            columnStructure()
+          }
+          }, [0]);
   return (
     <>
     {(columns.length > 0) ? 
@@ -219,6 +195,7 @@ const TableLevels = ({levelsMap, setLevelsMap,periodObject, setPeriodObject,allL
               paging:false
           }}
           onSelectionChange={rows => {
+            console.log('rows',rows)
               setPeriodObject({...periodObject, selectedPeriods:rows})
           }}
         />        
