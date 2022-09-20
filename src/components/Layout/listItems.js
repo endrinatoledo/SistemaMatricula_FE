@@ -20,6 +20,7 @@ import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import RequestPageRoundedIcon from '@mui/icons-material/RequestPageRounded';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 
 
 export const CollectionListItems = () => {
@@ -205,6 +206,16 @@ export const PeopleListItems = () => {
                 <GridOnRoundedIcon />
               </ListItemIcon>
               <ListItemText primary="Secciones" />
+            </ListItemButton>
+          </List>
+        </NavLink>
+        <NavLink to='/bancos'>
+        <List component="div" disablePadding >
+            <ListItemButton sx={{ pl: 2 }}  >
+              <ListItemIcon >
+                <AccountBalanceIcon />
+              </ListItemIcon>
+              <ListItemText primary="Bancos" />
             </ListItemButton>
           </List>
         </NavLink>

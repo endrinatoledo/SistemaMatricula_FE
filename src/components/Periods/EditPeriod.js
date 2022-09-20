@@ -50,7 +50,6 @@ const EditPeriod = () => {
 
   const valueMap = () =>{
     conteoMapUpdate = conteoMapUpdate+1
-    console.log('??????????',conteoMapUpdate)
     let perLevSecList2 = perLevSecList.periodLevelSection
     let levelsMap2 = levelsMap   
 
@@ -202,7 +201,6 @@ const EditPeriod = () => {
 
   React.useEffect(() => {
     conteoMapUpdate = conteoMapUpdate + 1
-    console.log('conteoMapUpdate',conteoMapUpdate)
     if(conteoMapUpdate === 1 && levelsMap.length > 0){
       console.log('entro a conteoMapUpdate', conteoMapUpdate)
       valueMap()

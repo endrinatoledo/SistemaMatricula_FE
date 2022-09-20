@@ -28,6 +28,10 @@ const TableReport = ({periodSelected,reportTypeSelected,columns,dataReporte,exce
       // `
       setReportName('Reporte de Nómina de Asistencia de Familia')
       return `U.E. Colegio Lourdes, Nómina de Asistencia de Familias - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear}`
+    }else if(reportTypeSelected.id === 4 ){
+      setReportName('Reporte de Seguro Escolar')
+      return `U.E. Colegio Lourdes, Seguro Escolar - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear}`
+
     }
   }
 
@@ -41,6 +45,8 @@ const TableReport = ({periodSelected,reportTypeSelected,columns,dataReporte,exce
     data={dataReporte} 
     columns={columns}
     options={{ 
+      search: false,
+      paging: false,
        width:300,
        actionsCellStyle:{paddingLeft:50,paddingRight:50},
        headerStyle: {

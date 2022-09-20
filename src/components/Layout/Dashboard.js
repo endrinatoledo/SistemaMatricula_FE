@@ -45,6 +45,7 @@ import CollectionReports from '../Reports/CollectionReports';
 import EnrollmentReports from '../Reports/EnrollmentReports'
 import SeePeriod from '../Periods/SeePeriod';
 import EditPeriod from '../Periods/EditPeriod';
+import BanksList from '../Banks/BanksList';
 
 const drawerWidth = 240;
 
@@ -197,7 +198,8 @@ const Dashboard= () => {
                       <Route path="/reportescobranza"element={<CollectionReports />} ></Route>
                       <Route path="/reportesmatricula"element={<EnrollmentReports />} ></Route>
                       <Route path="/verperiodo/:perid"element={<SeePeriod />} ></Route>  
-                      <Route path="/editarperiodo/:perid"element={<EditPeriod />} ></Route>                                 
+                      <Route path="/editarperiodo/:perid"element={<EditPeriod />} ></Route>       
+                      <Route path="/bancos"element={<BanksList />} ></Route>                
                     </Routes> 
                   }
                   </Paper>

@@ -105,8 +105,6 @@ const TableLevels = ({mode, levelsMap, setLevelsMap,periodObject, setPeriodObjec
                   ?  { ...element, e: event.target.checked }     
                   :element          
         )
-
-        console.log('//////////updatedOSArray/////////',updatedOSArray) 
         setLevelsMap(updatedOSArray)
 
       };

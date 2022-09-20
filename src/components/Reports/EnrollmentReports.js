@@ -65,6 +65,7 @@ const EnrollmentReports = () => {
         { id: 1, title: 'Listado de Alumnos por Gradro y Sección' },
         { id: 2, title: 'Estadística' }, // grado, cantidad total de alumnos, cantidad de niñas, cant de niños
         { id: 3, title: 'Nómina de Familias' }, //Codigo de familia, noombre padres con cedulas, nombres de alumnos cedulas grado cursante
+        { id: 4, title: 'Seguro Escolar' },
     ]
     const getAllPeriod = async () => {
 
@@ -162,6 +163,30 @@ const EnrollmentReports = () => {
             })
         }
 
+        if(reportTypeSelected.id === 4){
+            setColumns([
+                { title: 'Cédula Rep.', field: 'repIdentificationNumber'},
+                { title: 'Apellido(s)', field: 'surnamesRep'},
+                { title: 'Nombre(s)', field: 'namesRep'},
+                { title: 'Cédula Alum.', field: 'identificationNumberStu' },        
+                { title: '1er Apellido', field: 'surnameStu'},      
+                { title: '2do Apellido', field: 'secondSurnameStu'},
+                { title: '1er Nombre', field: 'firstNameStu'},
+                { title: '2do Nombre', field: 'secondNameStu'},
+                {title: 'Fch.Ncmto', field: 'dateOfBirthStu'},
+                {title: 'Sexo', field: 'sexStu'},
+                {title: 'Curso', field: 'levelSection'},
+            ])
+            setExcelStructure({
+                fileName : 'ReporteDeSeguroEscolar.xlsx',
+                columns:[["Cédula Rep.", "Apellido(s)", "Nombre(s)","Cédula Alum.", 
+                "1er Apellido", "2do Apellido",
+                "1er Nombre","2do Nombre",
+                "Fch.Ncmto","Sexo","Curso",]],
+                sheetName: "Seguro escolar"
+            })
+        }
+
     }
 
     const searchReport = async () =>{
@@ -186,13 +211,19 @@ const EnrollmentReports = () => {
         }else
         if(reportTypeSelected.id === 3){
             url = `/reports/familypayroll`
+        }else
+        if(reportTypeSelected.id === 4){
+            url = `/reports/schoolinsurance`
         }        
 
         const result = (await AxiosInstance.post(url,data)).data
+
         if(result.ok === true){
+            
             setDataReport(result.data)
             // setSeeTable(true)
         }else{
+            setDataReport([])
             setMessage(result.message)
             setAlertType('error')
             setAlertModal(true)
