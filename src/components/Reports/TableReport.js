@@ -32,6 +32,10 @@ const TableReport = ({periodSelected,reportTypeSelected,columns,dataReporte,exce
       setReportName('Reporte de Seguro Escolar')
       return `U.E. Colegio Lourdes, Seguro Escolar - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear}`
 
+    }else if(reportTypeSelected.id === 10 ){
+      setReportName('Reporte de resumen mensualidades')
+      return `U.E. Colegio Lourdes, Reporte de resumen mensualidades - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear}`
+
     }
   }
 

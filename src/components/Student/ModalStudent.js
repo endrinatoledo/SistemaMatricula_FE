@@ -174,7 +174,7 @@ const ModalStudent = ({ setSeeStudentDetails, seeStudentDetails, fillTable,setSe
 
   const updateStudent = async () => {
     //cuando se procese la accion cambiar setEditStudent(false)
-    const emptyForm = await validateRequiredFields()
+    const emptyForm = validateRequiredFields()
 
     if(!emptyForm) {
       setStatusCcircularProgress(true)
