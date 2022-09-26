@@ -22,7 +22,7 @@ const PaymentsList = () => {
 
   return (
     <>
-    <MaterialTable title={'Listad de Pagos'}
+    <MaterialTable title={'Lista de Pagos'}
      data={dataSource} 
      columns={columns}
      actions={[

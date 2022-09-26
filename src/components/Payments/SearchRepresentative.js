@@ -43,7 +43,7 @@ const IdentificationType = [
   }
 ]
 
-const SearchRepresentative = ({setSelectedFamily, representativeFound, setRepresentativeFound, identification, setIdentification, representativeData, setRepresentativeData }) => {
+const SearchRepresentative = ({setSelectedFamily, representativeFound, setRepresentativeFound, identification, setIdentification, representativeData, setRepresentativeData,setMensualidades }) => {
   const classes = UseStyles();
 
   const [alertModal, setAlertModal] = React.useState(false)
@@ -84,6 +84,7 @@ const SearchRepresentative = ({setSelectedFamily, representativeFound, setRepres
   const cleanIdentification = async () => {
 
     setIdentification({ repIdType: null, repIdentificationNumber: '' })
+    setMensualidades([])
     setRepresentativeFound(false)
     setSelectedFamily(null)
 

@@ -243,11 +243,9 @@ const ModalStudent = ({ setSeeStudentDetails, seeStudentDetails, fillTable,setSe
             setStudentObject={setStudentObject} studentObject={studentObject}/>
             
           </>
-          }
-       
+          }       
           <Stack spacing={2}  alignItems="flex-end" direction="row" justifyContent="center">
-           {
-             
+           {             
              (seeStudentDetails) ?  
              <>
                 <Button variant="outlined" onClick={closeModal} color="error">Cerrar</Button>
@@ -269,8 +267,7 @@ const ModalStudent = ({ setSeeStudentDetails, seeStudentDetails, fillTable,setSe
                     <Button variant="contained"onClick={saveStudent} color="success">Guardar</Button>
                   </>
                 }
-             </>
-             
+             </>             
            }
            
           </Stack>

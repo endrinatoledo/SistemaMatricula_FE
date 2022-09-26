@@ -7,6 +7,7 @@ import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import ModalFamily from './ModalFamily';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
+import TablaMensualidades from './TablaMensualidades';
 const { standardMessages } = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 const UseStyles = makeStyles({
@@ -39,6 +40,7 @@ const AddPayment = () => {
     const [openModal, setOpenModal] = React.useState(false)
     const [selectedFamily, setSelectedFamily] = React.useState(null)
     const [exchangeRate, setExchangeRate] = React.useState(null)
+    const [mensualidades, setMensualidades] = React.useState([])
     const classes = UseStyles();
 
     const getFamilyByRepId = async () => {
@@ -62,9 +64,7 @@ const AddPayment = () => {
 
     const getStudentPaymentSchemaFamId = async () => {
         try {
-            console.log('#######################')
             const stuPaySchRes = (await AxiosInstance.get(`/studentPaymentScheme/inscription/family/${selectedFamily.famId}`)).data
-            console.log('#######################',stuPaySchRes)
             
             if (stuPaySchRes.ok === true) {
                 setFamilies(stuPaySchRes.data)
@@ -75,7 +75,6 @@ const AddPayment = () => {
                 setAlertModal(true)
             }
         } catch {
-            console.log('aquiiii errorrrr')
             setMessage('Error**')
             setAlertType("error")
             setAlertModal(true)
@@ -86,6 +85,7 @@ const AddPayment = () => {
         console.log('se activo latestExchangeRate')
         try {
           const response = (await AxiosInstance.get("/exchangeRate/lastest/exchangeRates")).data
+          console.log('se activo latestExchangeRate',response)
           if (response.ok === true && response.data !== null) {
             setExchangeRate(response.data)
           }else{
@@ -94,20 +94,42 @@ const AddPayment = () => {
                 setAlertModal(true)
           }
         } catch {
+                setAlertType("error")
                 setMessage('Error de Conexion al consultar tasa del día')
                 setAlertModal(true)
         }
       }
 
-    //   React.useEffect(() => {
-    //     if (selectedFamily !== null) {
-    //         console.log('se activo yt entro')
-    //         getStudentPaymentSchemaFamId()
-    //     }
-    // }, [selectedFamily])  
+      const getMensualidadesFamily = async(selectedFamily) =>{
+        
+        try {
+            const response = (await AxiosInstance.get(`/pagoMensualidades/familia/${selectedFamily.famId}`)).data
+            if (response.ok === true && response.data.length > 0) {
+                setMensualidades(response.data)
+            }else{
+                setAlertType("error")
+                setMessage('Sin mensualidades para mostrar')
+                setAlertModal(true)
+            }
+        } catch (error) {
+            setMessage('Error al consultar mensualidades por familia')
+            setAlertType("error")
+            setAlertModal(true)
+        }
+      }
+
+      React.useEffect(() => {
+        if (selectedFamily !== null) {
+            getMensualidadesFamily(selectedFamily)
+
+            // console.log('se activo yt entro')
+            // getStudentPaymentSchemaFamId()
+        }
+    }, [selectedFamily])  
 
     React.useEffect(() => {
         if (representativeData.repId !== undefined) {
+            
             getFamilyByRepId()
         }
     }, [representativeData])
@@ -123,7 +145,7 @@ const AddPayment = () => {
                 <SearchRepresentative setSelectedFamily={setSelectedFamily} representativeFound={representativeFound}
                     setRepresentativeFound={setRepresentativeFound} identification={identification}
                     setIdentification={setIdentification} representativeData={representativeData}
-                    setRepresentativeData={setRepresentativeData} />
+                    setRepresentativeData={setRepresentativeData} setMensualidades={setMensualidades}/>
 
             </Box>
             {(alertModal) ?
@@ -132,7 +154,14 @@ const AddPayment = () => {
             {(openModal) ?
                 <ModalFamily selectedFamily={selectedFamily} setSelectedFamily={setSelectedFamily} openModal={openModal} setOpenModal={setOpenModal} families={families}> </ModalFamily>
                 : null}
-            {(selectedFamily !== null && exchangeRate !== null) ?
+            {
+                (mensualidades.length > 0 && exchangeRate !== null) 
+                ? <>
+                    <TablaMensualidades mensualidades={ mensualidades }/>
+                  </>
+                : null
+            }
+            {/* {(selectedFamily !== null && exchangeRate !== null) ?
                 <>
                 <Typography className={classes.typography} color="text.secondary" gutterBottom variant="h7" component="div">
                     <div>Nombre: {`${representativeData.repFirstName} ${representativeData.repSurname}`}</div>
@@ -143,7 +172,7 @@ const AddPayment = () => {
                     <PaymentMethodTable exchangeRate={exchangeRate}/>
                     <TabsPayments representativeData={representativeData}/>
                 </>
-                : null}
+                : null} */}
         </>
     )
 }
