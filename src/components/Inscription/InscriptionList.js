@@ -40,12 +40,14 @@ const InscriptionList = () => {
           if(resultInscripcion.data.length > 0){
             const data = resultInscripcion.data
             let result = []
+
+            // console.log('********************************************************',data)
             data.forEach( item => {
                 result.push({
                     id : item.insId,
                     identification : `${(item.student.stuIdType)?item.student.stuIdType:''}-${(item.student.stuIdentificationNumber)?item.student.stuIdentificationNumber:''}`,
-                    names : `${item.student.stuFirstName} ${item.student.stuSecondSurname}`,
-                    lastNames : `${item.student.stuSurname} ${item.student.stuSecondSurname}`,
+                    names : `${item.student.stuFirstName} ${item.student.stuSecondName ? item.student.stuSecondName : ''}`,
+                    lastNames : `${item.student.stuSurname} ${item.student.stuSecondSurname ? item.student.stuSecondSurname : ''}`,
                     period : `${item.period.perStartYear}-${item.period.perEndYear}`,
                     level : `${item.periodLevelSectionI.level.levName}`,
                     secction : `${item.periodLevelSectionI.section.secName}`,

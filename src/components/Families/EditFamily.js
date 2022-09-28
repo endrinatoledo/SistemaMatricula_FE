@@ -50,6 +50,8 @@ const EditFamily = () => {
 
   const getFamilyById = async () => {
 
+    console.log('llego aquiiiiiiiiiiiiiiii',family)
+
     try {
       const resultFamilies = (await AxiosInstance.get(`/representativeStudent/byFam/${famid}`)).data
 
@@ -76,7 +78,11 @@ const EditFamily = () => {
 
   const enableButton = () =>{
 
-    if(listRepresentative.length > 0 && listStudent.length > 0 && familyName !== '' && familyName !== null){
+    console.log('listRepresentative',listRepresentative.length)
+    console.log('listStudent',listStudent.length)
+    console.log('familyName',familyName)
+
+    if(familyName !== '' && familyName !== null){
       setDisableButtonSave(false)
     }else{
       setDisableButtonSave(true)

@@ -47,6 +47,7 @@ const Estudent = ({clearFieldSection, setClearFieldSection,clearFieldEstudent,li
     }
 }, [levelSelect])
 
+console.log('----------------------------------------',nonEnrolledStudents)
 
   return (
     <>

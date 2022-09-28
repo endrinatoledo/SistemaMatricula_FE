@@ -232,7 +232,6 @@ const ModalStudent = ({ setSeeStudentDetails, seeStudentDetails, fillTable,setSe
           :
           <>
               <ValidateIdentification editStudent={editStudent} setOrfStuIdentificationNumber={setOrfStuIdentificationNumber} setIdentificationValidation={setIdentificationValidation} identificationValidation={identificationValidation} orfStuIdentificationNumber={orfStuIdentificationNumber} setStudentObject={setStudentObject} studentObject={studentObject} />
-            
             <StudentForm 
             setSelectedStudent={setSelectedStudent}
             editStudent={editStudent} selectedStudent={selectedStudent}
@@ -240,8 +239,7 @@ const ModalStudent = ({ setSeeStudentDetails, seeStudentDetails, fillTable,setSe
             orfStuDateOfBirth = {orfStuDateOfBirth} orfStuSex ={orfStuSex}          
             orfCouId = {orfCouId} orfStatus = {orfStatus} orfFamId = {orfFamId}
             clearField={clearField} setClearField={setClearField} defaultValue={defaultValue} 
-            setStudentObject={setStudentObject} studentObject={studentObject}/>
-            
+            setStudentObject={setStudentObject} studentObject={studentObject}/>            
           </>
           }       
           <Stack spacing={2}  alignItems="flex-end" direction="row" justifyContent="center">
@@ -268,8 +266,7 @@ const ModalStudent = ({ setSeeStudentDetails, seeStudentDetails, fillTable,setSe
                   </>
                 }
              </>             
-           }
-           
+           }           
           </Stack>
         </Box>
       </Modal>

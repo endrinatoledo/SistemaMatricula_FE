@@ -151,15 +151,18 @@ const getFamilyById = async () => {
     const resultFamilies = (await AxiosInstance.get(`/representativeStudent/byFam/${selectedFamily.famId}`)).data
     if (resultFamilies.ok === true) {
 
+      console.log('.............................................................',resultFamilies.data)
       setListOfRepresentatives(resultFamilies.data.representatives)
       setListOfStudents(resultFamilies.data.students)
     }
   } catch {
-    console.log('error al consutlar')
+    console.log('error al consultar')
   }
 }
 
 const getNonEnrolledStudents = async () => {
+
+  console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',listOfStudents)
 
   const values = {
     students: listOfStudents,
