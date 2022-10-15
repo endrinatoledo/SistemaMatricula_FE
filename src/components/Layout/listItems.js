@@ -189,6 +189,16 @@ export const PeopleListItems = () => {
             </ListItemButton>
           </List>
         </NavLink>
+        <NavLink to='/costomensualidades'>
+          <List component="div" disablePadding >
+            <ListItemButton sx={{ pl: 2 }}  >
+              <ListItemIcon >
+                <AttachMoneyRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Costo Mens." />
+            </ListItemButton>
+          </List>
+        </NavLink>
         <NavLink to='/periodos'>
         <List component="div" disablePadding>
             <ListItemButton sx={{ pl: 2 }} >
