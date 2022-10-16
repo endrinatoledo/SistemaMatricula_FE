@@ -1,5 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
+import IconButton from '@mui/material/IconButton';
 import MaterialTable from '@material-table/core';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
@@ -26,33 +28,71 @@ const UseStyles = makeStyles({
     },
 });
 
-const meses = (rows) => {
-    if (rows === 1) {
-        return <CheckCircleOutlineIcon />
-    } else {
-        return <HighlightOffIcon />
-    }
-}
+
 
 const TablaMensualidades = ({ mensualidades }) => {
 
+
+
     const [pagoModal, setPagoModal] = React.useState(false)
+    const [mesesApagar, setMesesApagar] = React.useState([])
     const [statusCcircularProgress  , setStatusCcircularProgress] = React.useState(false)
     const columns = [
         { title: 'Estudiante', field: 'student' },
-        { title: 'Enero', field: 'ene', render: (rows) => meses(rows.ene) },
-        { title: 'Febrero', field: 'feb', render: (rows) => meses(rows.feb) },
-        { title: 'Marzo', field: 'mar', render: (rows) => meses(rows.mar) },
-        { title: 'Abril', field: 'abr', render: (rows) => meses(rows.abr) },
-        { title: 'Mayo', field: 'may', render: (rows) => meses(rows.may) },
-        { title: 'Junio', field: 'jun', render: (rows) => meses(rows.abr) },
-        { title: 'Julio', field: 'jul', render: (rows) => meses(rows.jul) },
-        { title: 'Agosto', field: 'ago', render: (rows) => meses(rows.ago) },
-        { title: 'Septiembre', field: 'sep', render: (rows) => meses(rows.sep) },
-        { title: 'Octubre', field: 'oct', render: (rows) => meses(rows.oct) },
-        { title: 'Noviembre', field: 'nov', render: (rows) => meses(rows.nov) },
-        { title: 'Diciembre', field: 'dic', render: (rows) => meses(rows.dic) },
+        { title: 'Enero', field: 'ene', render: (rows) => meses(rows.ene, 'ene','Enero', rows) },
+        { title: 'Febrero', field: 'feb', render: (rows) => meses(rows.feb, 'feb', 'Febrero', rows) },
+        { title: 'Marzo', field: 'mar', render: (rows) => meses(rows.mar, 'mar', 'Marzo', rows) },
+        { title: 'Abril', field: 'abr', render: (rows) => meses(rows.abr, 'abr', 'Abril', rows) },
+        { title: 'Mayo', field: 'may', render: (rows) => meses(rows.may, 'may', 'Mayo', rows) },
+        { title: 'Junio', field: 'jun', render: (rows) => meses(rows.abr, 'abr', 'Junio', rows) },
+        { title: 'Julio', field: 'jul', render: (rows) => meses(rows.jul, 'jul', 'Julio', rows) },
+        { title: 'Agosto', field: 'ago', render: (rows) => meses(rows.ago, 'ago', 'Agosto', rows) },
+        { title: 'Septiembre', field: 'sep', render: (rows) => meses(rows.sep, 'sep', 'Septiembre', rows) },
+        { title: 'Octubre', field: 'oct', render: (rows) => meses(rows.oct, 'oct', 'Octubre', rows) },
+        { title: 'Noviembre', field: 'nov', render: (rows) => meses(rows.nov, 'nov', 'Noviembre', rows) },
+        { title: 'Diciembre', field: 'dic', render: (rows) => meses(rows.dic, 'dic', 'Diciembre', rows) },
     ];
+
+
+    const meses = (mesValue, mes, nombreMes, rows) => {
+        
+    let arr = mesesApagar
+        console.log('.......', mes)
+        console.log('...........*/////**************////******', rows.mopId)
+    if (mesValue === 1) {
+        console.log('pagado')
+        return <CheckCircleOutlineIcon color="success"/>
+    } else {
+        // console.log('no pagado')
+        return    <> 
+            <Checkbox 
+            name={`${rows.mopId}-${mes}`} 
+            value={`${rows.mopId}-${mes}`} 
+            id={`${rows.mopId}-${mes}`} 
+            onChange={e => {
+                
+                if (e.target.checked === true) {
+                    arr.push({ 
+                        "id": `${rows.mopId}-${mes}`, 
+                        "mes": mes, 
+                        "nombreMes":nombreMes,
+                        "mopId": rows.mopId,
+                        "student": rows.student,
+                        "level":""
+                    })
+                }else{
+                    arr = arr.filter((item) => item.id !== `${rows.mopId}-${mes}` )
+                }
+                console.log('----------******------------', mesesApagar)
+                setMesesApagar(arr)
+                }}/>
+            </>
+    }
+}
+
+    React.useEffect(() => {
+        console.log('----------******------------', mesesApagar)
+    }, [mesesApagar])
 
     return (
         <>
@@ -85,7 +125,7 @@ const TablaMensualidades = ({ mensualidades }) => {
                 ]}
             />
             {(pagoModal)
-            ?  <ModalPayments pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades}/>
+                ? <ModalPayments mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades}/>
             :null
             }
         </>

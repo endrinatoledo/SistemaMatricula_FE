@@ -4,7 +4,7 @@ import SearchRepresentative from './SearchRepresentative'
 import PaymentMethodTable from './PaymentMethodTable'
 import TabsPayments from './TabsPayments'
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
-import ModalFamily from './ModalFamily';
+import ModalFamily from './modalFamily';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import TablaMensualidades from './TablaMensualidades';
