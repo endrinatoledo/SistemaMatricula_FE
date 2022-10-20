@@ -12,6 +12,8 @@ import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
+import MaterialTable from '@material-table/core';
+import NumberFormat, { InputAttributes } from 'react-number-format';
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
 
 const AxiosInstance = require("../utils/request").default;
@@ -92,10 +94,17 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
     const [metodosPago, setMetodosPago] = React.useState([])
     const [bankList, setBankList] = React.useState([])
     const [listaMonedas, setListaMonedas] = React.useState(['Dólares','Bolívares'])
-    const [pagosRegistrados, setPagosRegistrados] = React.useState([])
-    const [pagoPorRegistrar, setPagoPorRegistrar] = React.useState({moneda:null, metodoPago:null, monto:0, observacion:'',banco:'',referencia:''})
-
-    // console.log('valorMensualidad : -----..-----***************', valorMensualidad)
+    const [pagosRegistrados, setPagosRegistrados] = React.useState([{}])
+    const [pagoPorRegistrar, setPagoPorRegistrar] = React.useState({moneda:null, metodoPago:null, monto:null, observacion:null,banco:null,referencia:null})
+    const [statusBotonAgregar, setStatusBotonAgregar] = React.useState(false)
+    console.log('pagosRegistrados : -----..-----***************', pagosRegistrados)
+    const columnsPago = [{ title: 'Moneda', field: 'moneda' },
+        {
+            title: 'Método pago', field: 'metodoPago' },
+        { title: 'Monto', field: 'monto' },
+        { title: 'Observacion', field: 'observacion' },
+        { title: 'Banco', field: 'banco' },
+        { title: 'Referencia', field: 'referencia' }]
     const handleClose = () => {
 
         if (userResponse === 'yes') {
@@ -109,13 +118,21 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
             }
     };
 
-    const agregarPago = () => {
+    const cambiarStatusBotonAgregarPago = () => {
 
         if (pagoPorRegistrar.moneda === null || pagoPorRegistrar.metodoPago === null || pagoPorRegistrar.monto === 0 || pagoPorRegistrar.monto === null
             || pagoPorRegistrar.monto === '') {
-            
-               // mantener inactivo boton agregar pago
+            setStatusBotonAgregar(true)
+        }else{
+            setStatusBotonAgregar(false)
         } 
+    };
+
+    const agregarPago = () => {
+        let data = pagosRegistrados
+        data.push(pagoPorRegistrar)
+        setPagosRegistrados(data)
+        // setPagosRegistrados([...pagosRegistrados, pagoPorRegistrar])     
     };
 
     const consultarMetodosDePago = async () => {
@@ -212,6 +229,17 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
     React.useEffect(() => {
         ordenarDatosPago()
     }, [valorMensualidad])
+
+    React.useEffect(() => {
+        cambiarStatusBotonAgregarPago()
+    }, [pagoPorRegistrar])
+
+    // React.useEffect(() => {
+    //     if(!statusBotonAgregar) {agregarPago()}
+        
+    // }, [statusBotonAgregar])
+    
+    
     return (
         <>
             <Modal
@@ -226,7 +254,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                             <Grid item xs={5}>
                                 <Item2>
                                     <h5 className={classes.title}>Detalle de Pago</h5>
-                                    <Stack key={`detallePago`} className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                    <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                         <Autocomplete
                                             sx={{ width: '23%' }}
                                             options={listaMonedas}
@@ -237,9 +265,8 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             // value={item.moneda}
                                             getOptionLabel={(option) => option}
                                             onChange={(event, newValue) => {
-                                                console.log('newValue-----------------------------------', newValue)
-                                                //   setSelectedStudent({...selectedStudent, stuSex : (newValue !== null) ? newValue.value : selectedStudent.stuSex})
-                                            }}
+                                                console.log('moneda-----------------------------------', newValue)
+                                                setPagoPorRegistrar({ ...pagoPorRegistrar, moneda: newValue })                                            }}
                                             required
                                             id="clear-on-escape"
                                         />
@@ -250,11 +277,10 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                                 <TextField {...params} label="Método de Pago" variant="standard"
                                                 />
                                             )}
-                                            // value={item.metodoPago}
                                             getOptionLabel={(option) => option.payName}
                                             onChange={(event, newValue) => {
-                                                console.log('newValue-----------------------------------', newValue)
-                                                //   setSelectedStudent({...selectedStudent, stuSex : (newValue !== null) ? newValue.value : selectedStudent.stuSex})
+                                                console.log('"Método de Pago-----------------------------------', newValue)
+                                                setPagoPorRegistrar({ ...pagoPorRegistrar, metodoPago: newValue })
                                             }}
                                             required
                                             id="clear-on-escape"
@@ -262,17 +288,19 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                         <TextField
                                             sx={{ width: '15%' }}
                                             required
-                                            // value={item.pago}
+                                            // inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                                             id="monto"
                                             label="Monto"
                                             variant="standard"
                                             onChange={e => {
-                                                // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
+                                                setPagoPorRegistrar({ ...pagoPorRegistrar, monto: e.target.value })                      
                                             }}
                                         />
-                                        <Button variant="contained" color="info">Agregar</Button>
+                                        <Button variant="contained" color="info" 
+                                            disabled={statusBotonAgregar} onClick={() => agregarPago()}
+                                        >Agregar</Button>
                                     </Stack>
-                                    <Stack key={`detallePago`} className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                    <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                         <TextField
                                             sx={{ width: '48%' }}
                                             required
@@ -281,7 +309,8 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             label="Observaciones del pago"
                                             variant="standard"
                                             onChange={e => {
-                                                // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
+                                                console.log('observacionessssssssssssssssss',e.target.value)
+                                                setPagoPorRegistrar({ ...pagoPorRegistrar, observacion: e.target.value })   
                                             }}
                                         />
                                         <Autocomplete
@@ -294,8 +323,8 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             // value={item.moneda}
                                             getOptionLabel={(option) => option.banName}
                                             onChange={(event, newValue) => {
-                                                console.log('newValue-----------------------------------', newValue)
-                                                //   setSelectedStudent({...selectedStudent, stuSex : (newValue !== null) ? newValue.value : selectedStudent.stuSex})
+                                                console.log('newValue---------------monedaaaa--------------------', newValue)
+                                                setPagoPorRegistrar({ ...pagoPorRegistrar, banco: newValue })
                                             }}
                                             required
                                             id="clear-on-escape"
@@ -308,12 +337,41 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             label="Referencia"
                                             variant="standard"
                                             onChange={e => {
-                                                // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
+                                                setPagoPorRegistrar({ ...pagoPorRegistrar, referencia: e.target.value })
                                             }}
                                         />
                                        
                                         
                                     </Stack>
+
+                                    <MaterialTable title={'Pagos'}
+                                        data={pagosRegistrados}
+                                        columns={columnsPago}
+                                        options={{
+                                            search: false,
+                                            paging: false,
+                                            // width: 300,
+                                            // actionsCellStyle: { paddingLeft: 50, paddingRight: 50 },
+                                            // headerStyle: {
+                                            //     backgroundColor: "#007bff",
+                                            //     color: "#FFF",
+                                            //     fontWeight: 'normal',
+                                            //     fontSize: 18,
+                                            // },
+                                            actionsColumnIndex: -1,
+                                            addRowPosition: 'first'
+                                        }}
+                                        // actions={[
+                                        //     {
+                                        //         icon: () => <AddBoxRoundedIcon />,
+                                        //         tooltip: 'Registrar Pago',
+                                        //         isFreeAction: true,
+                                        //         onClick: () => {
+                                        //             setPagoModal(true)
+                                        //         }
+                                        //     },
+                                        // ]}
+                                    />
                                 </Item2>
                             </Grid>
                             <Grid item xs={7}>
@@ -372,6 +430,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                                         }}
                                                     />
                                                     <TextField
+                                                        type={'number'}
                                                         sx={{ width: '10%' }}
                                                         aria-readonly
                                                         value={item.restante}
@@ -383,46 +442,13 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                                         }}
                                                     />
                                                 </Stack>
-                                                <Stack
+                                                {/* <Stack
                                                     key={`${item.mes}-${item.modId}`}
-                                                    className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
-
-                                                    {/* <Autocomplete
-                                                        sx={{ width: '9%' }}
-                                                        options={listaMonedas}
-                                                        renderInput={(params) => (
-                                                            <TextField {...params} label="Moneda" variant="standard"
-                                                            />
-                                                        )}
-                                                        value={item.moneda}
-                                                        getOptionLabel={(option) => option}
-                                                        onChange={(event, newValue) => {
-                                                            console.log('newValue-----------------------------------', newValue)
-                                                            //   setSelectedStudent({...selectedStudent, stuSex : (newValue !== null) ? newValue.value : selectedStudent.stuSex})
-                                                        }}
-                                                        required
-                                                        id="clear-on-escape"
-                                                    /> */}
-                                                    {/* <Autocomplete
-                                                        sx={{ width: '15%' }}
-                                                        options={metodosPago}
-                                                        renderInput={(params) => (
-                                                            <TextField {...params} label="Método de Pago" variant="standard"
-                                                            />
-                                                        )}
-                                                        value={item.metodoPago}
-                                                        getOptionLabel={(option) => option.payName}
-                                                        onChange={(event, newValue) => {
-                                                            console.log('newValue-----------------------------------', newValue)
-                                                            //   setSelectedStudent({...selectedStudent, stuSex : (newValue !== null) ? newValue.value : selectedStudent.stuSex})
-                                                        }}
-                                                        required
-                                                        id="clear-on-escape"
-                                                    /> */}
-                                                    
+                                                    className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >                                               
                                                     
 
-                                                </Stack>
+
+                                                </Stack> */}
                                                 {/* <Divider variant="middle" /> */}
                                                 <br />
                                             </>)
