@@ -212,7 +212,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                         required
                                         value={item.costo?.cmeAmount}
                                         id="costo"
-                                        label="Costo"
+                                        label="Costo $"
                                         variant="standard"
                                         onChange={e => {
                                             // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
@@ -240,7 +240,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                         id="clear-on-escape"
                                     />
                                     <Autocomplete
-                                        sx={{ width: '10%' }}
+                                        sx={{ width: '15%' }}
                                         options={metodosPago}
                                         renderInput={(params) => (
                                             <TextField {...params} label="Método de Pago" variant="standard"
@@ -296,7 +296,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
 
                             :
                             null
-                    }
+                    } 
                     
                     <Stack spacing={2}  alignItems="flex-end" direction="row" justifyContent="center">
                     <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="center">
