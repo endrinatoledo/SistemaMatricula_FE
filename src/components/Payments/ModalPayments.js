@@ -97,6 +97,8 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
     const [pagosRegistrados, setPagosRegistrados] = React.useState([])
     const [pagoPorRegistrar, setPagoPorRegistrar] = React.useState({moneda:null, metodoPago:null, monto:null, observacion:null,banco:null,referencia:null})
     const [statusBotonAgregar, setStatusBotonAgregar] = React.useState(false)
+    const [montoTotalDolares, setMontoTotalDolares] = React.useState(0)
+    const [montoTotalBolivares, setMontoTotalBolivares] = React.useState(0)
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500 })
     console.log('pagosRegistrados : -----..-----***************', pagosRegistrados)
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
@@ -131,6 +133,12 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
 
     const agregarPago = () => {
 
+        if (pagoPorRegistrar.moneda === 'Dólares'){
+            setMontoTotalDolares(Number(montoTotalDolares) + Number(pagoPorRegistrar.monto))
+        }else{
+            setMontoTotalBolivares(Number(montoTotalBolivares) + Number(pagoPorRegistrar.monto))
+        }
+        
         console.log('llego aquiiii')
         let data = pagosRegistrados
         data.push(pagoPorRegistrar)
@@ -383,6 +391,13 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             actionsColumnIndex: -1,
                                             addRowPosition: 'first'
                                         }}
+                                        editable={{                                   
+                                            onRowDelete: (selectRow) =>  {
+
+                                                console.log('8888888888888888', selectRow)
+                                                
+                                            }
+                                        }}
                                         // actions={[
                                         //     {
                                         //         icon: () => <AddBoxRoundedIcon />,
@@ -394,6 +409,13 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                         //     },
                                         // ]}
                                     />
+                                    <Stack className={classes.stack} direction="column"
+                                        justifyContent="flex-end"
+                                        alignItems="flex-end"
+                                        spacing={2} >
+                                        <div> Monto Total $: {montoTotalDolares} </div>
+                                        <div> Monto Total Bs: {montoTotalBolivares} </div>
+                                    </Stack>
                                 </Item2>
                             </Grid>
                             <Grid item xs={6}>
@@ -485,7 +507,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                     </div>
 
                     <Box >
-                    <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="center" className={classes.stack}>
+                    <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-end" className={classes.stack}>
                             {
                                 <>
                                     {
