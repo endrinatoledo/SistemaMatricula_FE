@@ -94,17 +94,18 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
     const [metodosPago, setMetodosPago] = React.useState([])
     const [bankList, setBankList] = React.useState([])
     const [listaMonedas, setListaMonedas] = React.useState(['Dólares','Bolívares'])
-    const [pagosRegistrados, setPagosRegistrados] = React.useState([{}])
+    const [pagosRegistrados, setPagosRegistrados] = React.useState([])
     const [pagoPorRegistrar, setPagoPorRegistrar] = React.useState({moneda:null, metodoPago:null, monto:null, observacion:null,banco:null,referencia:null})
     const [statusBotonAgregar, setStatusBotonAgregar] = React.useState(false)
+    const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500 })
     console.log('pagosRegistrados : -----..-----***************', pagosRegistrados)
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
-        {
-            title: 'Método pago', field: 'metodoPago' },
+        { title: 'Método pago', field: 'metodoPago', render: (rows) => <>{rows.metodoPago.payName}</>},
         { title: 'Monto', field: 'monto' },
         { title: 'Observacion', field: 'observacion' },
-        { title: 'Banco', field: 'banco' },
+        { title: 'Banco', field: 'banco', render: (rows) => <>{rows.banco.banName}</>  },
         { title: 'Referencia', field: 'referencia' }]
+
     const handleClose = () => {
 
         if (userResponse === 'yes') {
@@ -129,11 +130,29 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
     };
 
     const agregarPago = () => {
+
+        console.log('llego aquiiii')
         let data = pagosRegistrados
         data.push(pagoPorRegistrar)
         setPagosRegistrados(data)
+
+        limpiarFormularioAgregarPago()
+        console.log('pagosRegistrados', pagosRegistrados)
         // setPagosRegistrados([...pagosRegistrados, pagoPorRegistrar])     
     };
+
+    const limpiarFormularioAgregarPago = () => {
+        setPagoPorRegistrar({ moneda: null, metodoPago: null, monto: null, observacion: null, banco: null, referencia: null })
+        setClearField(
+            {
+                moneda: (clearField.moneda + 1),
+                metodoPago: (clearField.metodoPago + 1),
+                monto: (clearField.monto + 1),
+                observacion: (clearField.observacion + 1),
+                banco: (clearField.banco + 1),
+                referencia: (clearField.referencia + 1)
+            })
+    }
 
     const consultarMetodosDePago = async () => {
         try {
@@ -234,10 +253,10 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
         cambiarStatusBotonAgregarPago()
     }, [pagoPorRegistrar])
 
-    // React.useEffect(() => {
-    //     if(!statusBotonAgregar) {agregarPago()}
+    React.useEffect(() => {
+        // if(!statusBotonAgregar) {agregarPago()}
         
-    // }, [statusBotonAgregar])
+    }, [pagosRegistrados])
     
     
     return (
@@ -251,11 +270,12 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
 
                     <div>
                         <Grid container spacing={2}>
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>
                                 <Item2>
                                     <h5 className={classes.title}>Detalle de Pago</h5>
                                     <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                         <Autocomplete
+                                            key={clearField.moneda}
                                             sx={{ width: '23%' }}
                                             options={listaMonedas}
                                             renderInput={(params) => (
@@ -271,6 +291,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             id="clear-on-escape"
                                         />
                                         <Autocomplete
+                                            key={clearField.metodoPago}
                                             sx={{ width: '23%' }}
                                             options={metodosPago}
                                             renderInput={(params) => (
@@ -286,6 +307,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             id="clear-on-escape"
                                         />
                                         <TextField
+                                            key={clearField.monto}
                                             sx={{ width: '15%' }}
                                             required
                                             // inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
@@ -304,6 +326,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                         <TextField
                                             sx={{ width: '48%' }}
                                             required
+                                            key={clearField.observacion}
                                             // value={item.descripcionPago}
                                             id="student"
                                             label="Observaciones del pago"
@@ -314,22 +337,21 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             }}
                                         />
                                         <Autocomplete
+                                            key={clearField.banco}
                                             sx={{ width: '28%' }}
                                             options={bankList}
                                             renderInput={(params) => (
                                                 <TextField {...params} label="Banco" variant="standard"
                                                 />
                                             )}
-                                            // value={item.moneda}
                                             getOptionLabel={(option) => option.banName}
                                             onChange={(event, newValue) => {
-                                                console.log('newValue---------------monedaaaa--------------------', newValue)
                                                 setPagoPorRegistrar({ ...pagoPorRegistrar, banco: newValue })
                                             }}
-                                            required
                                             id="clear-on-escape"
                                         />
                                         <TextField
+                                            key={clearField.referencia}
                                             sx={{ width: '16%' }}
                                             required
                                             // value={item.pago}
@@ -374,7 +396,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                     />
                                 </Item2>
                             </Grid>
-                            <Grid item xs={7}>
+                            <Grid item xs={6}>
                                 <Item2>
                                     <h5 className={classes.title}>Distribución de Pago</h5>
                                     {
