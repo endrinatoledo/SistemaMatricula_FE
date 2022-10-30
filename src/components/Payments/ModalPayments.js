@@ -13,7 +13,6 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import MaterialTable from '@material-table/core';
-import NumberFormat, { InputAttributes } from 'react-number-format';
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
 
 const AxiosInstance = require("../utils/request").default;
@@ -100,13 +99,13 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
     const [montoTotalDolares, setMontoTotalDolares] = React.useState(0)
     const [montoTotalBolivares, setMontoTotalBolivares] = React.useState(0)
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500 })
-    console.log('pagosRegistrados : -----..-----***************', pagosRegistrados)
+    console.log('pagoPorRegistrar : -----..-----***************', pagoPorRegistrar)
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
         { title: 'Método pago', field: 'metodoPago', render: (rows) => <>{rows.metodoPago.payName}</>},
         { title: 'Monto', field: 'monto' },
         { title: 'Observacion', field: 'observacion' },
-        { title: 'Banco', field: 'banco', render: (rows) => <>{rows.banco.banName}</>  },
-        { title: 'Referencia', field: 'referencia' }]
+        { title: 'Banco', field: 'banco', render: (rows) => <>{rows.banco !== null ? rows.banco.banName : ''}</>  },
+        { title: 'Referencia', field: 'referencia', render: (rows) => <>{rows.referencia !== null ? rows.referencia : ''}</> }]
 
     const handleClose = () => {
 
@@ -133,20 +132,25 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
 
     const agregarPago = () => {
 
-        if (pagoPorRegistrar.moneda === 'Dólares'){
-            setMontoTotalDolares(Number(montoTotalDolares) + Number(pagoPorRegistrar.monto))
-        }else{
-            setMontoTotalBolivares(Number(montoTotalBolivares) + Number(pagoPorRegistrar.monto))
-        }
-        
-        console.log('llego aquiiii')
-        let data = pagosRegistrados
-        data.push(pagoPorRegistrar)
-        setPagosRegistrados(data)
+        const numeroConvertido = Number(pagoPorRegistrar.monto) + 0
 
-        limpiarFormularioAgregarPago()
-        console.log('pagosRegistrados', pagosRegistrados)
-        // setPagosRegistrados([...pagosRegistrados, pagoPorRegistrar])     
+        if(String(numeroConvertido) == 'NaN'){
+
+        }else{
+            if (pagoPorRegistrar.moneda === 'Dólares'){
+                setMontoTotalDolares(Number(montoTotalDolares) + Number(pagoPorRegistrar.monto))
+            }else{
+                setMontoTotalBolivares(Number(montoTotalBolivares) + Number(pagoPorRegistrar.monto))
+            }
+    
+            let data = pagosRegistrados
+            data.push(pagoPorRegistrar)
+            setPagosRegistrados(data)
+    
+            limpiarFormularioAgregarPago()
+            console.log('pagosRegistrados', pagosRegistrados)
+
+        }   
     };
 
     const limpiarFormularioAgregarPago = () => {
@@ -243,6 +247,17 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
 
     }
 
+    const validarMetodoDePago = () =>{
+        if(pagoPorRegistrar.metodoPago !== null){
+           if(pagoPorRegistrar.metodoPago.payName != 'EFECTIVO'){
+            return false
+           }else{
+            return true
+           }
+        }else{
+            return true
+        }
+    }
     React.useEffect(() => {
         consultarValorMensualidad()
         consultarMetodosDePago()
@@ -273,7 +288,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                 hideBackdrop open={pagoModal}
                 onClose={handleClose}
                 aria-labelledby="child-modal-title" aria-describedby="child-modal-description" >
-                <Box sx={{ ...style, width: '95%' }}>
+                <Box sx={{ ...style, width: '95%', height:'87%' }}>
                     <h4 className={classes.title}> Agregar Pago</h4>
 
                     <div>
@@ -317,7 +332,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                         <TextField
                                             key={clearField.monto}
                                             sx={{ width: '15%' }}
-                                            required
+                                            required            
                                             // inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                                             id="monto"
                                             label="Monto"
@@ -326,6 +341,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                                 setPagoPorRegistrar({ ...pagoPorRegistrar, monto: e.target.value })                      
                                             }}
                                         />
+                                        
                                         <Button variant="contained" color="info" 
                                             disabled={statusBotonAgregar} onClick={() => agregarPago()}
                                         >Agregar</Button>
@@ -345,6 +361,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             }}
                                         />
                                         <Autocomplete
+                                            disabled={validarMetodoDePago()}
                                             key={clearField.banco}
                                             sx={{ width: '28%' }}
                                             options={bankList}
@@ -359,6 +376,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             id="clear-on-escape"
                                         />
                                         <TextField
+                                            disabled={validarMetodoDePago()}
                                             key={clearField.referencia}
                                             sx={{ width: '16%' }}
                                             required
@@ -380,6 +398,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                         options={{
                                             search: false,
                                             paging: false,
+                                            maxBodyHeight:190,
                                             // width: 300,
                                             // actionsCellStyle: { paddingLeft: 50, paddingRight: 50 },
                                             // headerStyle: {
