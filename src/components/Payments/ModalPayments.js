@@ -11,8 +11,10 @@ import TextField from '@mui/material/TextField';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import nextId from "react-id-generator";
 import { styled } from '@mui/material/styles';
 import MaterialTable from '@material-table/core';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
 
 const AxiosInstance = require("../utils/request").default;
@@ -137,6 +139,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
         if(String(numeroConvertido) == 'NaN'){
 
         }else{
+            pagoPorRegistrar.id = nextId()
             if (pagoPorRegistrar.moneda === 'Dólares'){
                 setMontoTotalDolares(Number(montoTotalDolares) + Number(pagoPorRegistrar.monto))
             }else{
@@ -356,7 +359,6 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             label="Observaciones del pago"
                                             variant="standard"
                                             onChange={e => {
-                                                console.log('observacionessssssssssssssssss',e.target.value)
                                                 setPagoPorRegistrar({ ...pagoPorRegistrar, observacion: e.target.value })   
                                             }}
                                         />
@@ -409,24 +411,18 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             // },
                                             actionsColumnIndex: -1,
                                             addRowPosition: 'first'
-                                        }}
-                                        editable={{                                   
-                                            onRowDelete: (selectRow) =>  {
-
-                                                console.log('8888888888888888', selectRow)
-                                                
+                                        }}                                        
+                                        actions={[
+                                            {
+                                                icon: () => <DeleteOutlineOutlinedIcon />,
+                                                tooltip: 'Eliminar Pago',
+                                                onClick: (event, rowData) => {
+                                                    let array = pagosRegistrados
+                                                    const newArray = array.filter((item) => item.id !== rowData.id)
+                                                    setPagosRegistrados(newArray)
+                                                }
                                             }
-                                        }}
-                                        // actions={[
-                                        //     {
-                                        //         icon: () => <AddBoxRoundedIcon />,
-                                        //         tooltip: 'Registrar Pago',
-                                        //         isFreeAction: true,
-                                        //         onClick: () => {
-                                        //             setPagoModal(true)
-                                        //         }
-                                        //     },
-                                        // ]}
+                                        ]}
                                     />
                                     <Stack className={classes.stack} direction="column"
                                         justifyContent="flex-end"
@@ -536,9 +532,9 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             <>
                                                 <Button variant="outlined" onClick={() => setPagoModal(false)}
                                                     color="error">Cancelar</Button>
-                                                <Button variant="contained"
+                                                <Button variant="contained" disabled={pagosRegistrados.length === 0 || datosPago.length === 0 ? true : false}
                                                     color="success">Guardar</Button>
-                                            </>
+                                            </> 
                                     }
                                 </>
                             }
