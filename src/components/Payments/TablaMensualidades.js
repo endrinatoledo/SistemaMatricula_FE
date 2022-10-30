@@ -119,7 +119,7 @@ const TablaMensualidades = ({ mensualidades }) => {
                 ]}
             />
             {(pagoModal)
-                ? <ModalPayments mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades}/>
+                ? <ModalPayments setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades}/>
             :null
             }
         </>

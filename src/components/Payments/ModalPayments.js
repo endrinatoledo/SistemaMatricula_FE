@@ -74,14 +74,19 @@ const UseStyles = makeStyles({
         paddingBottom: '2%',
         '& .MuiTextField-root': { m: 1, width: '25ch' }
 
+    },
+    distribPago:{
+        marginLeft:'3%',
+        marginBottom: '3%',
     } 
+
     // box:{
     //     marginTop:40,
     //     marginBottom:40,
     // }
 })
 
-const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,statusCcircularProgress }) => {
+const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades,statusCcircularProgress }) => {
     const classes = UseStyles();
     const [tipoConcepto, setTipoConcepto] = React.useState(null)
     const [userResponse, setUserResponse] = React.useState('')
@@ -94,6 +99,8 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
     const [datosPago, setDatosPago] = React.useState([])
     const [metodosPago, setMetodosPago] = React.useState([])
     const [bankList, setBankList] = React.useState([])
+    const [errorMontoDP, setErrorMontoDP] = React.useState(false)
+    const [mensajeErrorMontoDP, setMensajeErrorMontoDP] = React.useState('')    
     const [listaMonedas, setListaMonedas] = React.useState(['Dólares','Bolívares'])
     const [pagosRegistrados, setPagosRegistrados] = React.useState([])
     const [pagoPorRegistrar, setPagoPorRegistrar] = React.useState({moneda:null, metodoPago:null, monto:null, observacion:null,banco:null,referencia:null})
@@ -112,10 +119,10 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
     const handleClose = () => {
 
         if (userResponse === 'yes') {
-            //   cleanStudentObject()
-            setModalCancel(false)
-            // setOpenModal(false);
-            setPagoModal(false);
+            setPagosRegistrados([])
+            setDatosPago([])
+            setMesesApagar([])
+            setPagoModal(false)
         } else
             if (userResponse === 'no') {
                 setModalCancel(false)
@@ -138,7 +145,11 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
 
         if(String(numeroConvertido) == 'NaN'){
 
+            setErrorMontoDP(true)
+            setMensajeErrorMontoDP('Monto en números')
         }else{
+            setErrorMontoDP(false)
+            setMensajeErrorMontoDP('')
             pagoPorRegistrar.id = nextId()
             if (pagoPorRegistrar.moneda === 'Dólares'){
                 setMontoTotalDolares(Number(montoTotalDolares) + Number(pagoPorRegistrar.monto))
@@ -172,8 +183,6 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
     const consultarMetodosDePago = async () => {
         try {
             const metodosPagoRes = (await AxiosInstance.get(`/paymentmethod/`)).data
-
-            console.log('$$$$$$$$.........****************.............', metodosPagoRes)
             if (metodosPagoRes.ok === true) {
                 setMetodosPago(metodosPagoRes.data)
             } else {
@@ -191,8 +200,6 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
     const consultarBancos = async () => {
         try {
             const bancosRes = (await AxiosInstance.get(`/banks/allBanks/active/`)).data
-
-            console.log('......................................', bancosRes)
             if (bancosRes.ok === true) {
                 setBankList(bancosRes.data)
             } else {
@@ -232,6 +239,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
             const data = mesesApagar.map(item => {
                 console.log('***----/****----****-----', item)
                 return {
+                    "key":nextId(),
                     "mopId": item.mopId,
                     "mes": item.mes,
                     "student": `${item.student}`,
@@ -261,6 +269,14 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
             return true
         }
     }
+
+    const confirmarCancelarRegistroDePago = ()=>{
+        setModalCancel(true)
+    }
+    React.useEffect(() => {  
+        handleClose()
+        }, [userResponse]);
+
     React.useEffect(() => {
         consultarValorMensualidad()
         consultarMetodosDePago()
@@ -333,8 +349,10 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             id="clear-on-escape"
                                         />
                                         <TextField
+                                            error={errorMontoDP}
+                                            helperText={mensajeErrorMontoDP}
                                             key={clearField.monto}
-                                            sx={{ width: '15%' }}
+                                            sx={{ width: '18%' }}
                                             required            
                                             // inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                                             id="monto"
@@ -438,13 +456,14 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                     <h5 className={classes.title}>Distribución de Pago</h5>
                                     {
                                         datosPago.length > 0 ?
-                                            datosPago.map(item => <>
+                                            datosPago.map(item => <div>
                                                 <Stack
+                                                    className={classes.distribPago}
                                                     key={`${item.mes}-${item.modId}`}
-                                                    className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                    spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
 
                                                     <TextField
-                                                        sx={{ width: '30%' }}
+                                                        sx={{ width: '40%' }}
                                                         required
                                                         value={item.student}
                                                         id="student"
@@ -453,8 +472,13 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                                         onChange={e => {
                                                             // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
                                                         }}
-                                                    />
+                                                    />                                                   
+                                                </Stack>
+                                                <Stack
+                                                    key={`${item.mes}-${item.modId}`}
+                                                    className={classes.distribPago} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                                     <TextField
+                                                        sx={{ width: '40%' }}
                                                         required
                                                         value={item.descripcion}
                                                         id="description"
@@ -467,32 +491,43 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                                         }}
                                                     />
                                                     <TextField
+                                                        type={'number'}
                                                         sx={{ width: '10%' }}
                                                         required
                                                         value={item.costo?.cmeAmount}
                                                         id="costo"
                                                         label="Costo $"
                                                         variant="standard"
-                                                        onChange={e => {
-                                                            // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
-                                                        }}
-                                                    />
-                                                    <TextField
-                                                        sx={{ width: '10%' }}
-                                                        required
-                                                        value={item.pago}
-                                                        id="pago"
-                                                        label="Pago"
-                                                        variant="standard"
-                                                        onChange={e => {
-                                                            // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
-                                                        }}
+                                                        // onChange={e => {
+                                                        //     // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
+                                                        // }}
                                                     />
                                                     <TextField
                                                         type={'number'}
                                                         sx={{ width: '10%' }}
+                                                        required
+                                                        value={Number(item.pago)}
+                                                        id="pago"
+                                                        label="Pago"
+                                                        variant="standard"
+                                                        onChange={e => {
+
+                                                            const obtenerPosicion = datosPago.map(element => element.key).indexOf(item.key)
+                                                            datosPago[obtenerPosicion].pago = e.target.value ? e.target.value : 0
+                                                            setDatosPago(datosPago[obtenerPosicion])
+                                                            console.log('datosPago',datosPago)
+                                                            // console.log('obtenerPosicion',obtenerPosicion)
+                                                            // console.log('item',item)
+                                                            console.log('e.target.value',e.target.value)
+                                                            // setDatosPago({ ...item, pago: e.target.value ? e.target.value : 0 })
+                                                        }}
+                                                    />
+                                                    <TextField
+                                                        
+                                                        type={'number'}
+                                                        sx={{ width: '10%' }}
                                                         aria-readonly
-                                                        value={item.restante}
+                                                        value={item.pago}
                                                         id="MontoRestante"
                                                         label="Monto Restante"
                                                         variant="standard"
@@ -501,16 +536,10 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                                         }}
                                                     />
                                                 </Stack>
-                                                {/* <Stack
-                                                    key={`${item.mes}-${item.modId}`}
-                                                    className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >                                               
-                                                    
-
-
-                                                </Stack> */}
-                                                {/* <Divider variant="middle" /> */}
+                                                
+                                                <Divider variant="middle" />
                                                 <br />
-                                            </>)
+                                            </div>)
 
                                             :
                                             null
@@ -530,7 +559,7 @@ const ModalPayments = ({ mesesApagar, pagoModal, setPagoModal, mensualidades,sta
                                             <LoadingButtons message={'Guardando'} />
                                             :
                                             <>
-                                                <Button variant="outlined" onClick={() => setPagoModal(false)}
+                                                <Button variant="outlined" onClick={() => confirmarCancelarRegistroDePago()}
                                                     color="error">Cancelar</Button>
                                                 <Button variant="contained" disabled={pagosRegistrados.length === 0 || datosPago.length === 0 ? true : false}
                                                     color="success">Guardar</Button>
