@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import nextId from "react-id-generator";
 import { styled } from '@mui/material/styles';
+import EditIcon from '@mui/icons-material/Edit';
 import MaterialTable from '@material-table/core';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
@@ -107,6 +108,7 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
     const [statusBotonAgregar, setStatusBotonAgregar] = React.useState(false)
     const [montoTotalDolares, setMontoTotalDolares] = React.useState(0)
     const [montoTotalBolivares, setMontoTotalBolivares] = React.useState(0)
+    const [conteo, setConteo] = React.useState(0)
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500 })
     console.log('pagoPorRegistrar : -----..-----***************', pagoPorRegistrar)
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
@@ -116,6 +118,14 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
         { title: 'Banco', field: 'banco', render: (rows) => <>{rows.banco !== null ? rows.banco.banName : ''}</>  },
         { title: 'Referencia', field: 'referencia', render: (rows) => <>{rows.referencia !== null ? rows.referencia : ''}</> }]
 
+        const columnsDisPago = [
+        { title: 'Estudiante', field: 'student',editable: 'never'},
+        { title: 'Descripción Pago', field: 'descripcion',editable: 'never' },
+        { title: 'Costo', field: 'costo',editable: 'never',type:'currency', render: (rows) => <>{rows.costo !== null ? rows.costo.cmeAmount : 0}</> },
+        { title: 'Pago', field: 'pago',type:'currency',validate:rowData=>(rowData.pago === undefined || rowData.pago === ''|| rowData.pago === null|| rowData.pago === 0)?"Requerido":true  },
+        { title: 'Monto Restante', field: 'restante',editable: 'never',type:'currency'}]
+
+         
     const handleClose = () => {
 
         if (userResponse === 'yes') {
@@ -270,6 +280,21 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
         }
     }
 
+    const validarGuardar = () =>{
+
+        if(pagosRegistrados.length === 0 || datosPago.length === 0){
+            return true
+            
+        }else{
+            const found = datosPago.find(element => element.pago === 0);
+            if(found !== '' && found !== null && found !== undefined){
+                return true
+            }else{
+                return false
+            }            
+        }
+    }
+
     const confirmarCancelarRegistroDePago = ()=>{
         setModalCancel(true)
     }
@@ -418,15 +443,7 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                         options={{
                                             search: false,
                                             paging: false,
-                                            maxBodyHeight:190,
-                                            // width: 300,
-                                            // actionsCellStyle: { paddingLeft: 50, paddingRight: 50 },
-                                            // headerStyle: {
-                                            //     backgroundColor: "#007bff",
-                                            //     color: "#FFF",
-                                            //     fontWeight: 'normal',
-                                            //     fontSize: 18,
-                                            // },
+                                            maxBodyHeight:190,                                            
                                             actionsColumnIndex: -1,
                                             addRowPosition: 'first'
                                         }}                                        
@@ -456,90 +473,177 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                     <h5 className={classes.title}>Distribución de Pago</h5>
                                     {
                                         datosPago.length > 0 ?
-                                            datosPago.map(item => <div>
-                                                <Stack
-                                                    className={classes.distribPago}
-                                                    key={`${item.mes}-${item.modId}`}
-                                                    spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
-
-                                                    <TextField
-                                                        sx={{ width: '40%' }}
-                                                        required
-                                                        value={item.student}
-                                                        id="student"
-                                                        label="Estudiante"
-                                                        variant="standard"
-                                                        onChange={e => {
-                                                            // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
-                                                        }}
-                                                    />                                                   
-                                                </Stack>
-                                                <Stack
-                                                    key={`${item.mes}-${item.modId}`}
-                                                    className={classes.distribPago} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
-                                                    <TextField
-                                                        sx={{ width: '40%' }}
-                                                        required
-                                                        value={item.descripcion}
-                                                        id="description"
-                                                        label="Descripción de pago"
-                                                        variant="standard"
-                                                        // helperText={(representativeObject.repFirstName === null || representativeObject.repFirstName === '') ? requiredField : ''}
-                                                        // error={orfRepFirstName}
-                                                        onChange={e => {
-                                                            // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
-                                                        }}
-                                                    />
-                                                    <TextField
-                                                        type={'number'}
-                                                        sx={{ width: '10%' }}
-                                                        required
-                                                        value={item.costo?.cmeAmount}
-                                                        id="costo"
-                                                        label="Costo $"
-                                                        variant="standard"
-                                                        // onChange={e => {
-                                                        //     // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
-                                                        // }}
-                                                    />
-                                                    <TextField
-                                                        type={'number'}
-                                                        sx={{ width: '10%' }}
-                                                        required
-                                                        value={Number(item.pago)}
-                                                        id="pago"
-                                                        label="Pago"
-                                                        variant="standard"
-                                                        onChange={e => {
-
-                                                            const obtenerPosicion = datosPago.map(element => element.key).indexOf(item.key)
-                                                            datosPago[obtenerPosicion].pago = e.target.value ? e.target.value : 0
-                                                            setDatosPago(datosPago[obtenerPosicion])
-                                                            console.log('datosPago',datosPago)
-                                                            // console.log('obtenerPosicion',obtenerPosicion)
-                                                            // console.log('item',item)
-                                                            console.log('e.target.value',e.target.value)
-                                                            // setDatosPago({ ...item, pago: e.target.value ? e.target.value : 0 })
-                                                        }}
-                                                    />
-                                                    <TextField
-                                                        
-                                                        type={'number'}
-                                                        sx={{ width: '10%' }}
-                                                        aria-readonly
-                                                        value={item.pago}
-                                                        id="MontoRestante"
-                                                        label="Monto Restante"
-                                                        variant="standard"
-                                                        onChange={e => {
-                                                            // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
-                                                        }}
-                                                    />
-                                                </Stack>
+                                        <>
+                                        <MaterialTable title={'Distribución de Pagos'}
+                                        data={datosPago}
+                                        columns={columnsDisPago}
+                                        options={{
+                                            search: false,
+                                            paging: false,
+                                            maxBodyHeight:350,
+                                            // width: 300,
+                                            // actionsCellStyle: { paddingLeft: 50, paddingRight: 50 },
+                                            // headerStyle: {
+                                            //     backgroundColor: "#007bff",
+                                            //     color: "#FFF",
+                                            //     fontWeight: 'normal',
+                                            //     fontSize: 18,
+                                            // },
+                                            actionsColumnIndex: -1,
+                                            addRowPosition: 'first'
+                                        }}   
+                                        editable={{
+                                            onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
+                                                console.log('newRow',newRow)
+                                                // console.log('oldRow',oldRow)
+                                                if(newRow.pago > newRow.costo.cmeAmount){
+                                                    console.log('monto mayor')
+                                                    reject()
+                                                }else{
+                                                    const obtenerPosicion = datosPago.map(element => element.key).indexOf(newRow.key)
+                                                    let newArray = datosPago
+                                                    newArray[obtenerPosicion].pago = newRow.pago 
+                                                    // newArray[obtenerPosicion].restante = newRow.costo.cmeAmount - newRow.pago
+                                                    setDatosPago(newArray)
+                                                    console.log('*****************',datosPago)
+                                                    
+                                                    resolve(setDatosPago(newArray))
+                                                }
+                                                setConteo(conteo + 1)
                                                 
-                                                <Divider variant="middle" />
-                                                <br />
-                                            </div>)
+                                                
+                                                
+                                                // console.log('obtenerPosicion',obtenerPosicion)
+
+
+                                            //    AxiosInstance.put(`/roles/${newRow.rolId}`,newRow)
+                                            //    .then(resp=>{
+                                            //      setTimeout(() => {
+                                            //        if(resp.data.ok === true){
+                                            //          setAlertType("success")
+                                            //        }else{
+                                            //          setAlertType("error")
+                                            //        }
+                                            //        setMessage(resp.data.message)
+                                            //        setAlertModal(true)
+                                            //        fillTable()
+                                            //        resolve()
+                                            //      }, 2000);
+                                                 
+                                            //    }).catch((err) => {
+                                            //      setTimeout(() => {
+                                            //        setMessage(standardMessages.connectionError)
+                                            //        setAlertType("error")
+                                            //        setAlertModal(true)
+                                            //        fillTable()
+                                            //        reject()
+                                            //      }, 2000);
+                                            //    });
+                                   
+                                            })
+                                        }}                                     
+                                        // actions={[
+                                        //     {
+                                        //         icon: () => <DeleteOutlineOutlinedIcon />,
+                                        //         tooltip: 'Eliminar Pago',
+                                        //         onClick: (event, rowData) => {
+                                        //             let array = pagosRegistrados
+                                        //             const newArray = array.filter((item) => item.id !== rowData.id)
+                                        //             setPagosRegistrados(newArray)
+                                        //         }
+                                        //     }
+                                        // ]}
+                                    />
+
+                                    {/* {
+                                        datosPago.map(item => <div>
+                                            <Stack
+                                                className={classes.distribPago}
+                                                key={`${item.mes}-${item.modId}`}
+                                                spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+
+                                                <TextField
+                                                    sx={{ width: '40%' }}
+                                                    required
+                                                    value={item.student}
+                                                    id="student"
+                                                    label="Estudiante"
+                                                    variant="standard"
+                                                    onChange={e => {
+                                                        // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
+                                                    }}
+                                                />                                                   
+                                            </Stack>
+                                            <Stack
+                                                key={`${item.mes}-${item.modId}`}
+                                                className={classes.distribPago} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                <TextField
+                                                    sx={{ width: '40%' }}
+                                                    required
+                                                    value={item.descripcion}
+                                                    id="description"
+                                                    label="Descripción de pago"
+                                                    variant="standard"
+                                                    // helperText={(representativeObject.repFirstName === null || representativeObject.repFirstName === '') ? requiredField : ''}
+                                                    // error={orfRepFirstName}
+                                                    onChange={e => {
+                                                        // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
+                                                    }}
+                                                />
+                                                <TextField
+                                                    type={'number'}
+                                                    sx={{ width: '10%' }}
+                                                    required
+                                                    value={item.costo?.cmeAmount}
+                                                    id="costo"
+                                                    label="Costo $"
+                                                    variant="standard"
+                                                    // onChange={e => {
+                                                    //     // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
+                                                    // }}
+                                                />
+                                                <TextField
+                                                    type={'number'}
+                                                    sx={{ width: '10%' }}
+                                                    required
+                                                    value={Number(item.pago)}
+                                                    id="pago"
+                                                    label="Pago"
+                                                    variant="standard"
+                                                    onChange={e => {
+
+                                                        const obtenerPosicion = datosPago.map(element => element.key).indexOf(item.key)
+                                                        datosPago[obtenerPosicion].pago = e.target.value ? e.target.value : 0
+                                                        setDatosPago(datosPago[obtenerPosicion])
+                                                        console.log('datosPago',datosPago)
+                                                        // console.log('obtenerPosicion',obtenerPosicion)
+                                                        // console.log('item',item)
+                                                        console.log('e.target.value',e.target.value)
+                                                        // setDatosPago({ ...item, pago: e.target.value ? e.target.value : 0 })
+                                                    }}
+                                                />
+                                                <TextField
+                                                    
+                                                    type={'number'}
+                                                    sx={{ width: '10%' }}
+                                                    aria-readonly
+                                                    value={item.pago}
+                                                    id="MontoRestante"
+                                                    label="Monto Restante"
+                                                    variant="standard"
+                                                    onChange={e => {
+                                                        // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
+                                                    }}
+                                                />
+                                            </Stack>
+                                            
+                                            <Divider variant="middle" />
+                                            <br />
+                                        </div>)
+                                    } */}
+                                        </>
+                                        
+                                            
 
                                             :
                                             null
@@ -561,7 +665,7 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                             <>
                                                 <Button variant="outlined" onClick={() => confirmarCancelarRegistroDePago()}
                                                     color="error">Cancelar</Button>
-                                                <Button variant="contained" disabled={pagosRegistrados.length === 0 || datosPago.length === 0 ? true : false}
+                                                <Button variant="contained" disabled={validarGuardar()}
                                                     color="success">Guardar</Button>
                                             </> 
                                     }

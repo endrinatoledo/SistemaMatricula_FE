@@ -51,8 +51,6 @@ const TablaMensualidades = ({ mensualidades }) => {
     const meses = (mesValue, mes, nombreMes, rows) => {
         
     let arr = mesesApagar
-        console.log('.......', mes)
-        console.log('...........*/////**************////******', rows.mopId)
     if (mesValue === 1) {
         console.log('pagado')
         return <CheckCircleOutlineIcon color="success"/>
