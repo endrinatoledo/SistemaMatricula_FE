@@ -24,7 +24,7 @@ const UseStyles = makeStyles({
 
 
 
-const TablaMensualidades = ({ mensualidades }) => {
+const TablaMensualidades = ({ mensualidades, dataDetalle }) => {
 
 
 
@@ -47,6 +47,10 @@ const TablaMensualidades = ({ mensualidades }) => {
         { title: 'Diciembre', field: 'dic', render: (rows) => meses(rows.dic, 'dic', 'Diciembre', rows) },
     ];
 
+    const buscarDetalleDePago = (mopId) =>{
+        const itemDetalle = dataDetalle.find( element => element.mopId === mopId)
+        return itemDetalle
+    }
 
     const meses = (mesValue, mes, nombreMes, rows) => {
         
@@ -70,7 +74,8 @@ const TablaMensualidades = ({ mensualidades }) => {
                         "nombreMes":nombreMes,
                         "mopId": rows.mopId,
                         "student": rows.student,
-                        "level":""
+                        "level":"",
+                        "detallePago":buscarDetalleDePago(rows.mopId)
                     })
                 }else{
                     arr = arr.filter((item) => item.id !== `${rows.mopId}-${mes}` )
@@ -117,7 +122,7 @@ const TablaMensualidades = ({ mensualidades }) => {
                 ]}
             />
             {(pagoModal)
-                ? <ModalPayments setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades}/>
+                ? <ModalPayments setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
             :null
             }
         </>

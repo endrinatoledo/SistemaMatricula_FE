@@ -41,6 +41,8 @@ const AddPayment = () => {
     const [selectedFamily, setSelectedFamily] = React.useState(null)
     const [exchangeRate, setExchangeRate] = React.useState(null)
     const [mensualidades, setMensualidades] = React.useState([])
+    const [dataDetalle, setDataDetalle] = React.useState([])
+    
     const classes = UseStyles();
 
     const getFamilyByRepId = async () => {
@@ -106,6 +108,7 @@ const AddPayment = () => {
             const response = (await AxiosInstance.get(`/pagoMensualidades/familia/${selectedFamily.famId}`)).data
             if (response.ok === true && response.data.length > 0) {
                 setMensualidades(response.data)
+                setDataDetalle(response.dataDetalle)
             }else{
                 setAlertType("error")
                 setMessage('Sin mensualidades para mostrar')
@@ -157,7 +160,7 @@ const AddPayment = () => {
             {
                 (mensualidades.length > 0 && exchangeRate !== null) 
                 ? <>
-                    <TablaMensualidades mensualidades={ mensualidades }/>
+                    <TablaMensualidades mensualidades={ mensualidades } dataDetalle={dataDetalle}/>
                   </>
                 : null
             }

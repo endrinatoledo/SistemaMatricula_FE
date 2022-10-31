@@ -16,6 +16,7 @@ import { styled } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import MaterialTable from '@material-table/core';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import moment from 'moment';
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
 
 const AxiosInstance = require("../utils/request").default;
@@ -112,6 +113,7 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
     const [montoTotalBolivaresDis, setMontoTotalBolivaresDis] = React.useState(0)
     const [conteo, setConteo] = React.useState(0)
     const [tasaDelDia, setTasaDelDia] = React.useState(0)
+    const [paginaCabecera, setPaginaCabecera] = React.useState(false)
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500 })
     // console.log('pagoPorRegistrar : -----..-----***************', pagoPorRegistrar)
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
@@ -124,8 +126,8 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
         const columnsDisPago = [
         { title: 'Estudiante', field: 'student',editable: 'never'},
         { title: 'Descripción Pago', field: 'descripcion',editable: 'never' },
-        { title: 'Costo', field: 'costo',editable: 'never',type:'currency', render: (rows) => <>{rows.costo !== null ? rows.costo.cmeAmount : 0}</> },
-        { title: 'Pago', field: 'pago',type:'currency',validate:rowData=>(rowData.pago === undefined || rowData.pago === ''|| rowData.pago === null|| rowData.pago === 0)?"Requerido":true  },
+        { title: 'Costo', field: 'costoNeto',type:'currency' },
+        { title: 'Pago', field: 'pago',type:'currency',validate:rowData=>(rowData.pago === undefined || rowData.pago === ''|| rowData.pago === null|| rowData.pago === 0)?"Requerido": rowData.pago > rowData.costo.cmeAmount ? 'Monto Excedido':true  },
         { title: 'Monto Restante', field: 'restante',editable: 'never',type:'currency'}]
 
          
@@ -166,17 +168,22 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
         var s = x.toString()
         var l = s.length
         var decimalLength = s.indexOf('.') + 1
-        var numStr = s.substr(0, decimalLength + posiciones)
-        return Number(numStr)
+        if (decimalLength == 0){
+            return Number(x)
+        }else{
+            var numStr = s.substr(0, decimalLength + posiciones)
+            return Number(numStr)
+        }
       }
 
     const montosDistribuidosTotales = async() => {
           setMontoTotalDolaresDis(datosPago.reduce((accumulator, object) => {
             return Number(accumulator) + Number(object.pago);
           }, 0))
-          setMontoTotalBolivaresDis(trunc((datosPago.reduce((accumulator, object) => {
+
+          setMontoTotalBolivaresDis(trunc(parseFloat((datosPago.reduce((accumulator, object) => {
             return Number(accumulator) + Number(object.pago);
-          }, 0)) * tasaDelDia.excAmount,2))
+          }, 0)) * tasaDelDia.excAmount),2))
           setConteo(conteo + 1)
     }
     const agregarPago = () => {
@@ -282,6 +289,7 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
 
         if (mesesApagar.length > 0){
             const data = mesesApagar.map(item => {
+                console.log('..........----------',item)
                 return {
                     "key":nextId(),
                     "mopId": item.mopId,
@@ -289,10 +297,11 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                     "student": `${item.student}`,
                     "descripcion": `Mensualidad ${item.nombreMes}`,
                     "costo": valorMensualidad,
+                    "costoNeto": valorMensualidad?.cmeAmount,
                     "moneda":null,
                     "metodoPago": null,
                     "pago":0,
-                    "restante":0,
+                    "restante":Number(valorMensualidad.cmeAmount) - item.detallePago.mopAmountPaid,
                     "descripcionPago":"" 
                 }
         })
@@ -354,7 +363,8 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
     }, [datosPago])
 
     React.useEffect(() => {
-        ordenarDatosPago()
+        if (valorMensualidad){ordenarDatosPago()}
+        
     }, [valorMensualidad])
 
     React.useEffect(() => {
@@ -557,7 +567,7 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                         justifyContent="flex-end"
                                         alignItems="flex-end"
                                         spacing={2} >
-                                        <div> Tasa del día : {tasaDelDia.excAmount} Bs. {tasaDelDia.excDate}  </div>
+                                        <div> Tasa del día : {tasaDelDia.excAmount} Bs. {moment(tasaDelDia.excDate).format("DD/MM/YYYY")}  </div>
                                         <div> Monto Total Distribuido $: {montoTotalDolaresDis} </div>
                                         <div> Monto Total Distribuido Bs: {montoTotalBolivaresDis} </div>
                                     </Stack>
@@ -673,16 +683,13 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                                 <Button variant="outlined" onClick={() => confirmarCancelarRegistroDePago()}
                                                     color="error">Cancelar</Button>
                                                 <Button variant="contained" disabled={validarGuardar()}
-                                                    color="success">Guardar</Button>
+                                                    color="success">Siguiente</Button>
                                             </> 
                                     }
                                 </>
                             }
                     </Stack>
                     </Box>
-           
-           
-          {/* </Stack> */}
                 </Box>
             </Modal>
             {(modalCancel) ?
