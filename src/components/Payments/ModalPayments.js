@@ -17,6 +17,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import MaterialTable from '@material-table/core';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import moment from 'moment';
+import InvoiceHeader from './InvoiceHeader';
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
 
 const AxiosInstance = require("../utils/request").default;
@@ -112,6 +113,7 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
     const [montoTotalDolaresDis, setMontoTotalDolaresDis] = React.useState(0)
     const [montoTotalBolivaresDis, setMontoTotalBolivaresDis] = React.useState(0)
     const [conteo, setConteo] = React.useState(0)
+    const [estatusBotonSiguiente, setEstatusBotonSiguiente] = React.useState(true)
     const [tasaDelDia, setTasaDelDia] = React.useState(0)
     const [paginaCabecera, setPaginaCabecera] = React.useState(false)
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500 })
@@ -322,17 +324,23 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
             return true
         }
     }
-
+    const cabecera = () =>{
+        setPaginaCabecera(true)
+    }
+    
     const validarGuardar = () =>{
 
         if(pagosRegistrados.length === 0 || datosPago.length === 0){
+            // setEstatusBotonSiguiente(true)
             return true
             
         }else{
             const found = datosPago.find(element => element.pago === 0);
             if(found !== '' && found !== null && found !== undefined){
+                // setEstatusBotonSiguiente(true)
                 return true
             }else{
+                // setEstatusBotonSiguiente(false)
                 return false
             }            
         }
@@ -341,6 +349,7 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
     const confirmarCancelarRegistroDePago = ()=>{
         setModalCancel(true)
     }
+
     React.useEffect(() => {  
         handleClose()
         }, [userResponse]);
@@ -375,7 +384,6 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
         
     }, [pagosRegistrados])
     
-    
     return (
         <>
             <Modal
@@ -385,7 +393,10 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                 <Box sx={{ ...style, width: '95%', height:'87%' }}>
                     <h4 className={classes.title}> Agregar Pago</h4>
 
-                    <div>
+                    {
+                        (paginaCabecera)
+                        ? <InvoiceHeader Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago}/>
+                        :<div>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <Item2>
@@ -572,96 +583,7 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                         <div> Monto Total Distribuido Bs: {montoTotalBolivaresDis} </div>
                                     </Stack>
 
-                                    {/* {
-                                        datosPago.map(item => <div>
-                                            <Stack
-                                                className={classes.distribPago}
-                                                key={`${item.mes}-${item.modId}`}
-                                                spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
-
-                                                <TextField
-                                                    sx={{ width: '40%' }}
-                                                    required
-                                                    value={item.student}
-                                                    id="student"
-                                                    label="Estudiante"
-                                                    variant="standard"
-                                                    onChange={e => {
-                                                        // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
-                                                    }}
-                                                />                                                   
-                                            </Stack>
-                                            <Stack
-                                                key={`${item.mes}-${item.modId}`}
-                                                className={classes.distribPago} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
-                                                <TextField
-                                                    sx={{ width: '40%' }}
-                                                    required
-                                                    value={item.descripcion}
-                                                    id="description"
-                                                    label="Descripción de pago"
-                                                    variant="standard"
-                                                    // helperText={(representativeObject.repFirstName === null || representativeObject.repFirstName === '') ? requiredField : ''}
-                                                    // error={orfRepFirstName}
-                                                    onChange={e => {
-                                                        // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
-                                                    }}
-                                                />
-                                                <TextField
-                                                    type={'number'}
-                                                    sx={{ width: '10%' }}
-                                                    required
-                                                    value={item.costo?.cmeAmount}
-                                                    id="costo"
-                                                    label="Costo $"
-                                                    variant="standard"
-                                                    // onChange={e => {
-                                                    //     // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
-                                                    // }}
-                                                />
-                                                <TextField
-                                                    type={'number'}
-                                                    sx={{ width: '10%' }}
-                                                    required
-                                                    value={Number(item.pago)}
-                                                    id="pago"
-                                                    label="Pago"
-                                                    variant="standard"
-                                                    onChange={e => {
-
-                                                        const obtenerPosicion = datosPago.map(element => element.key).indexOf(item.key)
-                                                        datosPago[obtenerPosicion].pago = e.target.value ? e.target.value : 0
-                                                        setDatosPago(datosPago[obtenerPosicion])
-                                                        console.log('datosPago',datosPago)
-                                                        // console.log('obtenerPosicion',obtenerPosicion)
-                                                        // console.log('item',item)
-                                                        console.log('e.target.value',e.target.value)
-                                                        // setDatosPago({ ...item, pago: e.target.value ? e.target.value : 0 })
-                                                    }}
-                                                />
-                                                <TextField
-                                                    
-                                                    type={'number'}
-                                                    sx={{ width: '10%' }}
-                                                    aria-readonly
-                                                    value={item.pago}
-                                                    id="MontoRestante"
-                                                    label="Monto Restante"
-                                                    variant="standard"
-                                                    onChange={e => {
-                                                        // setSelectedRepresentative({ ...selectedRepresentative, repFirstName: e.target.value ? e.target.value : '' })
-                                                    }}
-                                                />
-                                            </Stack>
-                                            
-                                            <Divider variant="middle" />
-                                            <br />
-                                        </div>)
-                                    } */}
-                                        </>
-                                        
-                                            
-
+                                        </>                        
                                             :
                                             null
                                     } 
@@ -670,6 +592,8 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                         </Grid>
                         
                     </div>
+                    }
+                    
 
                     <Box >
                     <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-end" className={classes.stack}>
@@ -680,10 +604,17 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                             <LoadingButtons message={'Guardando'} />
                                             :
                                             <>
+                                                {
+                                                    (paginaCabecera) ?
+                                                    <Button variant="contained" onClick={() => setPaginaCabecera(false)}
+                                                    color="info">Anterior</Button>
+                                                    : null
+                                                }  
                                                 <Button variant="outlined" onClick={() => confirmarCancelarRegistroDePago()}
                                                     color="error">Cancelar</Button>
-                                                <Button variant="contained" disabled={validarGuardar()}
+                                                <Button variant="contained" disabled={validarGuardar()} onClick={() => cabecera()}
                                                     color="success">Siguiente</Button>
+                                                
                                             </> 
                                     }
                                 </>
