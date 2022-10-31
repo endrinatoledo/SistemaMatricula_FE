@@ -24,9 +24,7 @@ const UseStyles = makeStyles({
 
 
 
-const TablaMensualidades = ({ mensualidades, dataDetalle }) => {
-
-
+const TablaMensualidades = ({ families, mensualidades, dataDetalle }) => {
 
     const [pagoModal, setPagoModal] = React.useState(false)
     const [mesesApagar, setMesesApagar] = React.useState([])
@@ -122,7 +120,7 @@ const TablaMensualidades = ({ mensualidades, dataDetalle }) => {
                 ]}
             />
             {(pagoModal)
-                ? <ModalPayments setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
+                ? <ModalPayments families={families} setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
             :null
             }
         </>

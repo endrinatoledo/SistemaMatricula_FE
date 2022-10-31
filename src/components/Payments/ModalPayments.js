@@ -89,7 +89,7 @@ const UseStyles = makeStyles({
     // }
 })
 
-const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades,statusCcircularProgress }) => {
+const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades,statusCcircularProgress }) => {
     const classes = UseStyles();
     const [tipoConcepto, setTipoConcepto] = React.useState(null)
     const [userResponse, setUserResponse] = React.useState('')
@@ -395,7 +395,7 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
 
                     {
                         (paginaCabecera)
-                        ? <InvoiceHeader Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago}/>
+                            ? <InvoiceHeader families={families} Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago}/>
                         :<div>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
