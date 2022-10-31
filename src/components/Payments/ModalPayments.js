@@ -108,9 +108,12 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
     const [statusBotonAgregar, setStatusBotonAgregar] = React.useState(false)
     const [montoTotalDolares, setMontoTotalDolares] = React.useState(0)
     const [montoTotalBolivares, setMontoTotalBolivares] = React.useState(0)
+    const [montoTotalDolaresDis, setMontoTotalDolaresDis] = React.useState(0)
+    const [montoTotalBolivaresDis, setMontoTotalBolivaresDis] = React.useState(0)
     const [conteo, setConteo] = React.useState(0)
+    const [tasaDelDia, setTasaDelDia] = React.useState(0)
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500 })
-    console.log('pagoPorRegistrar : -----..-----***************', pagoPorRegistrar)
+    // console.log('pagoPorRegistrar : -----..-----***************', pagoPorRegistrar)
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
         { title: 'Método pago', field: 'metodoPago', render: (rows) => <>{rows.metodoPago.payName}</>},
         { title: 'Monto', field: 'monto' },
@@ -149,31 +152,48 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
         } 
     };
 
+    const montosTotales = async() => {
+          setMontoTotalDolares(pagosRegistrados.reduce((accumulator, object) => {
+            return object.moneda === 'Dólares' ? Number(accumulator) + Number(object.monto) : Number(accumulator) + 0;
+          }, 0))
+          setMontoTotalBolivares(pagosRegistrados.reduce((accumulator, object) => {
+            return object.moneda === 'Bolívares' ? Number(accumulator) + Number(object.monto) : Number(accumulator) + 0;
+          }, 0))
+          setConteo(conteo + 1)
+    }
+
+    const trunc =(x, posiciones = 0) =>{
+        var s = x.toString()
+        var l = s.length
+        var decimalLength = s.indexOf('.') + 1
+        var numStr = s.substr(0, decimalLength + posiciones)
+        return Number(numStr)
+      }
+
+    const montosDistribuidosTotales = async() => {
+          setMontoTotalDolaresDis(datosPago.reduce((accumulator, object) => {
+            return Number(accumulator) + Number(object.pago);
+          }, 0))
+          setMontoTotalBolivaresDis(trunc((datosPago.reduce((accumulator, object) => {
+            return Number(accumulator) + Number(object.pago);
+          }, 0)) * tasaDelDia.excAmount,2))
+          setConteo(conteo + 1)
+    }
     const agregarPago = () => {
 
         const numeroConvertido = Number(pagoPorRegistrar.monto) + 0
-
         if(String(numeroConvertido) == 'NaN'){
-
             setErrorMontoDP(true)
             setMensajeErrorMontoDP('Monto en números')
         }else{
             setErrorMontoDP(false)
             setMensajeErrorMontoDP('')
-            pagoPorRegistrar.id = nextId()
-            if (pagoPorRegistrar.moneda === 'Dólares'){
-                setMontoTotalDolares(Number(montoTotalDolares) + Number(pagoPorRegistrar.monto))
-            }else{
-                setMontoTotalBolivares(Number(montoTotalBolivares) + Number(pagoPorRegistrar.monto))
-            }
-    
+            pagoPorRegistrar.id = nextId()    
             let data = pagosRegistrados
             data.push(pagoPorRegistrar)
             setPagosRegistrados(data)
-    
             limpiarFormularioAgregarPago()
-            console.log('pagosRegistrados', pagosRegistrados)
-
+            montosTotales()
         }   
     };
 
@@ -189,7 +209,22 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                 referencia: (clearField.referencia + 1)
             })
     }
-
+    const consultarTasaDelDia = async () => {
+        try {
+            const tasaDelDiaRes = (await AxiosInstance.get(`/exchangeRate/lastest/exchangeRates`)).data
+            if (tasaDelDiaRes.ok === true) {
+                setTasaDelDia(tasaDelDiaRes.data)
+            } else {
+                setMessage(tasaDelDiaRes.message)
+                setAlertType("error")
+                setAlertModal(true)
+            }
+        } catch (error) {
+            setMessage('Error al consultar tasa del día')
+            setAlertType("error")
+            setAlertModal(true)
+        }
+    }
     const consultarMetodosDePago = async () => {
         try {
             const metodosPagoRes = (await AxiosInstance.get(`/paymentmethod/`)).data
@@ -247,7 +282,6 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
 
         if (mesesApagar.length > 0){
             const data = mesesApagar.map(item => {
-                console.log('***----/****----****-----', item)
                 return {
                     "key":nextId(),
                     "mopId": item.mopId,
@@ -302,10 +336,17 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
         handleClose()
         }, [userResponse]);
 
+        React.useEffect(() => {  
+            // console.log('..montoTotalBolivares')
+        }, [montoTotalBolivares]);
+            React.useEffect(() => {  
+                // console.log('.montoDolares')
+                }, [montoTotalDolares]);
     React.useEffect(() => {
         consultarValorMensualidad()
         consultarMetodosDePago()
         consultarBancos()
+        consultarTasaDelDia()
     }, [1])
 
     React.useEffect(() => {
@@ -321,7 +362,6 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
     }, [pagoPorRegistrar])
 
     React.useEffect(() => {
-        // if(!statusBotonAgregar) {agregarPago()}
         
     }, [pagosRegistrados])
     
@@ -352,7 +392,6 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                             // value={item.moneda}
                                             getOptionLabel={(option) => option}
                                             onChange={(event, newValue) => {
-                                                console.log('moneda-----------------------------------', newValue)
                                                 setPagoPorRegistrar({ ...pagoPorRegistrar, moneda: newValue })                                            }}
                                             required
                                             id="clear-on-escape"
@@ -367,7 +406,6 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                             )}
                                             getOptionLabel={(option) => option.payName}
                                             onChange={(event, newValue) => {
-                                                console.log('"Método de Pago-----------------------------------', newValue)
                                                 setPagoPorRegistrar({ ...pagoPorRegistrar, metodoPago: newValue })
                                             }}
                                             required
@@ -455,6 +493,12 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                                     let array = pagosRegistrados
                                                     const newArray = array.filter((item) => item.id !== rowData.id)
                                                     setPagosRegistrados(newArray)
+                                                    setTimeout(() => {
+                                                        montosTotales()
+                                                        
+                                                    }, 2000);
+                                                    
+                                                    
                                                 }
                                             }
                                         ]}
@@ -463,6 +507,7 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                         justifyContent="flex-end"
                                         alignItems="flex-end"
                                         spacing={2} >
+                                            <br /> 
                                         <div> Monto Total $: {montoTotalDolares} </div>
                                         <div> Monto Total Bs: {montoTotalBolivares} </div>
                                     </Stack>
@@ -480,22 +525,13 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                         options={{
                                             search: false,
                                             paging: false,
-                                            maxBodyHeight:350,
-                                            // width: 300,
-                                            // actionsCellStyle: { paddingLeft: 50, paddingRight: 50 },
-                                            // headerStyle: {
-                                            //     backgroundColor: "#007bff",
-                                            //     color: "#FFF",
-                                            //     fontWeight: 'normal',
-                                            //     fontSize: 18,
-                                            // },
+                                            maxBodyHeight:330,
                                             actionsColumnIndex: -1,
                                             addRowPosition: 'first'
                                         }}   
                                         editable={{
                                             onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
                                                 console.log('newRow',newRow)
-                                                // console.log('oldRow',oldRow)
                                                 if(newRow.pago > newRow.costo.cmeAmount){
                                                     console.log('monto mayor')
                                                     reject()
@@ -505,55 +541,26 @@ const ModalPayments = ({ setMesesApagar, mesesApagar, pagoModal, setPagoModal, m
                                                     newArray[obtenerPosicion].pago = newRow.pago 
                                                     // newArray[obtenerPosicion].restante = newRow.costo.cmeAmount - newRow.pago
                                                     setDatosPago(newArray)
-                                                    console.log('*****************',datosPago)
+                                                    setTimeout(() => {
+                                                        montosDistribuidosTotales()
+                                                        resolve(setDatosPago(newArray))
+                                                    }, 1000);
                                                     
-                                                    resolve(setDatosPago(newArray))
+                                                    
                                                 }
-                                                setConteo(conteo + 1)
-                                                
-                                                
-                                                
-                                                // console.log('obtenerPosicion',obtenerPosicion)
-
-
-                                            //    AxiosInstance.put(`/roles/${newRow.rolId}`,newRow)
-                                            //    .then(resp=>{
-                                            //      setTimeout(() => {
-                                            //        if(resp.data.ok === true){
-                                            //          setAlertType("success")
-                                            //        }else{
-                                            //          setAlertType("error")
-                                            //        }
-                                            //        setMessage(resp.data.message)
-                                            //        setAlertModal(true)
-                                            //        fillTable()
-                                            //        resolve()
-                                            //      }, 2000);
-                                                 
-                                            //    }).catch((err) => {
-                                            //      setTimeout(() => {
-                                            //        setMessage(standardMessages.connectionError)
-                                            //        setAlertType("error")
-                                            //        setAlertModal(true)
-                                            //        fillTable()
-                                            //        reject()
-                                            //      }, 2000);
-                                            //    });
-                                   
+                                                setConteo(conteo + 1)                                                                              
                                             })
                                         }}                                     
-                                        // actions={[
-                                        //     {
-                                        //         icon: () => <DeleteOutlineOutlinedIcon />,
-                                        //         tooltip: 'Eliminar Pago',
-                                        //         onClick: (event, rowData) => {
-                                        //             let array = pagosRegistrados
-                                        //             const newArray = array.filter((item) => item.id !== rowData.id)
-                                        //             setPagosRegistrados(newArray)
-                                        //         }
-                                        //     }
-                                        // ]}
+                                        
                                     />
+                                    <Stack className={classes.stack} direction="column"
+                                        justifyContent="flex-end"
+                                        alignItems="flex-end"
+                                        spacing={2} >
+                                        <div> Tasa del día : {tasaDelDia.excAmount} Bs. {tasaDelDia.excDate}  </div>
+                                        <div> Monto Total Distribuido $: {montoTotalDolaresDis} </div>
+                                        <div> Monto Total Distribuido Bs: {montoTotalBolivaresDis} </div>
+                                    </Stack>
 
                                     {/* {
                                         datosPago.map(item => <div>
