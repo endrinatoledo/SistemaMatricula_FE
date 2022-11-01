@@ -18,6 +18,7 @@ import MaterialTable from '@material-table/core';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import moment from 'moment';
 import InvoiceHeader from './InvoiceHeader';
+import FormatoFactura from './FormatoFactura';
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
 
 const AxiosInstance = require("../utils/request").default;
@@ -116,8 +117,10 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
     const [estatusBotonSiguiente, setEstatusBotonSiguiente] = React.useState(true)
     const [tasaDelDia, setTasaDelDia] = React.useState(0)
     const [paginaCabecera, setPaginaCabecera] = React.useState(false)
+    const [formatFactura, setFormatFactura] = React.useState(false)
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500 })
-    // console.log('pagoPorRegistrar : -----..-----***************', pagoPorRegistrar)
+    const [datosCabecera, setDatosCabecera] = React.useState(null)
+    const fechaActual = moment(new Date()).format("DD/MM/YYYY")
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
         { title: 'Método pago', field: 'metodoPago', render: (rows) => <>{rows.metodoPago.payName}</>},
         { title: 'Monto', field: 'monto' },
@@ -132,7 +135,17 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
         { title: 'Pago', field: 'pago',type:'currency',validate:rowData=>(rowData.pago === undefined || rowData.pago === ''|| rowData.pago === null|| rowData.pago === 0)?"Requerido": rowData.pago > rowData.costo.cmeAmount ? 'Monto Excedido':true  },
         { title: 'Monto Restante', field: 'restante',editable: 'never',type:'currency'}]
 
-         
+    const datosBase = () => {
+        setDatosCabecera({
+            "razonSocial": `${families[0].representative.repFirstName} ${families[0].representative.repSurname}`,
+            "identificacion": `${families[0].representative.repIdType}-${families[0].representative.repIdentificationNumber}`,
+            "date": `${fechaActual}`,
+            "address": `${families[0].representative.repAddress}`,
+            "phones": `${families[0].representative.repPhones}`,
+            "voucherType":""
+        })
+    }
+
     const handleClose = () => {
 
         if (userResponse === 'yes') {
@@ -291,7 +304,6 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
 
         if (mesesApagar.length > 0){
             const data = mesesApagar.map(item => {
-                console.log('..........----------',item)
                 return {
                     "key":nextId(),
                     "mopId": item.mopId,
@@ -327,20 +339,35 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
     const cabecera = () =>{
         setPaginaCabecera(true)
     }
+
+    const validarCabecera = () => {
+        if (datosCabecera.razonSocial === '' || datosCabecera.razonSocial === null || datosCabecera.razonSocial === undefined ||
+            datosCabecera.identificacion === '' || datosCabecera.identificacion === null || datosCabecera.identificacion === undefined ||
+            datosCabecera.address === '' || datosCabecera.address === null || datosCabecera.address === undefined ||
+            datosCabecera.phones === '' || datosCabecera.phones === null || datosCabecera.phones === undefined ||
+            datosCabecera.voucherType === '' || datosCabecera.voucherType === null || datosCabecera.voucherType === undefined ) {
+            return true
+        } else {
+            return false
+        }
+         
+    }
+
+    const confirmarCabecera = () => {
+        setPaginaCabecera(false)
+        setFormatFactura(true)
+    }
     
     const validarGuardar = () =>{
 
         if(pagosRegistrados.length === 0 || datosPago.length === 0){
-            // setEstatusBotonSiguiente(true)
             return true
             
         }else{
             const found = datosPago.find(element => element.pago === 0);
             if(found !== '' && found !== null && found !== undefined){
-                // setEstatusBotonSiguiente(true)
                 return true
             }else{
-                // setEstatusBotonSiguiente(false)
                 return false
             }            
         }
@@ -350,21 +377,33 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
         setModalCancel(true)
     }
 
+    const validarBotonAnterior = () => {
+        if(formatFactura){
+            
+            setFormatFactura(false)
+            setPaginaCabecera(true)
+        }
+        if(paginaCabecera){
+            setFormatFactura(false)
+            setPaginaCabecera(false)
+        }
+    }
+
     React.useEffect(() => {  
         handleClose()
         }, [userResponse]);
 
         React.useEffect(() => {  
-            // console.log('..montoTotalBolivares')
         }, [montoTotalBolivares]);
             React.useEffect(() => {  
-                // console.log('.montoDolares')
+                
                 }, [montoTotalDolares]);
     React.useEffect(() => {
         consultarValorMensualidad()
         consultarMetodosDePago()
         consultarBancos()
         consultarTasaDelDia()
+        datosBase()
     }, [1])
 
     React.useEffect(() => {
@@ -395,8 +434,11 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
 
                     {
                         (paginaCabecera)
-                            ? <InvoiceHeader families={families} Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago}/>
-                        :<div>
+                            ? <InvoiceHeader datosBase={datosBase} setDatosCabecera={setDatosCabecera} datosCabecera={datosCabecera} Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago}/>
+                            : (formatFactura)
+                                ? <FormatoFactura datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados}/>
+                                :
+                        <div>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <Item2>
@@ -552,15 +594,12 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                                         }}   
                                         editable={{
                                             onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
-                                                console.log('newRow',newRow)
                                                 if(newRow.pago > newRow.costo.cmeAmount){
-                                                    console.log('monto mayor')
                                                     reject()
                                                 }else{
                                                     const obtenerPosicion = datosPago.map(element => element.key).indexOf(newRow.key)
                                                     let newArray = datosPago
                                                     newArray[obtenerPosicion].pago = newRow.pago 
-                                                    // newArray[obtenerPosicion].restante = newRow.costo.cmeAmount - newRow.pago
                                                     setDatosPago(newArray)
                                                     setTimeout(() => {
                                                         montosDistribuidosTotales()
@@ -605,14 +644,14 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                                             :
                                             <>
                                                 {
-                                                    (paginaCabecera) ?
-                                                    <Button variant="contained" onClick={() => setPaginaCabecera(false)}
+                                                    (paginaCabecera || formatFactura) ?
+                                                        <Button variant="contained" onClick={() => validarBotonAnterior()}
                                                     color="info">Anterior</Button>
                                                     : null
                                                 }  
                                                 <Button variant="outlined" onClick={() => confirmarCancelarRegistroDePago()}
                                                     color="error">Cancelar</Button>
-                                                <Button variant="contained" disabled={validarGuardar()} onClick={() => cabecera()}
+                                                <Button variant="contained" disabled={!paginaCabecera ? validarGuardar() : validarCabecera()} onClick={() => !paginaCabecera ? cabecera() : confirmarCabecera()}
                                                     color="success">Siguiente</Button>
                                                 
                                             </> 

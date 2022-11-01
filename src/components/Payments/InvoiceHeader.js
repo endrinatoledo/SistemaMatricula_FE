@@ -48,25 +48,13 @@ const UseStyles = makeStyles({
     //     marginBottom:40,
     // }
 })
-const InvoiceHeader = ({families, Item2, pagosRegistrados, datosPago}) => {
+const InvoiceHeader = ({ datosBase, setDatosCabecera, datosCabecera, Item2, pagosRegistrados, datosPago}) => {
 
     const classes = UseStyles();
-    const fechaActual= moment(new Date()).format("DD/MM/YYYY")
-    const [datosCabecera, setDatosCabecera] = React.useState(null)
 
-    const datosBase = () => {
-        setDatosCabecera({
-            "razonSocial": `${families[0].representative.repFirstName} ${families[0].representative.repSurname}`,
-            "identificacion": `${families[0].representative.repIdType}-${families[0].representative.repIdentificationNumber}`,
-            "date": `${fechaActual}`,
-            "address": `${families[0].representative.repAddress}`,
-            "phones": `${families[0].representative.repPhones}`,
-        })
-    }
-
-    React.useEffect(() => {
-        datosBase()
-    }, [1])
+    // React.useEffect(() => {
+    //     datosBase()
+    // }, [1])
 
   return (
     <div>
@@ -153,22 +141,22 @@ const InvoiceHeader = ({families, Item2, pagosRegistrados, datosPago}) => {
                                       setDatosCabecera({ ...datosCabecera, phones: e.target.value })
                                   }}
                               />
-                              {/* <Autocomplete
+                              <Autocomplete
                                   // key={clearField.moneda}
-                                  sx={{ width: '23%' }}
-                                  options={['DE CONTADO']}
+                                  sx={{ width: '15%' }}
+                                  options={['COMPROBANTE','FACTURA FISCAL']}
                                   renderInput={(params) => (
-                                      <TextField {...params} label="Forma de Pago" variant="standard"
+                                      <TextField {...params} label="Tipo de comprobante" variant="standard"
                                       />
                                   )}
-                                  // value={item.moneda}
+                                  value={datosCabecera.voucherType}
                                   getOptionLabel={(option) => option}
                                   onChange={(event, newValue) => {
-                                      // setPagoPorRegistrar({ ...pagoPorRegistrar, moneda: newValue })   
+                                      setDatosCabecera({ ...datosCabecera, voucherType: newValue })
                                   }}
                                   required
                                   id="clear-on-escape"
-                              /> */}
+                              />
 
 
 

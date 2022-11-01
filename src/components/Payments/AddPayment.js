@@ -46,7 +46,6 @@ const AddPayment = () => {
     const classes = UseStyles();
 
     const getFamilyByRepId = async () => {
-        console.log('se activo getFamilyByRepId')
         try {
             const resultFamiles = (await AxiosInstance.get(`/representativeStudent/family/representativeId/${representativeData.repId}`)).data
             if (resultFamiles.ok === true) {
@@ -84,10 +83,8 @@ const AddPayment = () => {
     }
 
     const latestExchangeRate = async () => {
-        console.log('se activo latestExchangeRate')
         try {
           const response = (await AxiosInstance.get("/exchangeRate/lastest/exchangeRates")).data
-          console.log('se activo latestExchangeRate',response)
           if (response.ok === true && response.data !== null) {
             setExchangeRate(response.data)
           }else{
@@ -124,9 +121,6 @@ const AddPayment = () => {
       React.useEffect(() => {
         if (selectedFamily !== null) {
             getMensualidadesFamily(selectedFamily)
-
-            // console.log('se activo yt entro')
-            // getStudentPaymentSchemaFamId()
         }
     }, [selectedFamily])  
 
