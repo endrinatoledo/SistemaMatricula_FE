@@ -32,25 +32,70 @@ const FormatoFactura = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistrados
     // console.log('pagosRegistrados', pagosRegistrados)
     // console.log('tasaDelDia', tasaDelDia)
     const [montos, setMontos] = React.useState([])
+    const [total, setTotal] = React.useState(null)
+    const [destallesDePagos, setDestallesDePagos] = React.useState(null)
+
+    const bancosYreferencias = () => {
+        let descripcion =''
+
+        pagosRegistrados.forEach(element => {
+            if (element.banco !== null) descripcion = `${descripcion} ${element.banco.banName} `
+            if (element.referencia !== null) descripcion = `${descripcion} ${element.referencia} `
+            descripcion = `${descripcion} - `
+        });
+
+        setDestallesDePagos(descripcion.substring(0, descripcion.length - 2))
+    }
+
+    const calcularMontoTotal = () => {
+        const montoTotal = montos.reduce(function (sum, item) {
+                return sum + Number(item.monto);
+            }, 0);
+
+        setTotal(montoTotal)
+    }
+    function funcionSuma(element) {
+        return pagosRegistrados.reduce(function (sum, item) {
+            console.log('item', item)
+            return (item.metodoPago.payName === element) 
+                ? item.moneda === "Bolívares" ? sum + Number(item.monto) : sum + (tasaDelDia.excAmount * Number(item.monto))
+                : sum;
+        }, 0);
+    }
 
     const ordenarMontos = () => {
-        let montoBs = 0
-        const montoFinal = pagosRegistrados.map(item => {
+
+        let hash = {};
+        const eliminarMetodosPagoRepetidos = pagosRegistrados.filter(o => hash[o.metodoPago.payName] ? false : hash[o.metodoPago.payName] = true);
+
             
-            if (item.moneda === 'Dólares'){
-                montoBs = item.monto * tasaDelDia.excAmount
-            }
+
+        const detallePagoMetodos = eliminarMetodosPagoRepetidos.map(item => {
             return {
                 metodoPago: item.metodoPago.payName,
-                monto: montoBs === 0 ? item.monto : montoBs
+                monto:0
+            }}
+        )
+
+        const detallePagoMonto = detallePagoMetodos.map(item => {
+            return {
+                metodoPago: item.metodoPago,
+                monto: funcionSuma(item.metodoPago)
             }
-        })
-        setMontos(montoFinal)
+        }
+        )
+        setMontos(detallePagoMonto)
     }
 
     React.useEffect(() => {
         ordenarMontos()
+        if (datosPago.length > 0) { bancosYreferencias ()}
     }, [1])
+
+    React.useEffect(() => {
+        if (montos.length > 0) {calcularMontoTotal()}
+        
+    }, [montos])
 
   return (
       <Box sx={{ flexGrow: 1 }}>
@@ -67,88 +112,94 @@ const FormatoFactura = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistrados
                   <Item>
                     <br /> 
                     <br /> 
-                    <div> Fecha </div>
+                      <div><strong>Fecha</strong>  </div>
                       <div> {datosCabecera.date !== undefined ? datosCabecera.date : ''} </div>
                   </Item>
               </Grid>
               <Grid item xs={2}>
                   <Item>
-                    <div> Nro. CONTROL </div>
+                      <div><strong>Nro. Control</strong>  </div>
                     <div> 00-00020792 </div>
-                    <div> Factura </div>
+                      <div> <strong>Factura</strong> </div>
                     <div> 00020760</div>
                   </Item>
               </Grid>
               <Grid item xs={8}>
                   <ItemIzquierda>
                     <br /> 
-                      <div> Nombre o Razón Social: {datosCabecera.razonSocial !== undefined ? datosCabecera.razonSocial : ''} </div>
-                      <div> Dirección: {datosCabecera.address !== undefined ? datosCabecera.address : ''} </div>
+                      <div> <strong>Nombre o Razón Social:</strong> {datosCabecera.razonSocial !== undefined ? datosCabecera.razonSocial : ''} </div>
+                      <div> <strong>Dirección:</strong> {datosCabecera.address !== undefined ? datosCabecera.address : ''} </div>
                   </ItemIzquierda>
               </Grid>
               <Grid item xs={4}>
                   <ItemIzquierda>
                     <br /> 
-                      <div> CI/RIF : {datosCabecera.identificacion !== undefined ? datosCabecera.identificacion : ''}  </div>
-                      <div> Teléfono: {datosCabecera.phones !== undefined ? datosCabecera.phones : ''}  </div>
+                      <div><strong>CI/RIF :</strong> {datosCabecera.identificacion !== undefined ? datosCabecera.identificacion : ''}  </div>
+                      <div><strong>Teléfono: </strong> {datosCabecera.phones !== undefined ? datosCabecera.phones : ''}  </div>
                   </ItemIzquierda>
               </Grid>
               <Grid item xs={10}>
                   <Item>
                     <br />
-                    <div> CONCEPTO </div>
+                      <div> <strong>CONCEPTO </strong></div>
                     <br />
                   </Item>
               </Grid>
               <Grid item xs={2}>
                   <Item>
                     <br />
-                    <div> MONTO EN BOLIVARES </div>
+                      <div><strong> MONTO EN BOLIVARES </strong></div>
                     <br />
                   </Item>
               </Grid>
               {
                   datosPago.length > 0  
-                    ? datosPago.map(item => <> 
+                    ? <> 
                       <Grid item xs={10}>
                           <ItemIzquierda>
                             <br />
-                                <div> {item.descripcion} {item.student} </div>
+                            {
+                                    datosPago.map(item => <>
+                                        <div> {item.descripcion} {item.student} </div>
+                                    </>)                                        
+                            }
+                                
                             <br />
                           </ItemIzquierda>
                       </Grid>
                       <Grid item xs={2}>
                           <ItemDerecha>
                             <br />
-                            <div> 10.256 </div>
+                                  {datosPago.map(item => <>
+                                      <div> {item.pago * tasaDelDia.excAmount}  </div>
+                                  </>)}
+                                
                             <br />
                           </ItemDerecha>
                       </Grid>
-                     </>)
+                     </>
                     : null
               }
               <Grid item xs={9}>
                   <ItemIzquierda>
-                    <div> Formas de pago </div>
+                      <div><strong>Formas de pago</strong>  </div>
                     {
                           montos.length > 0
                           ? montos.map(item => <div> {item.metodoPago} </div>) 
                           : null
                     }
-                    <div> NumDoc:  </div>
-                    <div> Banco:  </div>
+                      <div><strong>Detalle de pago: </strong>  {` ${destallesDePagos}`} </div>
                   </ItemIzquierda>
               </Grid>
               <Grid item xs={3}>
                   <ItemDerecha>
-                      <div> Total </div>
+                      <br />
                     {
                           montos.length > 0
                               ? montos.map(item => <div> {item.monto} </div>)
                               : null
-                    }
-                    <br />
-                    <br />                      
+                    }                    
+                      <div> <strong>{`Total  ${total}`}</strong> </div>                      
                   </ItemDerecha>
               </Grid>
               <Grid item xs={12}>
