@@ -388,6 +388,24 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
             setPaginaCabecera(false)
         }
     }
+    const guardarRegistro = async () => {
+
+        const data = {
+            cabecera: datosCabecera,
+            cuerpo:'',
+            familia: families
+        }
+        try {
+
+            const guardarFacturaRes = (await AxiosInstance.post(`/invoiceHeader`, data)).data
+        } catch (error) {
+            console.log('Error al guardar registro factura ', error)
+            setMessage('Error al guardar factura')
+            setAlertType("error")
+            setAlertModal(true)
+        }
+        
+    }
 
     React.useEffect(() => {  
         handleClose()
@@ -651,8 +669,14 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                                                 }  
                                                 <Button variant="outlined" onClick={() => confirmarCancelarRegistroDePago()}
                                                     color="error">Cancelar</Button>
-                                                <Button variant="contained" disabled={!paginaCabecera ? validarGuardar() : validarCabecera()} onClick={() => !paginaCabecera ? cabecera() : confirmarCabecera()}
-                                                    color="success">Siguiente</Button>
+                                                    {
+                                                    ( formatFactura) 
+                                                        ? <Button variant="contained" onClick={() => guardarRegistro()}
+                                                            color="success">Guardar</Button>
+                                                    : <Button variant="contained" disabled={!paginaCabecera ? validarGuardar() : validarCabecera()} onClick={() => !paginaCabecera ? cabecera() : confirmarCabecera()}
+                                                            color="success">Siguiente</Button>
+                                                    }
+                                                
                                                 
                                             </> 
                                     }
