@@ -39,9 +39,14 @@ const FormatoFactura = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistrados
         let descripcion =''
 
         pagosRegistrados.forEach(element => {
-            if (element.banco !== null) descripcion = `${descripcion} ${element.banco.banName} `
-            if (element.referencia !== null) descripcion = `${descripcion} ${element.referencia} `
-            descripcion = `${descripcion} - `
+            console.log('element', element)
+            if(element.metodoPago.payName != 'EFECTIVO'){
+                if (element.banco !== null) descripcion = `${descripcion} Banco: ${element.banco.banName} `
+                if (element.referencia !== null) descripcion = `${descripcion} Referencia: ${element.referencia} `
+                if (element.tarjeta !== null && element.tarjeta !== undefined) descripcion = `${descripcion} Tarjeta: ${element.tarjeta} `
+                descripcion = `${descripcion} - `
+            }
+            
         });
 
         setDestallesDePagos(descripcion.substring(0, descripcion.length - 2))

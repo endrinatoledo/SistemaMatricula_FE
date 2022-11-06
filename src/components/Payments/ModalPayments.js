@@ -107,7 +107,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
     const [mensajeErrorMontoDP, setMensajeErrorMontoDP] = React.useState('')    
     const [listaMonedas, setListaMonedas] = React.useState(['Dólares','Bolívares'])
     const [pagosRegistrados, setPagosRegistrados] = React.useState([])
-    const [pagoPorRegistrar, setPagoPorRegistrar] = React.useState({moneda:null, metodoPago:null, monto:null, observacion:null,banco:null,referencia:null})
+    const [pagoPorRegistrar, setPagoPorRegistrar] = React.useState({moneda:null, metodoPago:null, monto:null, observacion:null,banco:null,referencia:null,tarjeta:null})
     const [statusBotonAgregar, setStatusBotonAgregar] = React.useState(false)
     const [montoTotalDolares, setMontoTotalDolares] = React.useState(0)
     const [montoTotalBolivares, setMontoTotalBolivares] = React.useState(0)
@@ -118,13 +118,14 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
     const [tasaDelDia, setTasaDelDia] = React.useState(0)
     const [paginaCabecera, setPaginaCabecera] = React.useState(false)
     const [formatFactura, setFormatFactura] = React.useState(false)
-    const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500 })
+    const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500, tarjeta:600 })
     const [datosCabecera, setDatosCabecera] = React.useState(null)
     const fechaActual = moment(new Date()).format("DD/MM/YYYY")
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
         { title: 'Método pago', field: 'metodoPago', render: (rows) => <>{rows.metodoPago.payName}</>},
         { title: 'Monto', field: 'monto' },
         { title: 'Observacion', field: 'observacion' },
+        { title: 'Tarjeta', field: 'tarjeta' },
         { title: 'Banco', field: 'banco', render: (rows) => <>{rows.banco !== null ? rows.banco.banName : ''}</>  },
         { title: 'Referencia', field: 'referencia', render: (rows) => <>{rows.referencia !== null ? rows.referencia : ''}</> }]
 
@@ -136,7 +137,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
         { title: 'Monto Restante', field: 'restante',editable: 'never',type:'currency'}]
 
 
-    console.log('datosPago', datosPago)
+    console.log('pagoPorRegistrar', pagoPorRegistrar)
 
     const datosBase = () => {
         setDatosCabecera({
@@ -231,7 +232,8 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                 monto: (clearField.monto + 1),
                 observacion: (clearField.observacion + 1),
                 banco: (clearField.banco + 1),
-                referencia: (clearField.referencia + 1)
+                referencia: (clearField.referencia + 1),
+                tarjeta: (clearField.tarjeta + 1)
             })
     }
     const consultarTasaDelDia = async () => {
@@ -330,6 +332,19 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
 
     }
 
+    const validarTarjeta = () => {
+        if (pagoPorRegistrar.metodoPago !== null) {
+            if (pagoPorRegistrar.metodoPago.payName == 'PTO. DE VENTA') {
+                return false
+            } else {
+                return true
+            }
+        } else {
+            return true
+        }
+    }
+
+
     const validarMetodoDePago = () =>{
         if(pagoPorRegistrar.metodoPago !== null){
            if(pagoPorRegistrar.metodoPago.payName != 'EFECTIVO'){
@@ -393,13 +408,14 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
             setPaginaCabecera(false)
         }
     }
+    
     const guardarRegistro = async () => {
 
         const data = {
             cabecera: datosCabecera,
             cuerpo: datosPago,
             familia: families,
-            detallePagos:''
+            detallePagos: pagosRegistrados
         }
         try {
 
@@ -485,7 +501,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                                         />
                                         <Autocomplete
                                             key={clearField.metodoPago}
-                                            sx={{ width: '23%' }}
+                                            sx={{ width: '28%' }}
                                             options={metodosPago}
                                             renderInput={(params) => (
                                                 <TextField {...params} label="Método de Pago" variant="standard"
@@ -518,18 +534,20 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                                         >Agregar</Button>
                                     </Stack>
                                     <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
-                                        <TextField
-                                            sx={{ width: '48%' }}
+                                         <TextField
+                                            disabled={validarTarjeta()}
+                                            sx={{ width: '23%' }}
                                             required
-                                            key={clearField.observacion}
-                                            // value={item.descripcionPago}
+                                            key={clearField.tarjeta}
+                                            // value={}
                                             id="student"
-                                            label="Observaciones del pago"
+                                            label="Num Tarjeta"
                                             variant="standard"
                                             onChange={e => {
-                                                setPagoPorRegistrar({ ...pagoPorRegistrar, observacion: e.target.value })   
+                                                console.log('........!', e.target.value)
+                                                setPagoPorRegistrar({ ...pagoPorRegistrar, tarjeta: e.target.value })   
                                             }}
-                                        />
+                                        /> 
                                         <Autocomplete
                                             disabled={validarMetodoDePago()}
                                             key={clearField.banco}
@@ -548,7 +566,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                                         <TextField
                                             disabled={validarMetodoDePago()}
                                             key={clearField.referencia}
-                                            sx={{ width: '16%' }}
+                                            sx={{ width: '18%' }}
                                             required
                                             // value={item.pago}
                                             id="referencia"
@@ -560,6 +578,20 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                                         />
                                        
                                         
+                                    </Stack>
+                                    <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                    <TextField
+                                                        sx={{ width: '53%' }}
+                                                        required
+                                                        key={clearField.observacion}
+                                                        // value={item.descripcionPago}
+                                                        id="student"
+                                                        label="Observaciones del pago"
+                                                        variant="standard"
+                                                        onChange={e => {
+                                                            setPagoPorRegistrar({ ...pagoPorRegistrar, observacion: e.target.value })
+                                                        }}
+                                                    />
                                     </Stack>
 
                                     <MaterialTable title={'Pagos'}
