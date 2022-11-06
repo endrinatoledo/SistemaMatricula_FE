@@ -18,7 +18,7 @@ import MaterialTable from '@material-table/core';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import moment from 'moment';
 import InvoiceHeader from './InvoiceHeader';
-import FormatoFactura from './FormatoFactura';
+import FormatoComprobante from './FormatoComprobante';
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
 
 const AxiosInstance = require("../utils/request").default;
@@ -132,8 +132,11 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
         { title: 'Estudiante', field: 'student',editable: 'never'},
         { title: 'Descripción Pago', field: 'descripcion',editable: 'never' },
         { title: 'Costo', field: 'costoNeto',type:'currency' },
-        { title: 'Pago', field: 'pago',type:'currency',validate:rowData=>(rowData.pago === undefined || rowData.pago === ''|| rowData.pago === null|| rowData.pago === 0)?"Requerido": rowData.pago > rowData.costo.cmeAmount ? 'Monto Excedido':true  },
+        { title: 'Pago', field: 'pago',type:'currency',validate:rowData=>(rowData.pago === undefined || rowData.pago === ''|| rowData.pago === null|| rowData.pago === 0)?"Requerido": rowData.pago > rowData.restante ? 'Monto Excedido':true  },
         { title: 'Monto Restante', field: 'restante',editable: 'never',type:'currency'}]
+
+
+    console.log('datosPago', datosPago)
 
     const datosBase = () => {
         setDatosCabecera({
@@ -302,6 +305,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
 
     const ordenarDatosPago = () => {
 
+        console.log('meses a pagar', mesesApagar)
         if (mesesApagar.length > 0){
             const data = mesesApagar.map(item => {
                 return {
@@ -315,6 +319,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                     "moneda":null,
                     "metodoPago": null,
                     "pago":0,
+                    "montoPagado": Number(item.detallePago.mopAmountPaid),
                     "restante":Number(valorMensualidad.cmeAmount) - item.detallePago.mopAmountPaid,
                     "descripcionPago":"" 
                 }
@@ -392,8 +397,9 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
 
         const data = {
             cabecera: datosCabecera,
-            cuerpo:'',
-            familia: families
+            cuerpo: datosPago,
+            familia: families,
+            detallePagos:''
         }
         try {
 
@@ -454,7 +460,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                         (paginaCabecera)
                             ? <InvoiceHeader datosBase={datosBase} setDatosCabecera={setDatosCabecera} datosCabecera={datosCabecera} Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago}/>
                             : (formatFactura)
-                                ? <FormatoFactura datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados}/>
+                                ? <FormatoComprobante datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados}/>
                                 :
                         <div>
                         <Grid container spacing={2}>
@@ -612,12 +618,19 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                                         }}   
                                         editable={{
                                             onRowUpdate:(newRow, oldRow)=>new Promise((resolve, reject)=>{
+
                                                 if(newRow.pago > newRow.costo.cmeAmount){
                                                     reject()
                                                 }else{
                                                     const obtenerPosicion = datosPago.map(element => element.key).indexOf(newRow.key)
                                                     let newArray = datosPago
                                                     newArray[obtenerPosicion].pago = newRow.pago 
+
+                                                    if (newRow.restante - newRow.pago  !== 0){
+                                                        newArray[obtenerPosicion].descripcion = `Abo ${newArray[obtenerPosicion].descripcion}` 
+                                                    }else{
+                                                        newArray[obtenerPosicion].descripcion = (newArray[obtenerPosicion].descripcion).replace('Abo ', '')
+                                                    }
                                                     setDatosPago(newArray)
                                                     setTimeout(() => {
                                                         montosDistribuidosTotales()

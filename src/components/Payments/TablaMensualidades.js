@@ -52,31 +52,33 @@ const TablaMensualidades = ({ families, mensualidades, dataDetalle }) => {
 
     const meses = (mesValue, mes, nombreMes, rows) => {
         
+        console.log('***************************rows', rows)
+
     let arr = mesesApagar
-    if (mesValue === 1) {
+        if (mesValue.mopStatus === 1) {
         console.log('pagado')
         return <CheckCircleOutlineIcon color="success"/>
     } else {
         // console.log('no pagado')
         return    <> 
             <Checkbox 
-            name={`${rows.mopId}-${mes}`} 
-            value={`${rows.mopId}-${mes}`} 
-            id={`${rows.mopId}-${mes}`} 
+                name={`${mesValue.mopId}-${mes}`} 
+                value={`${mesValue.mopId}-${mes}`} 
+                id={`${mesValue.mopId}-${mes}`} 
             onChange={e => {
                 
                 if (e.target.checked === true) {
                     arr.push({ 
-                        "id": `${rows.mopId}-${mes}`, 
+                        "id": `${mesValue.mopId}-${mes}`, 
                         "mes": mes, 
                         "nombreMes":nombreMes,
-                        "mopId": rows.mopId,
+                        "mopId": mesValue.mopId,
                         "student": rows.student,
                         "level":"",
-                        "detallePago":buscarDetalleDePago(rows.mopId)
+                        "detallePago": buscarDetalleDePago(mesValue.mopId)
                     })
                 }else{
-                    arr = arr.filter((item) => item.id !== `${rows.mopId}-${mes}` )
+                    arr = arr.filter((item) => item.id !== `${mesValue.mopId}-${mes}` )
                 }
                 console.log('----------******------------', mesesApagar)
                 setMesesApagar(arr)
