@@ -5,7 +5,7 @@ import FilterList from '@material-ui/icons/FilterList';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import {NavLink} from 'react-router-dom'
-
+const AxiosInstance = require("../utils/request").default;
 const PaymentsList = () => {
 
   const [dataSource, setDataSource] = React.useState([])
@@ -19,10 +19,15 @@ const PaymentsList = () => {
     { title: 'Monto', field: 'families.famName' },
   ];
 
+  React.useEffect(() => {
+    // console.log('----------******------------', mesesApagar)
+  }, [0])
+
 
   return (
     <>
-    <MaterialTable title={'Lista de Pagos'}
+      <NavLink to='/registrarpago' ></NavLink>
+    {/* <MaterialTable title={'Lista de Pagos'}
      data={dataSource} 
      columns={columns}
      actions={[
@@ -62,7 +67,7 @@ const PaymentsList = () => {
     />
     {(alertModal) ? 
       <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType}/> 
-      : null}
+      : null} */}
     </>
     
 

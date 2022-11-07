@@ -32,7 +32,7 @@ export const CollectionListItems = () => {
           Cobranza
         </ListSubheader>
       </List>
-      <NavLink to='/pagos'>
+      <NavLink to='/registrarpago'>
         <List component="div" disablePadding>
           <ListItemButton sx={{ pl: 2 }} >
               <ListItemIcon>

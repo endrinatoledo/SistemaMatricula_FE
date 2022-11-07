@@ -154,6 +154,7 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
             setDatosPago([])
             setMesesApagar([])
             setPagoModal(false)
+            setDatosCabecera(null)
         } else
             if (userResponse === 'no') {
                 setModalCancel(false)
@@ -221,6 +222,7 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
     };
 
     const limpiarFormularioAgregarPago = () => {
+
         setPagoPorRegistrar({ moneda: null, metodoPago: null, monto: null, observacion: null, banco: null, referencia: null })
         setClearField(
             {

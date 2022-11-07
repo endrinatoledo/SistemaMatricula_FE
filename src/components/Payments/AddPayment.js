@@ -100,6 +100,8 @@ const AddPayment = () => {
       }
 
       const getMensualidadesFamily = async(selectedFamily) =>{
+
+          console.log('----------------dataDetalle---------------',dataDetalle)
         
         try {
             const response = (await AxiosInstance.get(`/pagoMensualidades/familia/${selectedFamily.famId}`)).data
@@ -150,7 +152,7 @@ const AddPayment = () => {
                 : null}
             {(openModal) ?
                 <ModalFamily selectedFamily={selectedFamily} setSelectedFamily={setSelectedFamily} openModal={openModal} setOpenModal={setOpenModal} families={families}> </ModalFamily>
-                : null}
+                : null} 
             {
                 (mensualidades.length > 0 && exchangeRate !== null) 
                 ? <>

@@ -91,10 +91,6 @@ const SearchRepresentative = ({setSelectedFamily, representativeFound, setRepres
 
   }
 
-  const cerrar = () => {
-
-  }
-
   return (
     <>
       <Box className={classes.box}>

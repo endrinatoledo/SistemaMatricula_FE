@@ -2,27 +2,10 @@ import * as React from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import MaterialTable from '@material-table/core';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
-import { makeStyles } from '@mui/styles';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ModalPayments from './ModalPayments';
-
-const AxiosInstance = require("../utils/request").default;
-
-const UseStyles = makeStyles({
-    typography: {
-        marginLeft: '3%'
-    },
-    box: {
-        marginTop: '3%'
-    },
-    TextField: {
-        marginBottom: '3%',
-        marginTop: '2%',
-        marginLeft: '3%'
-    },
-});
-
-
+import ModalVerPagos from './ModalVerPagos';
 
 const TablaMensualidades = ({ selectedFamily, getMensualidadesFamily, families, mensualidades, dataDetalle }) => {
 
@@ -32,6 +15,7 @@ const TablaMensualidades = ({ selectedFamily, getMensualidadesFamily, families, 
     const [datosPago, setDatosPago] = React.useState([])
     const [mesesApagar, setMesesApagar] = React.useState([])
     const [pagosRegistrados, setPagosRegistrados] = React.useState([])
+    const [statusModalVerPagos, setStatusModalVerPagos] = React.useState(false)
     const columns = [
         { title: 'Estudiante', field: 'student' },
         { title: 'Enero', field: 'ene', render: (rows) => meses(rows.ene, 'ene','Enero', rows) },
@@ -133,12 +117,23 @@ const TablaMensualidades = ({ selectedFamily, getMensualidadesFamily, families, 
                             setPagoModal(true)
                         }
                     },
+                    {
+                        icon: () => <VisibilityIcon />,
+                        tooltip: 'Ver Pagos',
+                        isFreeAction: true,
+                        onClick: () => {
+                            setStatusModalVerPagos(true)
+                        }
+                    },
                 ]}
             />
             {(pagoModal)
                 ? <ModalPayments numLimpiarFactura={numLimpiarFactura} setNumLimpiarFactura={setNumLimpiarFactura} pagosRegistrados={pagosRegistrados} setPagosRegistrados={setPagosRegistrados} datosPago={datosPago} setDatosPago = { setDatosPago } datosCabecera={datosCabecera} setDatosCabecera={setDatosCabecera} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
             :null
             }
+            {(statusModalVerPagos) ?
+                <ModalVerPagos selectedFamily={selectedFamily} statusModalVerPagos={statusModalVerPagos} setStatusModalVerPagos={setStatusModalVerPagos} />
+                : null}   
         </>
     )
 }
