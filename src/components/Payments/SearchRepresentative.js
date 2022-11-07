@@ -8,6 +8,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
+import { NavLink } from 'react-router-dom'
 
 const AxiosInstance = require("../utils/request").default;
 const UseStyles = makeStyles({
@@ -90,12 +91,23 @@ const SearchRepresentative = ({setSelectedFamily, representativeFound, setRepres
 
   }
 
+  const cerrar = () => {
+
+  }
+
   return (
     <>
       <Box className={classes.box}>
-        <Typography className={classes.typography} color="text.secondary" gutterBottom variant="h6" component="div">
-          Representante
-        </Typography>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" >
+          <Typography className={classes.typography} color="text.secondary" gutterBottom variant="h6" component="div">
+            Representante
+          </Typography>
+          <NavLink to='/pagos' ><Button variant="outlined" size="large" disabled={representativeFound}>Cerrar</Button></NavLink>
+
+        </Stack>
+
+
+
         <Divider variant="middle" />
         <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
           <Button variant="outlined" size="medium" disabled={representativeFound} onClick={() => searchIdentification()}>Buscar</Button>
@@ -132,7 +144,9 @@ const SearchRepresentative = ({setSelectedFamily, representativeFound, setRepres
 
             }
           />
+
         </Stack>
+
       </Box>
       {(alertModal) 
       ? <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />

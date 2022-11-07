@@ -26,11 +26,8 @@ const ItemDerecha = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-const FormatoFactura = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
+const FormatoComprobante = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
 
-    // console.log('datosPago', datosPago)
-    // console.log('pagosRegistrados', pagosRegistrados)
-    // console.log('tasaDelDia', tasaDelDia)
     const [montos, setMontos] = React.useState([])
     const [total, setTotal] = React.useState(null)
     const [destallesDePagos, setDestallesDePagos] = React.useState(null)
@@ -46,7 +43,7 @@ const FormatoFactura = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistrados
                 if (element.tarjeta !== null && element.tarjeta !== undefined) descripcion = `${descripcion} Tarjeta: ${element.tarjeta} `
                 descripcion = `${descripcion} - `
             }
-            
+             
         });
 
         setDestallesDePagos(descripcion.substring(0, descripcion.length - 2))
@@ -217,4 +214,4 @@ const FormatoFactura = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistrados
   )
 }
 
-export default FormatoFactura
+export default FormatoComprobante

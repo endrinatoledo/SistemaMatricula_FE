@@ -24,11 +24,14 @@ const UseStyles = makeStyles({
 
 
 
-const TablaMensualidades = ({ families, mensualidades, dataDetalle }) => {
+const TablaMensualidades = ({ selectedFamily, getMensualidadesFamily, families, mensualidades, dataDetalle }) => {
 
-    const [pagoModal, setPagoModal] = React.useState(false)
+    const [pagoModal, setPagoModal] = React.useState(false) 
+    const [numLimpiarFactura, setNumLimpiarFactura] = React.useState(0) 
+    const [datosCabecera, setDatosCabecera] = React.useState(null)
+    const [datosPago, setDatosPago] = React.useState([])
     const [mesesApagar, setMesesApagar] = React.useState([])
-    const [statusCcircularProgress  , setStatusCcircularProgress] = React.useState(false)
+    const [pagosRegistrados, setPagosRegistrados] = React.useState([])
     const columns = [
         { title: 'Estudiante', field: 'student' },
         { title: 'Enero', field: 'ene', render: (rows) => meses(rows.ene, 'ene','Enero', rows) },
@@ -50,16 +53,22 @@ const TablaMensualidades = ({ families, mensualidades, dataDetalle }) => {
         return itemDetalle
     }
 
+    const limpiarFormularioFactura = () => {
+        setPagosRegistrados([])
+        setDatosPago([])
+        setMesesApagar([])
+        setDatosCabecera(null)
+        getMensualidadesFamily(selectedFamily)
+        setNumLimpiarFactura(0)
+
+    }
+
     const meses = (mesValue, mes, nombreMes, rows) => {
-        
-        console.log('***************************rows', rows)
 
     let arr = mesesApagar
         if (mesValue.mopStatus === 1) {
-        console.log('pagado')
         return <CheckCircleOutlineIcon color="success"/>
     } else {
-        // console.log('no pagado')
         return    <> 
             <Checkbox 
                 name={`${mesValue.mopId}-${mes}`} 
@@ -80,7 +89,6 @@ const TablaMensualidades = ({ families, mensualidades, dataDetalle }) => {
                 }else{
                     arr = arr.filter((item) => item.id !== `${mesValue.mopId}-${mes}` )
                 }
-                console.log('----------******------------', mesesApagar)
                 setMesesApagar(arr)
                 }}/>
             </>
@@ -90,6 +98,12 @@ const TablaMensualidades = ({ families, mensualidades, dataDetalle }) => {
     React.useEffect(() => {
         console.log('----------******------------', mesesApagar)
     }, [mesesApagar])
+
+    React.useEffect(() => {
+        if (numLimpiarFactura > 0) limpiarFormularioFactura()
+    }, [numLimpiarFactura])
+
+    
 
     return (
         <>
@@ -122,7 +136,7 @@ const TablaMensualidades = ({ families, mensualidades, dataDetalle }) => {
                 ]}
             />
             {(pagoModal)
-                ? <ModalPayments families={families} setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
+                ? <ModalPayments numLimpiarFactura={numLimpiarFactura} setNumLimpiarFactura={setNumLimpiarFactura} pagosRegistrados={pagosRegistrados} setPagosRegistrados={setPagosRegistrados} datosPago={datosPago} setDatosPago = { setDatosPago } datosCabecera={datosCabecera} setDatosCabecera={setDatosCabecera} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
             :null
             }
         </>

@@ -90,8 +90,10 @@ const UseStyles = makeStyles({
     // }
 })
 
-const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades,statusCcircularProgress }) => {
+const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrados, setPagosRegistrados, datosPago, setDatosPago, datosCabecera, setDatosCabecera, selectedFamily, getMensualidadesFamily, families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades }) => {
     const classes = UseStyles();
+    const [layautPagos, setlayautPagos] = React.useState(false)
+    const [circularProgress, setCircularProgress] = React.useState(false)
     const [tipoConcepto, setTipoConcepto] = React.useState(null)
     const [userResponse, setUserResponse] = React.useState('')
     const [modalCancel, setModalCancel] = React.useState(false)
@@ -100,13 +102,11 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
     const [openModal, setOpenModal] = React.useState(false)
-    const [datosPago, setDatosPago] = React.useState([])
     const [metodosPago, setMetodosPago] = React.useState([])
     const [bankList, setBankList] = React.useState([])
     const [errorMontoDP, setErrorMontoDP] = React.useState(false)
     const [mensajeErrorMontoDP, setMensajeErrorMontoDP] = React.useState('')    
     const [listaMonedas, setListaMonedas] = React.useState(['Dólares','Bolívares'])
-    const [pagosRegistrados, setPagosRegistrados] = React.useState([])
     const [pagoPorRegistrar, setPagoPorRegistrar] = React.useState({moneda:null, metodoPago:null, monto:null, observacion:null,banco:null,referencia:null,tarjeta:null})
     const [statusBotonAgregar, setStatusBotonAgregar] = React.useState(false)
     const [montoTotalDolares, setMontoTotalDolares] = React.useState(0)
@@ -119,7 +119,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
     const [paginaCabecera, setPaginaCabecera] = React.useState(false)
     const [formatFactura, setFormatFactura] = React.useState(false)
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500, tarjeta:600 })
-    const [datosCabecera, setDatosCabecera] = React.useState(null)
+    
     const fechaActual = moment(new Date()).format("DD/MM/YYYY")
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
         { title: 'Método pago', field: 'metodoPago', render: (rows) => <>{rows.metodoPago.payName}</>},
@@ -135,9 +135,6 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
         { title: 'Costo', field: 'costoNeto',type:'currency' },
         { title: 'Pago', field: 'pago',type:'currency',validate:rowData=>(rowData.pago === undefined || rowData.pago === ''|| rowData.pago === null|| rowData.pago === 0)?"Requerido": rowData.pago > rowData.restante ? 'Monto Excedido':true  },
         { title: 'Monto Restante', field: 'restante',editable: 'never',type:'currency'}]
-
-
-    console.log('pagoPorRegistrar', pagoPorRegistrar)
 
     const datosBase = () => {
         setDatosCabecera({
@@ -307,7 +304,6 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
 
     const ordenarDatosPago = () => {
 
-        console.log('meses a pagar', mesesApagar)
         if (mesesApagar.length > 0){
             const data = mesesApagar.map(item => {
                 return {
@@ -344,7 +340,6 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
         }
     }
 
-
     const validarMetodoDePago = () =>{
         if(pagoPorRegistrar.metodoPago !== null){
            if(pagoPorRegistrar.metodoPago.payName != 'EFECTIVO'){
@@ -357,6 +352,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
         }
     }
     const cabecera = () =>{
+        setlayautPagos(false)
         setPaginaCabecera(true)
     }
 
@@ -411,6 +407,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
     
     const guardarRegistro = async () => {
 
+        setCircularProgress(true)
         const data = {
             cabecera: datosCabecera,
             cuerpo: datosPago,
@@ -420,6 +417,22 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
         try {
 
             const guardarFacturaRes = (await AxiosInstance.post(`/invoiceHeader`, data)).data
+
+            if (guardarFacturaRes.ok){
+                setCircularProgress(false)
+                setMessage(guardarFacturaRes.message)
+                setAlertType("success")
+                setAlertModal(true)
+                setFormatFactura(false)
+                setNumLimpiarFactura(numLimpiarFactura + 1)
+                setPagoModal(false)
+            }else{
+                setCircularProgress(false)
+                setMessage(guardarFacturaRes.message)
+                setAlertType("error")
+                setAlertModal(true)
+            }
+
         } catch (error) {
             console.log('Error al guardar registro factura ', error)
             setMessage('Error al guardar factura')
@@ -444,6 +457,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
         consultarBancos()
         consultarTasaDelDia()
         datosBase()
+        setlayautPagos(true)
     }, [1])
 
     React.useEffect(() => {
@@ -477,7 +491,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                             ? <InvoiceHeader datosBase={datosBase} setDatosCabecera={setDatosCabecera} datosCabecera={datosCabecera} Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago}/>
                             : (formatFactura)
                                 ? <FormatoComprobante datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados}/>
-                                :
+                                : (layautPagos) ?
                         <div>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
@@ -544,7 +558,6 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                                             label="Num Tarjeta"
                                             variant="standard"
                                             onChange={e => {
-                                                console.log('........!', e.target.value)
                                                 setPagoPorRegistrar({ ...pagoPorRegistrar, tarjeta: e.target.value })   
                                             }}
                                         /> 
@@ -694,6 +707,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                         </Grid>
                         
                     </div>
+                    : null
                     }
                     
 
@@ -702,7 +716,7 @@ const ModalPayments = ({ families, setMesesApagar, mesesApagar, pagoModal, setPa
                             {
                                 <>
                                     {
-                                        (statusCcircularProgress) ?
+                                        (circularProgress) ?
                                             <LoadingButtons message={'Guardando'} />
                                             :
                                             <>
