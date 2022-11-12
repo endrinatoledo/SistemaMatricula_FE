@@ -732,8 +732,10 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
                                                     color="error">Cancelar</Button>
                                                     {
                                                     ( formatFactura) 
-                                                        ? <Button variant="contained" onClick={() => guardarRegistro()}
-                                                            color="success">Guardar</Button>
+                                                        ? <> <Button variant="contained" onClick={() => guardarRegistro()}
+                                                            color="success">Guardar</Button> 
+                                                            <Button variant="contained" color="success"><a target={'_blank'} href='http://localhost:3000/comprobantepdf'> Imprimir </a></Button> 
+                                                        </>
                                                     : <Button variant="contained" disabled={!paginaCabecera ? validarGuardar() : validarCabecera()} onClick={() => !paginaCabecera ? cabecera() : confirmarCabecera()}
                                                             color="success">Siguiente</Button>
                                                     }
