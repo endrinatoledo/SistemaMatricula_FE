@@ -178,7 +178,7 @@ const AddPayment = () => {
             {
                 (mensualidades.length > 0 && exchangeRate !== null && periodoSeleccionado !== null) 
                 ? <>
-                        <TablaMensualidades selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} mensualidades={ mensualidades } dataDetalle={dataDetalle}/>
+                        <TablaMensualidades periodoSeleccionado={periodoSeleccionado} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} mensualidades={ mensualidades } dataDetalle={dataDetalle}/>
                   </>
                 : null
             }

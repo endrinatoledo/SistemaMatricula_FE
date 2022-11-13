@@ -87,7 +87,7 @@ const UseStyles = makeStyles({
     // }
 })
 
-const ModalVerPagos = ({ selectedFamily, statusModalVerPagos, setStatusModalVerPagos }) => {
+const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPagos, setStatusModalVerPagos }) => {
 
     const classes = UseStyles();
     const [alertModal, setAlertModal] = React.useState(false)
@@ -98,7 +98,7 @@ const ModalVerPagos = ({ selectedFamily, statusModalVerPagos, setStatusModalVerP
     const consultarPagos = async () => {
 
         try {
-            const monthlyPaymentFamily = (await AxiosInstance.get(`/invoiceHeader/invoice/family/${selectedFamily.famId}/periodo/${1}`)).data
+            const monthlyPaymentFamily = (await AxiosInstance.get(`/invoiceHeader/invoice/family/${selectedFamily.famId}/periodo/${periodoSeleccionado.perId}`)).data
             // console.log('monthlyPaymentFamily', monthlyPaymentFamily)
             
         } catch (error) {

@@ -7,7 +7,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ModalPayments from './ModalPayments';
 import ModalVerPagos from './ModalVerPagos';
 
-const TablaMensualidades = ({ selectedFamily, getMensualidadesFamily, families, mensualidades, dataDetalle }) => {
+const TablaMensualidades = ({ periodoSeleccionado, selectedFamily, getMensualidadesFamily, families, mensualidades, dataDetalle }) => {
 
     const [pagoModal, setPagoModal] = React.useState(false) 
     const [numLimpiarFactura, setNumLimpiarFactura] = React.useState(0) 
@@ -128,11 +128,11 @@ const TablaMensualidades = ({ selectedFamily, getMensualidadesFamily, families, 
                 ]}
             />
             {(pagoModal)
-                ? <ModalPayments numLimpiarFactura={numLimpiarFactura} setNumLimpiarFactura={setNumLimpiarFactura} pagosRegistrados={pagosRegistrados} setPagosRegistrados={setPagosRegistrados} datosPago={datosPago} setDatosPago = { setDatosPago } datosCabecera={datosCabecera} setDatosCabecera={setDatosCabecera} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
+                ? <ModalPayments periodoSeleccionado={periodoSeleccionado} numLimpiarFactura={numLimpiarFactura} setNumLimpiarFactura={setNumLimpiarFactura} pagosRegistrados={pagosRegistrados} setPagosRegistrados={setPagosRegistrados} datosPago={datosPago} setDatosPago = { setDatosPago } datosCabecera={datosCabecera} setDatosCabecera={setDatosCabecera} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
             :null
             }
             {(statusModalVerPagos) ?
-                <ModalVerPagos selectedFamily={selectedFamily} statusModalVerPagos={statusModalVerPagos} setStatusModalVerPagos={setStatusModalVerPagos} />
+                <ModalVerPagos periodoSeleccionado={periodoSeleccionado} selectedFamily={selectedFamily} statusModalVerPagos={statusModalVerPagos} setStatusModalVerPagos={setStatusModalVerPagos} />
                 : null}   
         </>
     )

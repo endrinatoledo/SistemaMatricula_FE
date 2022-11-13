@@ -94,7 +94,7 @@ const UseStyles = makeStyles({
     // }
 })
 
-const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrados, setPagosRegistrados, datosPago, setDatosPago, datosCabecera, setDatosCabecera, selectedFamily, getMensualidadesFamily, families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades }) => {
+const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFactura, pagosRegistrados, setPagosRegistrados, datosPago, setDatosPago, datosCabecera, setDatosCabecera, selectedFamily, getMensualidadesFamily, families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades }) => {
     const classes = UseStyles();
     const [layautPagos, setlayautPagos] = React.useState(false)
     const [circularProgress, setCircularProgress] = React.useState(false)
@@ -425,7 +425,8 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
             cabecera: datosCabecera,
             cuerpo: datosPago,
             familia: families,
-            detallePagos: pagosRegistrados
+            detallePagos: pagosRegistrados,
+            periodo: periodoSeleccionado
         }
         try {
 
