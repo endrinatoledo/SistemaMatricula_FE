@@ -98,8 +98,8 @@ const ModalVerPagos = ({ selectedFamily, statusModalVerPagos, setStatusModalVerP
     const consultarPagos = async () => {
 
         try {
-            const monthlyPaymentFamily = (await AxiosInstance.get(`/monthlyPayment/family/${selectedFamily.famId}`)).data
-            console.log('monthlyPaymentFamily', monthlyPaymentFamily)
+            const monthlyPaymentFamily = (await AxiosInstance.get(`/invoiceHeader/invoice/family/${selectedFamily.famId}/periodo/${1}`)).data
+            // console.log('monthlyPaymentFamily', monthlyPaymentFamily)
             
         } catch (error) {
             setMessage('Error al consultar Pagos')

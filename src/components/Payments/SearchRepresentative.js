@@ -44,7 +44,7 @@ const IdentificationType = [
   }
 ]
 
-const SearchRepresentative = ({setSelectedFamily, representativeFound, setRepresentativeFound, identification, setIdentification, representativeData, setRepresentativeData,setMensualidades }) => {
+const SearchRepresentative = ({setPeriodoSeleccionado, setSelectedFamily, representativeFound, setRepresentativeFound, identification, setIdentification, representativeData, setRepresentativeData,setMensualidades }) => {
   const classes = UseStyles();
 
   const [alertModal, setAlertModal] = React.useState(false)
@@ -88,6 +88,7 @@ const SearchRepresentative = ({setSelectedFamily, representativeFound, setRepres
     setMensualidades([])
     setRepresentativeFound(false)
     setSelectedFamily(null)
+    setPeriodoSeleccionado(null)
 
   }
 

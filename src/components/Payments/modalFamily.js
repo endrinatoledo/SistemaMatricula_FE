@@ -39,15 +39,21 @@ const useStyles = makeStyles({
   }
 });
 
-const ModalFamily = ({ selectedFamily, setSelectedFamily, openModal, setOpenModal, families }) => {
+const ModalFamily = ({ periodoSeleccionado, setPeriodoSeleccionado, listadoPeriodo, selectedFamily, setSelectedFamily, openModal, setOpenModal, families }) => {
 
   const classes = useStyles();
 
   React.useEffect(() => {
-    if (selectedFamily !== null) {
+    if (selectedFamily !== null && periodoSeleccionado !== null) {
       setOpenModal(false)
     }
   }, [selectedFamily])
+
+  React.useEffect(() => {
+    if (selectedFamily !== null && periodoSeleccionado !== null) {
+      setOpenModal(false)
+    }
+  }, [periodoSeleccionado])
 
   return (
     <Modal
@@ -66,7 +72,23 @@ const ModalFamily = ({ selectedFamily, setSelectedFamily, openModal, setOpenModa
               />
             )}
             getOptionLabel={(option) => option.families.famName}
-            onChange={(event, newValue) => { setSelectedFamily(newValue) }}
+            onChange={(event, newValue) => {setSelectedFamily(newValue) }}
+            required
+            noOptionsText={'Sin Opciones'}
+            sx={{ width: '80%' }}
+            id="clear-on-escape"
+          />
+        </Stack>
+        <Stack direction="row" spacing={2} justifyContent="space-between" className={classes.TextField}>
+
+          <Autocomplete
+            options={listadoPeriodo}
+            renderInput={(params) => (
+              <TextField {...params} label="Periodo" variant="standard"
+              />
+            )}
+            getOptionLabel={(option) => `${option.perStartYear}-${option.perEndYear}`}
+            onChange={(event, newValue) => { setPeriodoSeleccionado(newValue) }}
             required
             noOptionsText={'Sin Opciones'}
             sx={{ width: '80%' }}

@@ -42,8 +42,12 @@ const AddPayment = () => {
     const [exchangeRate, setExchangeRate] = React.useState(null)
     const [mensualidades, setMensualidades] = React.useState([])
     const [dataDetalle, setDataDetalle] = React.useState([])
+    const [listadoPeriodo, setListadoPeriodo] = React.useState([])
+    const [periodoSeleccionado, setPeriodoSeleccionado] = React.useState(null)
     
     const classes = UseStyles();
+
+    console.log('este es el periodoSeleccionadooooooooooooooooooooooooooooooooooooooo', periodoSeleccionado)
 
     const getFamilyByRepId = async () => {
         try {
@@ -61,6 +65,24 @@ const AddPayment = () => {
             setAlertType("error")
             setAlertModal(true)
         }
+    }
+
+    const getPeriodos = async () => {
+
+        try {
+            const resultPeriods = (await AxiosInstance.get("/periods")).data
+
+            console.log('todos los periodos', resultPeriods)
+
+            if (resultPeriods.ok === true) {
+                setListadoPeriodo(resultPeriods.data)
+            }
+        } catch {
+            setMessage('Error de Conexion')
+            setAlertModal(true)
+
+        }
+
     }
 
     const getStudentPaymentSchemaFamId = async () => {
@@ -128,12 +150,12 @@ const AddPayment = () => {
 
     React.useEffect(() => {
         if (representativeData.repId !== undefined) {
-            
             getFamilyByRepId()
         }
     }, [representativeData])
     React.useEffect(() => {
         latestExchangeRate()
+        getPeriodos()
     }, [0])
 
     
@@ -141,7 +163,7 @@ const AddPayment = () => {
     return (
         <>
             <Box>
-                <SearchRepresentative setSelectedFamily={setSelectedFamily} representativeFound={representativeFound}
+                <SearchRepresentative setPeriodoSeleccionado={setPeriodoSeleccionado} setSelectedFamily={setSelectedFamily} representativeFound={representativeFound}
                     setRepresentativeFound={setRepresentativeFound} identification={identification}
                     setIdentification={setIdentification} representativeData={representativeData}
                     setRepresentativeData={setRepresentativeData} setMensualidades={setMensualidades}/>
@@ -151,10 +173,10 @@ const AddPayment = () => {
                 <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
                 : null}
             {(openModal) ?
-                <ModalFamily selectedFamily={selectedFamily} setSelectedFamily={setSelectedFamily} openModal={openModal} setOpenModal={setOpenModal} families={families}> </ModalFamily>
+                <ModalFamily periodoSeleccionado={periodoSeleccionado} setPeriodoSeleccionado={setPeriodoSeleccionado} listadoPeriodo={listadoPeriodo} selectedFamily={selectedFamily} setSelectedFamily={setSelectedFamily} openModal={openModal} setOpenModal={setOpenModal} families={families}> </ModalFamily>
                 : null} 
             {
-                (mensualidades.length > 0 && exchangeRate !== null) 
+                (mensualidades.length > 0 && exchangeRate !== null && periodoSeleccionado !== null) 
                 ? <>
                         <TablaMensualidades selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} mensualidades={ mensualidades } dataDetalle={dataDetalle}/>
                   </>
