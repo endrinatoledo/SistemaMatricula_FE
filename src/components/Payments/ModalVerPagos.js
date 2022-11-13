@@ -16,6 +16,11 @@ import { styled } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import MaterialTable from '@material-table/core';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import moment from 'moment';
 
 const AxiosInstance = require("../utils/request").default;
@@ -99,7 +104,7 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
 
         try {
             const monthlyPaymentFamily = (await AxiosInstance.get(`/invoiceHeader/invoice/family/${selectedFamily.famId}/periodo/${periodoSeleccionado.perId}`)).data
-            // console.log('monthlyPaymentFamily', monthlyPaymentFamily)
+            console.log('monthlyPaymentFamilyyyyyyyyyyyyyyyyyyyyyy', monthlyPaymentFamily)
             
         } catch (error) {
             setMessage('Error al consultar Pagos')
@@ -121,7 +126,197 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
 
               <Box sx={{ ...style, width: '95%', height: '87%' }}>
 
-                holaaaa
+                  <div>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel1a-content"
+                              id="panel1a-header"
+                          >
+                              <Typography><b>Enero</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel2a-content"
+                              id="panel2a-header"
+                          >
+                              <Typography><b>Febrero</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography><b>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </b></Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel2a-content"
+                              id="panel2a-header"
+                          >
+                              <Typography><b>Marzo</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography><b>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </b></Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel2a-content"
+                              id="panel2a-header"
+                          >
+                              <Typography><b>Abril</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography><b>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </b></Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel2a-content"
+                              id="panel2a-header"
+                          >
+                              <Typography><b>Mayo</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography><b>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </b></Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel2a-content"
+                              id="panel2a-header"
+                          >
+                              <Typography><b>Junio</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography><b>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </b></Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel2a-content"
+                              id="panel2a-header"
+                          >
+                              <Typography><b>Julio</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography><b>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </b></Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel2a-content"
+                              id="panel2a-header"
+                          >
+                              <Typography><b>Agosto</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography><b>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </b></Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel2a-content"
+                              id="panel2a-header"
+                          >
+                              <Typography><b>Septiembre</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography><b>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </b></Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel2a-content"
+                              id="panel2a-header"
+                          >
+                              <Typography><b>Octubre</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography><b>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </b></Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel2a-content"
+                              id="panel2a-header"
+                          >
+                              <Typography><b>Noviembre</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography><b>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </b></Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel2a-content"
+                              id="panel2a-header"
+                          >
+                              <Typography><b>Dicembre</b></Typography>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              <Typography><b>
+                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
+                              </b></Typography>
+                          </AccordionDetails>
+                      </Accordion>
+                      <Accordion disabled>
+                          <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel3a-content"
+                              id="panel3a-header"
+                          >
+                              <Typography><b>Disabled Accordion</b></Typography>
+                          </AccordionSummary>
+                      </Accordion>
+                  </div>
                 <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-end" className={classes.stack}>
                     <Button variant="outlined" onClick={() => setStatusModalVerPagos(false)}
                         color="error">Cerrar</Button>
