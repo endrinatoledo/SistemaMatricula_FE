@@ -61,6 +61,7 @@ const CollectionReports = () => {
 
   const reportType = [
     { id: 10, title: 'Resumen mensualidades' },
+    { id: 11, title: 'Resumen morosos' },
   ]
 
   const getAllPeriod = async () => {
@@ -127,9 +128,18 @@ const CollectionReports = () => {
       level: null,
       section: null
     }
-    if (reportTypeSelected.id === 10) {
+    if (reportTypeSelected.id === 11) {
 
       url = `/reports/morosos`
+      data.level = levelSelected.level;
+      if (sectionSelected !== null) {
+        data.section = sectionSelected.section;
+      }
+
+    }
+    if (reportTypeSelected.id === 10) {
+
+      url = `/reports/mensualidades/cobranza`
       data.level = levelSelected.level;
       if (sectionSelected !== null) {
         data.section = sectionSelected.section;
@@ -252,7 +262,7 @@ const CollectionReports = () => {
               >Buscar</Button>
             </Stack>
 
-            {(reportTypeSelected?.id === 10)
+            {(reportTypeSelected?.id === 10 || reportTypeSelected?.id === 11 )
               ? <>
                 <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
                   <Autocomplete
