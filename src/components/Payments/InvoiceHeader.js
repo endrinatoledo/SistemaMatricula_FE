@@ -48,7 +48,7 @@ const UseStyles = makeStyles({
     //     marginBottom:40,
     // }
 })
-const InvoiceHeader = ({ datosBase, setDatosCabecera, datosCabecera, Item2, pagosRegistrados, datosPago}) => {
+const InvoiceHeader = ({ setVoucherType, datosBase, setDatosCabecera, datosCabecera, Item2, pagosRegistrados, datosPago}) => {
 
     const classes = UseStyles();
 
@@ -152,6 +152,7 @@ const InvoiceHeader = ({ datosBase, setDatosCabecera, datosCabecera, Item2, pago
                                   value={datosCabecera.voucherType}
                                   getOptionLabel={(option) => option}
                                   onChange={(event, newValue) => {
+                                      setVoucherType(newValue)
                                       setDatosCabecera({ ...datosCabecera, voucherType: newValue })
                                   }}
                                   required

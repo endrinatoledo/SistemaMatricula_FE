@@ -20,6 +20,7 @@ import moment from 'moment';
 import InvoiceHeader from './InvoiceHeader';
 import FormatoComprobante from './FormatoComprobante';
 import ComprobantePDF from './ComprobantePDF';
+import ComprobanteFiscalPDF from './ComprobanteFiscalPDF';
 
 
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
@@ -124,6 +125,8 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500, tarjeta:600 })
     const [datosCompletos, setDatosCompletos] = React.useState(null)
     const [mostrarComprobante, setMostrarComprobante] = React.useState(false)
+    const [voucherType, setVoucherType] = React.useState(null)
+    
     const fechaActual = moment(new Date()).format("DD/MM/YYYY")
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
         { title: 'Método pago', field: 'metodoPago', render: (rows) => <>{rows.metodoPago.payName}</>},
@@ -399,6 +402,10 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
         setModalCancel(true)
     }
 
+    const cerrarModal = () => {
+        setUserResponse('yes')
+    }
+
     const validarBotonAnterior = () => {
         if(formatFactura){
             
@@ -411,7 +418,7 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
         }
     }
     
-    const guardarRegistro = async () => {
+    const guardarRegistro = async () => { 
 
         setCircularProgress(true)
         const data = {
@@ -504,11 +511,14 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
 
                     {
                         (paginaCabecera)
-                            ? <InvoiceHeader datosBase={datosBase} setDatosCabecera={setDatosCabecera} datosCabecera={datosCabecera} Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago}/>
+                            ? <InvoiceHeader setVoucherType={setVoucherType} datosBase={datosBase} setDatosCabecera={setDatosCabecera} datosCabecera={datosCabecera} Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago}/>
                             : (formatFactura)
                                 ? <FormatoComprobante datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados}/>
                                 : (mostrarComprobante) 
-                                    ? <ComprobantePDF datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} /> :
+                                    ? (voucherType === 'COMPROBANTE')
+                                    ? <ComprobantePDF datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                        : <ComprobanteFiscalPDF datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                :
                                 (layautPagos) ?
                         <div>
                         <Grid container spacing={2}>
@@ -744,8 +754,14 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
                                                     color="info">Anterior</Button>
                                                     : null
                                                 }  
-                                                <Button variant="outlined" onClick={() => confirmarCancelarRegistroDePago()}
-                                                    color="error">Cancelar</Button>
+                                                {
+                                                    (mostrarComprobante) 
+                                                        ? <Button variant="outlined" onClick={() => cerrarModal()}
+                                                            color="error">Cerrar</Button>
+                                                    : <Button variant="outlined" onClick={() => confirmarCancelarRegistroDePago()}
+                                                            color="error">Cancelar</Button>
+                                                }
+                                                
                                                     {
                                                     ( formatFactura) 
                                                         ? <> <Button variant="contained" onClick={() => guardarRegistro()}

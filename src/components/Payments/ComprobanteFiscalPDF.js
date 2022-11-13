@@ -30,12 +30,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const ComprobantePDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
-
-    //PULGADAS : 9.5  - 5.5
-    //CENTIMETROS: 24.13 - 13.97
-    //MILIMETROS: 228.6 - 139.7
-
+const ComprobanteFiscalPDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
     const [montos, setMontos] = React.useState([])
     const [total, setTotal] = React.useState(null)
     const [destallesDePagos, setDestallesDePagos] = React.useState(null)
@@ -122,28 +117,32 @@ const ComprobantePDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabecera, 
                                 }}>
                                     <View style={{ display: "flex", flexDirection: 'row' }}>
                                         <View style={{ flex: 2 }}>
-                                            <Text style={{ fontSize: tamañoLetra }}> A.C.U.E Colegio Nuestra Señora de Lourdes</Text>
-                                            <Text style={{ fontSize: tamañoLetra }}> Inscrito en el M.P.P.E. Cod.S0207D0814</Text>
-                                            <Text style={{ fontSize: tamañoLetra }}> Número de RIF: J-31730846-8</Text>
-                                            <Text style={{ fontSize: tamañoLetra }}> AV(100) Bolivar Norte. Valencia-Carabobo</Text>
+                                            <Text style={{ fontSize: tamañoLetra }}> </Text>
+                                            <Text style={{ fontSize: tamañoLetra }}> </Text>
+                                            <Text style={{ fontSize: tamañoLetra }}> </Text>
+                                            <Text style={{ fontSize: tamañoLetra }}> </Text>
 
                                         </View>
                                         <View style={{ flex: 1 }}>
                                             <View style={{ top: '20%' }}>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Fecha</Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {datosCompletos.cabecera?.date !== undefined ? datosCompletos.cabecera.date : ''}</Text>
                                             </View>
                                         </View>
                                         <View style={{ flex: 1 }}>
                                             <View style={{ top: '20%' }}>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Nro. de Control</Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> 00-00020792</Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Factura</Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> 00020760 </Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Fiscal </Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> 00000000 </Text>
                                             </View>
                                         </View>
                                     </View>
-                                    <View style={{ height: '19px' }}></View>
+                                    <View style={{ height: '29px' }}></View>
                                     <View style={{ display: "flex", flexDirection: 'row' }}>
                                         <View style={{ flex: 2 }}>
                                             <View >
@@ -182,7 +181,6 @@ const ComprobantePDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabecera, 
                                                     </View>
                                                     : null
                                             }
-                                            {/* <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> conceptos </Text> */}
 
                                         </View>
                                         <View style={{ flex: 1 }}>
@@ -195,12 +193,11 @@ const ComprobantePDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabecera, 
                                                     </View>
                                                     : null
                                             }
-                                            {/* <Text style={{ fontSize: tamañoLetra, textAlign: 'right' }}> bolivares </Text> */}
                                         </View>
                                     </View>
                                     <View style={{ height: '5px' }}></View>
                                     <View style={{ display: "flex", flexDirection: 'row', border: '1', padding: '5px' }}>
-                                        <View style={{ flex: 3, borderRight: '1', margin: '1px',paddingRight:'5px' }}>
+                                        <View style={{ flex: 3, borderRight: '1', margin: '1px', paddingRight: '5px' }}>
                                             <View >
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> Formas de pago: </Text>
                                                 {
@@ -211,10 +208,6 @@ const ComprobantePDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabecera, 
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> Detalle de Pago:  {` ${destallesDePagos}`} </Text>
                                             </View>
                                         </View>
-                                        {/* <View style={{ display: "flex", flexDirection: 'row' }}>
-                                            
-                                        </View> */}
-                                        
                                         <View style={{ flex: 1 }}>
                                             <Text style={{ fontSize: tamañoLetra, textAlign: 'right' }}>  </Text>
                                             {
@@ -227,11 +220,9 @@ const ComprobantePDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabecera, 
                                     </View>
                                     <View style={{ height: '19px' }}></View>
                                     <View style={{ display: "flex", flexDirection: 'row' }}>
-                                        {/* <View style={{ flex: 3 }}> */}
                                         <View >
                                             <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> Conforme de recibido: _______________________________________ </Text>
                                         </View>
-                                        {/* </View> */}
                                     </View>
                                 </View>
                             </Page>
@@ -246,4 +237,4 @@ const ComprobantePDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabecera, 
     )
 }
 
-export default ComprobantePDF
+export default ComprobanteFiscalPDF
