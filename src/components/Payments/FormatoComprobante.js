@@ -26,6 +26,8 @@ const ItemDerecha = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
+
+
 const FormatoComprobante = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
 
     const [montos, setMontos] = React.useState([])
@@ -36,7 +38,7 @@ const FormatoComprobante = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistr
         let descripcion =''
 
         pagosRegistrados.forEach(element => {
-            console.log('element', element)
+            // console.log('element', element)
             if(element.metodoPago.payName != 'EFECTIVO'){
                 if (element.banco !== null) descripcion = `${descripcion} Banco: ${element.banco.banName} `
                 if (element.referencia !== null) descripcion = `${descripcion} Referencia: ${element.referencia} `
@@ -52,17 +54,15 @@ const FormatoComprobante = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistr
     const calcularMontoTotal = () => {
         const montoTotal = montos.reduce(function (sum, item) {
                 return sum + Number(item.monto);
-            }, 0);
-
-        setTotal(montoTotal)
+        }, 0)
+        setTotal(montoTotal.toFixed(2))
     }
     function funcionSuma(element) {
         return pagosRegistrados.reduce(function (sum, item) {
-            console.log('item', item)
             return (item.metodoPago.payName === element) 
                 ? item.moneda === "Bolívares" ? sum + Number(item.monto) : sum + (tasaDelDia.excAmount * Number(item.monto))
                 : sum;
-        }, 0);
+        }, 0)
     }
 
     const ordenarMontos = () => {
@@ -82,7 +82,7 @@ const FormatoComprobante = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistr
         const detallePagoMonto = detallePagoMetodos.map(item => {
             return {
                 metodoPago: item.metodoPago,
-                monto: funcionSuma(item.metodoPago)
+                monto: (funcionSuma(item.metodoPago)).toFixed(2)
             }
         }
         )
@@ -173,7 +173,7 @@ const FormatoComprobante = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistr
                           <ItemDerecha>
                             <br />
                                   {datosPago.map(item => <>
-                                      <div> {item.pago * tasaDelDia.excAmount}  </div>
+                                      <div> {(item.pago * tasaDelDia.excAmount).toFixed(2)}  </div>
                                   </>)}
                                 
                             <br />

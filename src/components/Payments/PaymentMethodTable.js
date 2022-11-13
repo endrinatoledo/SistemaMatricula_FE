@@ -118,7 +118,7 @@ const PaymentMethodTable = ({exchangeRate}) => {
           onRowAdd: (newRow) => new Promise((resolve, reject) => {
             if (newRow) {
               let pay = payments
-              pay.push({ ...newRow, id: payments.length + 1, payConvertedAmount:trunc((newRow.payAmount * exchangeRate.excAmount),2)})
+              pay.push({ ...newRow, id: payments.length + 1, payConvertedAmount: (newRow.payAmount * exchangeRate.excAmount).toFixed(2) })
               setPayments(pay)
               setReload(reload + 1)
               resolve()

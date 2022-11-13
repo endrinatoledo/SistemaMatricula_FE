@@ -19,6 +19,9 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import moment from 'moment';
 import InvoiceHeader from './InvoiceHeader';
 import FormatoComprobante from './FormatoComprobante';
+import ComprobantePDF from './ComprobantePDF';
+
+
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default 
 
 const AxiosInstance = require("../utils/request").default;
@@ -119,7 +122,8 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
     const [paginaCabecera, setPaginaCabecera] = React.useState(false)
     const [formatFactura, setFormatFactura] = React.useState(false)
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500, tarjeta:600 })
-    
+    const [datosCompletos, setDatosCompletos] = React.useState(null)
+    const [mostrarComprobante, setMostrarComprobante] = React.useState(false)
     const fechaActual = moment(new Date()).format("DD/MM/YYYY")
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
         { title: 'Método pago', field: 'metodoPago', render: (rows) => <>{rows.metodoPago.payName}</>},
@@ -198,9 +202,9 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
             return Number(accumulator) + Number(object.pago);
           }, 0))
 
-          setMontoTotalBolivaresDis(trunc(parseFloat((datosPago.reduce((accumulator, object) => {
+          setMontoTotalBolivaresDis(((datosPago.reduce((accumulator, object) => {
             return Number(accumulator) + Number(object.pago);
-          }, 0)) * tasaDelDia.excAmount),2))
+          }, 0)) * tasaDelDia.excAmount).toFixed(2))
           setConteo(conteo + 1)
     }
     const agregarPago = () => {
@@ -420,14 +424,24 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
 
             const guardarFacturaRes = (await AxiosInstance.post(`/invoiceHeader`, data)).data
 
+            console.log('guardarFacturaRes...................................', guardarFacturaRes)
+
             if (guardarFacturaRes.ok){
+                setDatosCompletos({
+                    cabecera: datosCabecera,
+                    cuerpo: datosPago,
+                    familia: families,
+                    detallePagos: pagosRegistrados
+                })
                 setCircularProgress(false)
-                setMessage(guardarFacturaRes.message)
-                setAlertType("success")
-                setAlertModal(true)
+                // setMessage(guardarFacturaRes.message)
+                // setAlertType("success")
+                // setAlertModal(true)
+                setMostrarComprobante(true)
                 setFormatFactura(false)
+                // setMostrarComprobante(true)
                 setNumLimpiarFactura(numLimpiarFactura + 1)
-                setPagoModal(false)
+                // setPagoModal(false)
             }else{
                 setCircularProgress(false)
                 setMessage(guardarFacturaRes.message)
@@ -437,9 +451,9 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
 
         } catch (error) {
             console.log('Error al guardar registro factura ', error)
-            setMessage('Error al guardar factura')
-            setAlertType("error")
-            setAlertModal(true)
+            // setMessage('Error al guardar factura')
+            // setAlertType("error")
+            // setAlertModal(true)
         }
         
     }
@@ -463,7 +477,7 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
     }, [1])
 
     React.useEffect(() => {
-        console.log('..............................', datosPago)
+        // console.log('..............................', datosPago)
     }, [datosPago])
 
     React.useEffect(() => {
@@ -493,7 +507,9 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
                             ? <InvoiceHeader datosBase={datosBase} setDatosCabecera={setDatosCabecera} datosCabecera={datosCabecera} Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago}/>
                             : (formatFactura)
                                 ? <FormatoComprobante datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados}/>
-                                : (layautPagos) ?
+                                : (mostrarComprobante) 
+                                    ? <ComprobantePDF datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} /> :
+                                (layautPagos) ?
                         <div>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
@@ -734,7 +750,7 @@ const ModalPayments = ({ numLimpiarFactura, setNumLimpiarFactura, pagosRegistrad
                                                     ( formatFactura) 
                                                         ? <> <Button variant="contained" onClick={() => guardarRegistro()}
                                                             color="success">Guardar</Button> 
-                                                            <Button variant="contained" color="success"><a target={'_blank'} href='http://localhost:3000/comprobantepdf'> Imprimir </a></Button> 
+                                                            {/* <Button variant="contained" color="success"><a target={'_blank'} href='http://localhost:3000/comprobantepdf'> Imprimir </a></Button>  */}
                                                         </>
                                                     : <Button variant="contained" disabled={!paginaCabecera ? validarGuardar() : validarCabecera()} onClick={() => !paginaCabecera ? cabecera() : confirmarCabecera()}
                                                             color="success">Siguiente</Button>
