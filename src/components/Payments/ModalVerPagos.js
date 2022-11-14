@@ -202,19 +202,14 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
         pago.forEach(element => {
             // console.log('element', element)
             if (element.depObservation != '' && element.depObservation != null) {
-                // if (element.banksPay !== null) descripcion = `${descripcion} Banco: ${element.banksPay.banName}, `
-                // if (element.depApprovalNumber !== null) descripcion = `${descripcion} Referencia: ${element.depApprovalNumber}, `
-                // if (element.depCardNumber !== null && element.depCardNumber !== undefined) descripcion = `${descripcion} Tarjeta: ${element.depCardNumber}, `
-                descripcion = `${descripcion} ${element.depObservation} - `
+                 descripcion = `${descripcion} ${element.depObservation} - `
             }
 
         });
         return descripcion.substring(0, descripcion.length - 2)
-        // setDestallesDePagos(descripcion.substring(0, descripcion.length - 2))
     }
 
     const componenteDetallePago = (data) => {
-        console.log('data', data)
         return (
             <>
                 {data.map((item,index) => {
@@ -252,19 +247,9 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         {item.cuerpo.map((element, index) => <div> {`${element.indDescripcion} ${element.indStuName} : Bs. ${(parseFloat(element.indpagado) * parseFloat(element.indtasa)).toFixed(2) }`}</div>)}
                                         <div><b>Formas de pago:</b> </div>
                                         {item.pago.map((element, index) => <div> {`${element.paymentMethodsPay.payName} : Bs. ${element.depCurrency === 'Dólares' ? (parseFloat(element.depAmount) * parseFloat(element.deptasa)).toFixed(2) : (element.depAmount).toFixed(2) } `}</div>)}
-
-                                    </Stack>
-                                    
-                                </Stack>
-                                {/* <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-start">
-                                    <Stack spacing={0.5} direction="column" justifyContent="flex-start" alignItems="flex-end" >
-                                        <div><b>Formas de pago:</b> </div>
-                                        {item.pago.map((element, index) => <div> {`${element.paymentMethodsPay.payName} : Bs. ${element.depCurrency === 'Dólares' ? (parseFloat(element.depAmount) * parseFloat(element.deptasa)).toFixed(2) : element.depAmount} `}</div>)}
-                                    </Stack>
-                                </Stack> */}
-
+                                    </Stack>                                
+                                </Stack>                            
                             </Box>
-
                         </Stack>
                         <Divider className={classes.div} />
                     </div>
@@ -294,7 +279,7 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                     {
                         dataClasificada.length > 0
                             ? <div>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[0].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel1a-content"
@@ -303,14 +288,15 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         <Typography><b>Enero</b></Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        {dataClasificada.mes === 'Enero' && dataClasificada.data.length > 0
-                                            ? componenteDetallePago()
-                                            : null
+                                        {
+                                            dataClasificada[0].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[0].data)
+                                                : null
                                         }
 
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[1].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -319,13 +305,14 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         <Typography><b>Febrero</b></Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography><b>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                                        </b></Typography>
+                                        {
+                                            dataClasificada[1].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[1].data)
+                                                : null
+                                        }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[2].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -334,13 +321,14 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         <Typography><b>Marzo</b></Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography><b>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                                        </b></Typography>
+                                        {
+                                            dataClasificada[2].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[2].data)
+                                                : null
+                                        }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[3].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -349,13 +337,14 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         <Typography><b>Abril</b></Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography><b>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                                        </b></Typography>
+                                        {
+                                            dataClasificada[3].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[3].data)
+                                                : null
+                                        }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[4].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -364,13 +353,14 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         <Typography><b>Mayo</b></Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography><b>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                                        </b></Typography>
+                                        {
+                                            dataClasificada[4].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[4].data)
+                                                : null
+                                        }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[5].data.length > 0 ? false : true}> 
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -379,13 +369,14 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         <Typography><b>Junio</b></Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography><b>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                                        </b></Typography>
+                                        {
+                                            dataClasificada[5].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[5].data)
+                                                : null
+                                        }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[6].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -394,13 +385,14 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         <Typography><b>Julio</b></Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography><b>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                                        </b></Typography>
+                                        {
+                                            dataClasificada[6].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[6].data)
+                                                : null
+                                        }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[7].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -409,13 +401,14 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         <Typography><b>Agosto</b></Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography><b>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                                        </b></Typography>
+                                        {
+                                            dataClasificada[7].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[7].data)
+                                                : null
+                                        }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[8].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -424,13 +417,14 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         <Typography><b>Septiembre</b></Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography><b>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                                        </b></Typography>
+                                        {
+                                            dataClasificada[8].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[8].data)
+                                                : null
+                                        }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[9].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -439,13 +433,14 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         <Typography><b>Octubre</b></Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography><b>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                                        </b></Typography>
+                                        {
+                                            dataClasificada[9].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[9].data)
+                                                : null
+                                        }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[10].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -455,15 +450,13 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         {
-
-                                            // console.log('dataClasificada[10].',dataClasificada[10].data)
                                             dataClasificada[10].data.length > 0
                                                 ? componenteDetallePago(dataClasificada[10].data)
                                                 : null
                                         }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion>
+                                <Accordion disabled={dataClasificada[11].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -472,20 +465,12 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         <Typography><b>Dicembre</b></Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <Typography><b>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                                        </b></Typography>
+                                        {
+                                            dataClasificada[11].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[11].data)
+                                                : null
+                                        }
                                     </AccordionDetails>
-                                </Accordion>
-                                <Accordion disabled>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel3a-content"
-                                        id="panel3a-header"
-                                    >
-                                        <Typography><b>Disabled Accordion</b></Typography>
-                                    </AccordionSummary>
                                 </Accordion>
                             </div>
                             : null
