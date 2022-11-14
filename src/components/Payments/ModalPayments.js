@@ -426,7 +426,8 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
             cuerpo: datosPago,
             familia: families,
             detallePagos: pagosRegistrados,
-            periodo: periodoSeleccionado
+            periodo: periodoSeleccionado,
+            tasa: tasaDelDia,
         }
         try {
 

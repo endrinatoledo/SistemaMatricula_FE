@@ -47,7 +47,7 @@ const AddPayment = () => {
     
     const classes = UseStyles();
 
-    console.log('este es el periodoSeleccionadooooooooooooooooooooooooooooooooooooooo', periodoSeleccionado)
+    // console.log('este es el periodoSeleccionadooooooooooooooooooooooooooooooooooooooo', periodoSeleccionado)
 
     const getFamilyByRepId = async () => {
         try {
@@ -72,7 +72,7 @@ const AddPayment = () => {
         try {
             const resultPeriods = (await AxiosInstance.get("/periods")).data
 
-            console.log('todos los periodos', resultPeriods)
+            // console.log('todos los periodos', resultPeriods)
 
             if (resultPeriods.ok === true) {
                 setListadoPeriodo(resultPeriods.data)

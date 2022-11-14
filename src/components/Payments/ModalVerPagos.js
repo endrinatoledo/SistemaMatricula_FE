@@ -84,12 +84,12 @@ const UseStyles = makeStyles({
     distribPago: {
         marginLeft: '3%',
         marginBottom: '3%',
-    }
+    },
 
-    // box:{
-    //     marginTop:40,
-    //     marginBottom:40,
-    // }
+    div:{
+        marginTop:5,
+        // marginBottom:40,
+    }
 })
 
 const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPagos, setStatusModalVerPagos }) => {
@@ -98,14 +98,20 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
     const [alertModal, setAlertModal] = React.useState(false)
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
+    const [resultadoPagos, setResultadoPagos] = React.useState([]);
+    const [dataClasificada, setDataClasificada] = React.useState([]);
 
+    // console.log('dataClasificada--------------------', dataClasificada)
 
     const consultarPagos = async () => {
 
         try {
             const monthlyPaymentFamily = (await AxiosInstance.get(`/invoiceHeader/invoice/family/${selectedFamily.famId}/periodo/${periodoSeleccionado.perId}`)).data
-            console.log('monthlyPaymentFamilyyyyyyyyyyyyyyyyyyyyyy', monthlyPaymentFamily)
-            
+            // console.log('monthlyPaymentFamilyyyyyyyyyyyyyyyyyyyyyy', monthlyPaymentFamily)
+            if (monthlyPaymentFamily.ok === true && monthlyPaymentFamily.data.length > 0) {
+                setResultadoPagos(monthlyPaymentFamily.data)
+            }
+
         } catch (error) {
             setMessage('Error al consultar Pagos')
             setAlertType("error")
@@ -113,219 +119,388 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
         }
     }
 
+    const clasificarData = () => {
+        let dataFinal = [
+            { mes: 'Enero', data: [] }, // posicion 0
+            { mes: 'Febrero', data: [] },// posicion 1
+            { mes: 'Marzo', data: [] },// posicion 2
+            { mes: 'Abril', data: [] },// posicion 3
+            { mes: 'Mayo', data: [] },// posicion 4
+            { mes: 'Junio', data: [] },// posicion 5
+            { mes: 'Julio', data: [] },// posicion 6
+            { mes: 'Agosto', data: [] },// posicion 7
+            { mes: 'Septiembre', data: [] },// posicion 8
+            { mes: 'Octubre', data: [] },// posicion 9
+            { mes: 'Noviembre', data: [] },// posicion 10
+            { mes: 'Diciembre', data: [] },// posicion 11
+        ]
+
+        // const data = 
+        resultadoPagos.map(item => {
+            // console.log('itemmmmmmmmmmmmmmm', item)
+            const fechaC = (item.fecha).split('/')
+
+            if (fechaC[1] === '1' || fechaC[1] === '01') {
+                dataFinal[0].data.push(item)
+            }
+            if (fechaC[1] === '2' || fechaC[1] === '02') {
+                dataFinal[1].data.push(item)
+            }
+            if (fechaC[1] === '3' || fechaC[1] === '03') {
+                dataFinal[2].data.push(item)
+            }
+            if (fechaC[1] === '4' || fechaC[1] === '04') {
+                dataFinal[3].data.push(item)
+            }
+            if (fechaC[1] === '5' || fechaC[1] === '05') {
+                dataFinal[4].data.push(item)
+            }
+            if (fechaC[1] === '6' || fechaC[1] === '06') {
+                dataFinal[5].data.push(item)
+            }
+            if (fechaC[1] === '7' || fechaC[1] === '07') {
+                dataFinal[6].data.push(item)
+            }
+            if (fechaC[1] === '8' || fechaC[1] === '08') {
+                dataFinal[7].data.push(item)
+            }
+            if (fechaC[1] === '9' || fechaC[1] === '09') {
+                dataFinal[8].data.push(item)
+            }
+            if (fechaC[1] === '10' || fechaC[1] === '10') {
+                dataFinal[9].data.push(item)
+            }
+            if (fechaC[1] === '11' || fechaC[1] === '11') {
+                dataFinal[10].data.push(item)
+            }
+            if (fechaC[1] === '12' || fechaC[1] === '12') {
+                dataFinal[11].data.push(item)
+            }
+        })
+
+        setDataClasificada(dataFinal)
+    }
+    const ordenarDetalleDePago = (pago) => {
+        let descripcion = ''
+
+        pago.forEach(element => {
+            // console.log('element', element)
+            if (element.paymentMethodsPay.payName != 'EFECTIVO') {
+                if (element.banksPay !== null) descripcion = `${descripcion} Banco: ${element.banksPay.banName}, `
+                if (element.depApprovalNumber !== null) descripcion = `${descripcion} Referencia: ${element.depApprovalNumber}, `
+                if (element.depCardNumber !== null && element.depCardNumber !== undefined) descripcion = `${descripcion} Tarjeta: ${element.depCardNumber}, `
+                descripcion = `${descripcion} - `
+            }
+
+        });
+        return descripcion.substring(0, descripcion.length - 2)
+        // setDestallesDePagos(descripcion.substring(0, descripcion.length - 2))
+    }
+    const ordenarObservaciones = (pago) => {
+        let descripcion = ''
+
+        pago.forEach(element => {
+            // console.log('element', element)
+            if (element.depObservation != '' && element.depObservation != null) {
+                // if (element.banksPay !== null) descripcion = `${descripcion} Banco: ${element.banksPay.banName}, `
+                // if (element.depApprovalNumber !== null) descripcion = `${descripcion} Referencia: ${element.depApprovalNumber}, `
+                // if (element.depCardNumber !== null && element.depCardNumber !== undefined) descripcion = `${descripcion} Tarjeta: ${element.depCardNumber}, `
+                descripcion = `${descripcion} ${element.depObservation} - `
+            }
+
+        });
+        return descripcion.substring(0, descripcion.length - 2)
+        // setDestallesDePagos(descripcion.substring(0, descripcion.length - 2))
+    }
+
+    const componenteDetallePago = (data) => {
+        console.log('data', data)
+        return (
+            <>
+                {data.map((item,index) => {
+                    return <div key={index}>
+                        <Stack spacing={2} direction="row"
+                            justifyContent="space-between"
+                            alignItems="flex-start">
+                            <Box>
+                                <Stack className={classes.div} spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-start">
+                                    <div><b>Fecha:</b> {item.fecha} </div>
+                                    <div><b>Nro Control:</b> {item.cabecera.inhControlNumber}</div>
+                                    <div><b>Nro Factura:</b> {item.cabecera.inhInvoiceNumber}</div>
+                                </Stack>
+                                <Stack className={classes.div} spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-start">
+                                    <div><b>RIF/CI:</b> {item.cabecera.inhRifCed}</div>
+                                    <div><b>Razón Social:</b> {item.cabecera.inhBusinessName}</div>
+                                </Stack>
+                                <Stack className={classes.div} spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-start">
+                                    <div><b>Teléfonos:</b> {item.cabecera.inhPhone}</div>
+                                    <div><b>Dirección:</b>  {item.cabecera.inhAddress}</div>
+                                </Stack>
+                                <Stack className={classes.div} spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-start">
+                                    <div><b>Detalle de pago:</b> {ordenarDetalleDePago(item.pago)} </div>
+                                    <div> </div>
+                                </Stack>
+                                <Stack className={classes.div} spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-start">
+                                    <div><b>Observaciones:</b> {ordenarObservaciones(item.pago)} </div>
+                                    <div> </div>
+                                </Stack>
+                            </Box>
+                            <Box>
+                                <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-start">
+                                    <Stack spacing={0.5} alignItems="flex-end" direction="column" justifyContent="flex-start">
+                                        <div><b>Conceptos de pago y montos:</b> </div>
+                                        {item.cuerpo.map((element, index) => <div> {`${element.indDescripcion} ${element.indStuName} : Bs. ${(parseFloat(element.indpagado) * parseFloat(element.indtasa)).toFixed(2) }`}</div>)}
+                                        <div><b>Formas de pago:</b> </div>
+                                        {item.pago.map((element, index) => <div> {`${element.paymentMethodsPay.payName} : Bs. ${element.depCurrency === 'Dólares' ? (parseFloat(element.depAmount) * parseFloat(element.deptasa)).toFixed(2) : (element.depAmount).toFixed(2) } `}</div>)}
+
+                                    </Stack>
+                                    
+                                </Stack>
+                                {/* <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-start">
+                                    <Stack spacing={0.5} direction="column" justifyContent="flex-start" alignItems="flex-end" >
+                                        <div><b>Formas de pago:</b> </div>
+                                        {item.pago.map((element, index) => <div> {`${element.paymentMethodsPay.payName} : Bs. ${element.depCurrency === 'Dólares' ? (parseFloat(element.depAmount) * parseFloat(element.deptasa)).toFixed(2) : element.depAmount} `}</div>)}
+                                    </Stack>
+                                </Stack> */}
+
+                            </Box>
+
+                        </Stack>
+                        <Divider className={classes.div} />
+                    </div>
+                })}
+
+            </>
+        )
+    }
+
     React.useEffect(() => {
         consultarPagos()
     }, [0]);
 
-  return (
-    <>
-          <Modal
-              hideBackdrop open={statusModalVerPagos}
-              onClose={() => setStatusModalVerPagos(false)}
-              aria-labelledby="child-modal-title" aria-describedby="child-modal-description" >
+    React.useEffect(() => {
+        if (resultadoPagos.length > 0) clasificarData()
 
-              <Box sx={{ ...style, width: '95%', height: '87%' }}>
+    }, [resultadoPagos]);
 
-                  <div>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel1a-content"
-                              id="panel1a-header"
-                          >
-                              <Typography><b>Enero</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel2a-content"
-                              id="panel2a-header"
-                          >
-                              <Typography><b>Febrero</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography><b>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </b></Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel2a-content"
-                              id="panel2a-header"
-                          >
-                              <Typography><b>Marzo</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography><b>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </b></Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel2a-content"
-                              id="panel2a-header"
-                          >
-                              <Typography><b>Abril</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography><b>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </b></Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel2a-content"
-                              id="panel2a-header"
-                          >
-                              <Typography><b>Mayo</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography><b>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </b></Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel2a-content"
-                              id="panel2a-header"
-                          >
-                              <Typography><b>Junio</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography><b>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </b></Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel2a-content"
-                              id="panel2a-header"
-                          >
-                              <Typography><b>Julio</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography><b>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </b></Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel2a-content"
-                              id="panel2a-header"
-                          >
-                              <Typography><b>Agosto</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography><b>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </b></Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel2a-content"
-                              id="panel2a-header"
-                          >
-                              <Typography><b>Septiembre</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography><b>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </b></Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel2a-content"
-                              id="panel2a-header"
-                          >
-                              <Typography><b>Octubre</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography><b>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </b></Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel2a-content"
-                              id="panel2a-header"
-                          >
-                              <Typography><b>Noviembre</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography><b>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </b></Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel2a-content"
-                              id="panel2a-header"
-                          >
-                              <Typography><b>Dicembre</b></Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                              <Typography><b>
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                                  malesuada lacus ex, sit amet blandit leo lobortis eget.
-                              </b></Typography>
-                          </AccordionDetails>
-                      </Accordion>
-                      <Accordion disabled>
-                          <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel3a-content"
-                              id="panel3a-header"
-                          >
-                              <Typography><b>Disabled Accordion</b></Typography>
-                          </AccordionSummary>
-                      </Accordion>
-                  </div>
-                <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-end" className={classes.stack}>
-                    <Button variant="outlined" onClick={() => setStatusModalVerPagos(false)}
-                        color="error">Cerrar</Button>
-                </Stack>
-              </Box>
-          </Modal>
-    
-    </>
-  )
+    return (
+        <>
+            <Modal
+                hideBackdrop open={statusModalVerPagos}
+                onClose={() => setStatusModalVerPagos(false)}
+                aria-labelledby="child-modal-title" aria-describedby="child-modal-description" >
+
+                <Box sx={{ ...style, width: '95%', height: '87%' }}>
+                    {
+                        dataClasificada.length > 0
+                            ? <div>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
+                                        <Typography><b>Enero</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {dataClasificada.mes === 'Enero' && dataClasificada.data.length > 0
+                                            ? componenteDetallePago()
+                                            : null
+                                        }
+
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Febrero</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography><b>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                        </b></Typography>
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Marzo</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography><b>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                        </b></Typography>
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Abril</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography><b>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                        </b></Typography>
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Mayo</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography><b>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                        </b></Typography>
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Junio</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography><b>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                        </b></Typography>
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Julio</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography><b>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                        </b></Typography>
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Agosto</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography><b>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                        </b></Typography>
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Septiembre</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography><b>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                        </b></Typography>
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Octubre</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography><b>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                        </b></Typography>
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Noviembre</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {
+
+                                            // console.log('dataClasificada[10].',dataClasificada[10].data)
+                                            dataClasificada[10].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[10].data)
+                                                : null
+                                        }
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Dicembre</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <Typography><b>
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                                            malesuada lacus ex, sit amet blandit leo lobortis eget.
+                                        </b></Typography>
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion disabled>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel3a-content"
+                                        id="panel3a-header"
+                                    >
+                                        <Typography><b>Disabled Accordion</b></Typography>
+                                    </AccordionSummary>
+                                </Accordion>
+                            </div>
+                            : null
+                    }
+
+
+                    <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-end" className={classes.stack}>
+                        <Button variant="outlined" onClick={() => setStatusModalVerPagos(false)}
+                            color="error">Cerrar</Button>
+                    </Stack>
+                </Box>
+            </Modal>
+
+        </>
+    )
 }
 
 export default ModalVerPagos
