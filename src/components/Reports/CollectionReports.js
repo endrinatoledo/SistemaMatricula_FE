@@ -7,6 +7,8 @@ import { makeStyles } from '@mui/styles';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Button from '@mui/material/Button';
 import TableReport from './TableReport';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ClearIcon from '@mui/icons-material/Clear';
 const AxiosInstance = require("../utils/request").default;
 
 const UseStyles = makeStyles({
@@ -58,6 +60,10 @@ const CollectionReports = () => {
   const [columns, setColumns] = React.useState([])
   const [seeTable, setSeeTable] = React.useState(false)
   const [excelStructure, setExcelStructure] = React.useState({})
+  const [nombreNivel, setNombreNivel] = React.useState(null)
+  const [nombreSeccion, setNombreSeccion] = React.useState(null)
+  const [nombreArchivo, setNombreArchivo] = React.useState(null)
+  const [nombreReporte, setNombreReporte] = React.useState(null)
 
   const reportType = [
     { id: 10, title: 'Resumen mensualidades' },
@@ -86,34 +92,29 @@ const CollectionReports = () => {
 
   const tableColumns = (reportTypeSelected) => {
 
-    if (reportTypeSelected.id === 10) {
+    if (reportTypeSelected.id === 11) {
+      setNombreArchivo(`Reporte_morosos_${nombreNivel}_${nombreSeccion}.xlsx`)
+
+      // setNombreArchivo(`Reporte_morosos_${periodSelected.perStartYear}-${periodSelected.perEndYear}_${nombreNivel}_${nombreSeccion}.xlsx`)
       setColumns([
-        { title: 'Grado', field: 'level' },
-        { title: 'Sección', field: 'section' },
-        { title: 'Tipo identificación', field: 'stuIdType' },
-        { title: 'Identificación', field: 'stuIdentificationNumber' },
-        { title: 'Primer Nombre', field: 'stuFirstName' },
-        { title: 'Segundo Nombre', field: 'stuSecondName' },
-        { title: 'Primer Apellido', field: 'stuSurname' },
-        { title: 'Segundo Apellido', field: 'stuSecondSurname' },
-        { title: 'Enero', field: 'mopEne' },
-        { title: 'Febrero', field: 'mopFeb' },
-        { title: 'Marzo', field: 'mopMar' },
-        { title: 'Abril', field: 'mopAbr' },
-        { title: 'Mayo', field: 'mopMay' },
-        { title: 'Junio', field: 'mopJun' },
-        { title: 'Julio', field: 'mopJul' },
-        { title: 'Agosto', field: 'mopAgo' },
-        { title: 'Septiembre', field: 'mopSep' },
-        { title: 'Octubre', field: 'mopOct' },
-        { title: 'Noviembre', field: 'mopNov' },
-        { title: 'Diciembre', field: 'mopDic' },
+        { title: 'Nombre', field: 'nombre' },
+        { title: 'Ene', field: 'mopEne', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+        { title: 'Feb', field: 'mopFeb', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+        { title: 'Mar', field: 'mopMar', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+        { title: 'Abr', field: 'mopAbr', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+        { title: 'May', field: 'mopMay', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+        { title: 'Jun', field: 'mopJun', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+        { title: 'Jul', field: 'mopJul', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+        { title: 'Ago', field: 'mopAgo', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+        { title: 'Sep', field: 'mopSep', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+        { title: 'Oct', field: 'mopOct', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+        { title: 'Nov', field: 'mopNov', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+        { title: 'Dic', field: 'mopDic', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
       ])
       setExcelStructure({
-        fileName: 'ReporteDeMorosos.xlsx',
-        columns: [["Grado", "Sección", "Tipo identificación", "Identificación", "Primer Nombre", "Segundo Nombre", 
-        "Primer Apellido", "Segundo Apellido", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto"
-        , "Septiembre", "Octubre", "Noviembre", "Diciembre"]],
+        fileName: `Reporte_morosos_${nombreNivel}-${nombreSeccion}.xlsx`,
+        columns: [["Nombre", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago"
+        , "Sep", "Oct", "Nov", "Dic"]],
         sheetName: "Estudiantes"
       })
     }
@@ -148,9 +149,9 @@ const CollectionReports = () => {
     }
 
     const result = (await AxiosInstance.post(url, data)).data
-
+    // console.log('result', result)
     if (result.ok === true) {
-
+      
       setDataReport(result.data)
       // setSeeTable(true)
     } else {
@@ -290,6 +291,8 @@ const CollectionReports = () => {
                     onChange={(event, newValue) => {
                       setLevelSelected(newValue)
                       setListSections(newValue.sections)
+                      setNombreNivel((newValue.level.levName).replaceAll(' ','_'))
+                      
                     }}
                     required
                     noOptionsText={'Sin Opciones'}
@@ -305,6 +308,7 @@ const CollectionReports = () => {
                     getOptionLabel={(option) => `${option.section.secName}`}
                     onChange={(event, newValue) => {
                       setSectionSelected(newValue)
+                      setNombreSeccion(newValue.section.secName)
                     }}
                     required
                     noOptionsText={'Sin Opciones'}
