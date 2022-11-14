@@ -198,23 +198,38 @@ const CollectionReports = () => {
       getPeriodLevelSectionByPerId()
     }
   }, [periodSelected]);
+
   React.useEffect(() => {
-    if (reportTypeSelected?.id === 10 || reportTypeSelected === null) {
+    if (periodSelected === null || reportTypeSelected === null || levelSelected === null || sectionSelected === null) {
       setSearchButton(true)
     } else {
-      setLevelSelected(null)
-      setSectionSelected(null)
+      setSearchButton(false)
+    }
+  }, [periodSelected]);
+
+  React.useEffect(() => {
+    if (periodSelected === null || reportTypeSelected === null || levelSelected === null || sectionSelected === null) {
+      setSearchButton(true)
+    } else {
       setSearchButton(false)
     }
   }, [reportTypeSelected]);
 
   React.useEffect(() => {
-    if (reportTypeSelected?.id === 10 && levelSelected === null) {
+    if (periodSelected === null || reportTypeSelected === null || levelSelected === null || sectionSelected === null) {
       setSearchButton(true)
     } else {
       setSearchButton(false)
     }
   }, [levelSelected]);
+
+  React.useEffect(() => {
+    if (periodSelected === null || reportTypeSelected === null || levelSelected === null || sectionSelected === null) {
+      setSearchButton(true)
+    } else {
+      setSearchButton(false)
+    }
+  }, [sectionSelected]);
 
   return (
     <>
