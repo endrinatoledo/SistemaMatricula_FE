@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const ComprobanteFiscalPDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
+const ComprobanteFiscalPDF = ({ numFact, datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
     const [montos, setMontos] = React.useState([])
     const [total, setTotal] = React.useState(null)
     const [destallesDePagos, setDestallesDePagos] = React.useState(null)
@@ -134,11 +134,11 @@ const ComprobanteFiscalPDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabe
                                         <View style={{ flex: 1 }}>
                                             <View style={{ top: '20%' }}>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> 00-00020792</Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Fiscal </Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> 00000000 </Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {numFact} </Text>
                                             </View>
                                         </View>
                                     </View>

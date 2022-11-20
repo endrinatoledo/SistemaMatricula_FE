@@ -28,7 +28,7 @@ const ItemDerecha = styled(Paper)(({ theme }) => ({
 
 
 
-const FormatoComprobante = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
+const FormatoComprobante = ({ numControl, numFact, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
 
     const [montos, setMontos] = React.useState([])
     const [total, setTotal] = React.useState(null)
@@ -121,9 +121,9 @@ const FormatoComprobante = ({ datosPago, tasaDelDia, datosCabecera, pagosRegistr
               <Grid item xs={2}>
                   <Item>
                       <div><strong>Nro. Control</strong>  </div>
-                    <div> 00-00020792 </div>
+                      <div> {numControl} </div>
                       <div> <strong>Factura</strong> </div>
-                    <div> 00020760</div>
+                      <div> {numFact}</div>
                   </Item>
               </Grid>
               <Grid item xs={8}>

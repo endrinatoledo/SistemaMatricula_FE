@@ -135,8 +135,13 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
     const [voucherType, setVoucherType] = React.useState(null)
     const [listadoEstudiantes, setlistadoEstudiantes] = React.useState([])
     const [listadoConceptosPago, setListadoConceptosPago] = React.useState([])
-
-    // console.log('datosPago....................', datosPago)
+    const [numControl, setNumControl] = React.useState(null)
+    const [numFact, setNumFact] = React.useState(null)
+    const [numControlFormatoNum, setNumControlFormatoNum] = React.useState(null)
+    const [numFactFormatoNum, setNumFactFormatoNum] = React.useState(null)
+    
+    console.log('datosPago....................', datosPago)
+    // console.log('numFact....................', numFact)
 
     const fechaActual = moment(new Date()).format("DD/MM/YYYY")
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
@@ -312,7 +317,6 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
             let data = datosPago
             data.push(distribicionPorRegistrar)
             setDatosPago(data)
-            // datosPago
             limpiarFormularioAgregarDistribucion()
             // montosTotales()
         }
@@ -413,16 +417,78 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
         }
     }
 
+    const rellenarConCeros = (number) => {
+        var numberOutput = Math.abs(number); /* Valor absoluto del número */
+        var length = number.toString().length; /* Largo del número */
+        var zero = "0"; /* String de cero */
+
+        if (8 <= length) {
+            if (number < 0) {
+                return ("-" + numberOutput.toString());
+            } else {
+                return numberOutput.toString();
+            }
+        } else {
+            if (number < 0) {
+                return ("-" + (zero.repeat(8 - length)) + numberOutput.toString());
+            } else {
+                return ((zero.repeat(8 - length)) + numberOutput.toString());
+            }
+        }
+    }
+    const consultarNumControl = async () => {
+
+        try {
+            const numControlRes = (await AxiosInstance.get(`/controlNumber/lastest`)).data
+            if (numControlRes.ok === true) {
+                setNumControlFormatoNum(Number(numControlRes.data.nucValue))
+                setNumControl(`00-${rellenarConCeros(numControlRes.data.nucValue)}`)
+            } else {
+                setMessage(numControlRes.message)
+                setAlertType("error")
+                setAlertModal(true)
+            }
+
+        } catch (error) {
+            setMessage('Error al consultar número de control')
+            setAlertType("error")
+            setAlertModal(true)
+        }
+    }
+    const consultarNumFact = async () => {
+
+        try {
+            const numFactRes = (await AxiosInstance.get(`/invoiceNumber/lastest`)).data
+            if (numFactRes.ok === true) {
+                setNumFactFormatoNum(Number(numFactRes.data.nuiValue))
+                setNumFact(`${rellenarConCeros(numFactRes.data.nuiValue)}`)
+            } else {
+                setMessage(numFactRes.message)
+                setAlertType("error")
+                setAlertModal(true)
+            }
+
+        } catch (error) {
+            setMessage('Error al consultar número de factura')
+            setAlertType("error")
+            setAlertModal(true)
+        }
+    }
+
     const ordenarDatosPago = () => {
 
         if (mesesApagar.length > 0) {
             const data = mesesApagar.map(item => {
+
+                console.log('itemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',item)
+
                 return {
                     "key": nextId(),
                     "mopId": item.mopId,
                     "mes": item.mes,
-                    "student": `${item.student}`,
+                    "student": `${item.student} -> ${item.detallePago.level.levName} `,
                     "descripcion": `Mensualidad ${item.nombreMes}`,
+                    // "nivel": item.detallePago.level.levName,
                     "costo": valorMensualidad,
                     "costoNeto": valorMensualidad?.cmeAmount,
                     "moneda": null,
@@ -525,6 +591,8 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
 
         setCircularProgress(true)
         const data = {
+            numControl:numControlFormatoNum,
+            numFact:numFactFormatoNum,
             cabecera: datosCabecera,
             cuerpo: datosPago,
             familia: families,
@@ -588,6 +656,8 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
         setlayautPagos(true)
         arrayEstudiantes()
         arrayConceptosDePago()
+        consultarNumControl()
+        consultarNumFact()
     }, [1])
 
     React.useEffect(() => {
@@ -624,11 +694,11 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
                         (paginaCabecera)
                             ? <InvoiceHeader setVoucherType={setVoucherType} datosBase={datosBase} setDatosCabecera={setDatosCabecera} datosCabecera={datosCabecera} Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago} />
                             : (formatFactura)
-                                ? <FormatoComprobante datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
-                                : (mostrarComprobante)
+                                ? <FormatoComprobante numControl={numControl} numFact={numFact} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                : (mostrarComprobante) 
                                     ? (voucherType === 'COMPROBANTE')
-                                        ? <ComprobantePDF datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
-                                        : <ComprobanteFiscalPDF datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                        ? <ComprobantePDF numControl={numControl} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                        : <ComprobanteFiscalPDF numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
                                     :
                                     (layautPagos) ?
                                         <div>

@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const ComprobantePDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
+const ComprobantePDF = ({ numControl, numFact, datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
 
     //PULGADAS : 9.5  - 5.5
     //CENTIMETROS: 24.13 - 13.97
@@ -137,9 +137,9 @@ const ComprobantePDF = ({ datosCompletos, datosPago, tasaDelDia, datosCabecera, 
                                         <View style={{ flex: 1 }}>
                                             <View style={{ top: '20%' }}>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Nro. de Control</Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> 00-00020792</Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {numControl}</Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Factura</Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> 00020760 </Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {numFact} </Text>
                                             </View>
                                         </View>
                                     </View>
