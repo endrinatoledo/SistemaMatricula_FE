@@ -279,6 +279,70 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                     {
                         dataClasificada.length > 0
                             ? <div>
+                                <Accordion disabled={dataClasificada[8].data.length > 0 ? false : true}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Septiembre</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {
+                                            dataClasificada[8].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[8].data)
+                                                : null
+                                        }
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion disabled={dataClasificada[9].data.length > 0 ? false : true}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Octubre</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {
+                                            dataClasificada[9].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[9].data)
+                                                : null
+                                        }
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion disabled={dataClasificada[10].data.length > 0 ? false : true}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Noviembre</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {
+                                            dataClasificada[10].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[10].data)
+                                                : null
+                                        }
+                                    </AccordionDetails>
+                                </Accordion>
+                                <Accordion disabled={dataClasificada[11].data.length > 0 ? false : true}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel2a-content"
+                                        id="panel2a-header"
+                                    >
+                                        <Typography><b>Dicembre</b></Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {
+                                            dataClasificada[11].data.length > 0
+                                                ? componenteDetallePago(dataClasificada[11].data)
+                                                : null
+                                        }
+                                    </AccordionDetails>
+                                </Accordion>
                                 <Accordion disabled={dataClasificada[0].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
@@ -408,72 +472,9 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion disabled={dataClasificada[8].data.length > 0 ? false : true}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel2a-content"
-                                        id="panel2a-header"
-                                    >
-                                        <Typography><b>Septiembre</b></Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        {
-                                            dataClasificada[8].data.length > 0
-                                                ? componenteDetallePago(dataClasificada[8].data)
-                                                : null
-                                        }
-                                    </AccordionDetails>
-                                </Accordion>
-                                <Accordion disabled={dataClasificada[9].data.length > 0 ? false : true}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel2a-content"
-                                        id="panel2a-header"
-                                    >
-                                        <Typography><b>Octubre</b></Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        {
-                                            dataClasificada[9].data.length > 0
-                                                ? componenteDetallePago(dataClasificada[9].data)
-                                                : null
-                                        }
-                                    </AccordionDetails>
-                                </Accordion>
-                                <Accordion disabled={dataClasificada[10].data.length > 0 ? false : true}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel2a-content"
-                                        id="panel2a-header"
-                                    >
-                                        <Typography><b>Noviembre</b></Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        {
-                                            dataClasificada[10].data.length > 0
-                                                ? componenteDetallePago(dataClasificada[10].data)
-                                                : null
-                                        }
-                                    </AccordionDetails>
-                                </Accordion>
-                                <Accordion disabled={dataClasificada[11].data.length > 0 ? false : true}>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                        aria-controls="panel2a-content"
-                                        id="panel2a-header"
-                                    >
-                                        <Typography><b>Dicembre</b></Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        {
-                                            dataClasificada[11].data.length > 0
-                                                ? componenteDetallePago(dataClasificada[11].data)
-                                                : null
-                                        }
-                                    </AccordionDetails>
-                                </Accordion>
+                                
                             </div>
-                            : null
+                            : <div> Sin datos para mostrar</div>
                     }
 
 
@@ -482,6 +483,9 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                             color="error">Cerrar</Button>
                     </Stack>
                 </Box>
+                {(alertModal) ?
+                    <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
+                    : null}
             </Modal>
 
         </>

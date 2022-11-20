@@ -18,6 +18,10 @@ const TablaMensualidades = ({ periodoSeleccionado, selectedFamily, getMensualida
     const [statusModalVerPagos, setStatusModalVerPagos] = React.useState(false)
     const columns = [
         { title: 'Estudiante', field: 'student' },
+        { title: 'Septiembre', field: 'sep', render: (rows) => meses(rows.sep, 'sep', 'Septiembre', rows) },
+        { title: 'Octubre', field: 'oct', render: (rows) => meses(rows.oct, 'oct', 'Octubre', rows) },
+        { title: 'Noviembre', field: 'nov', render: (rows) => meses(rows.nov, 'nov', 'Noviembre', rows) },
+        { title: 'Diciembre', field: 'dic', render: (rows) => meses(rows.dic, 'dic', 'Diciembre', rows) },
         { title: 'Enero', field: 'ene', render: (rows) => meses(rows.ene, 'ene','Enero', rows) },
         { title: 'Febrero', field: 'feb', render: (rows) => meses(rows.feb, 'feb', 'Febrero', rows) },
         { title: 'Marzo', field: 'mar', render: (rows) => meses(rows.mar, 'mar', 'Marzo', rows) },
@@ -26,10 +30,6 @@ const TablaMensualidades = ({ periodoSeleccionado, selectedFamily, getMensualida
         { title: 'Junio', field: 'jun', render: (rows) => meses(rows.abr, 'abr', 'Junio', rows) },
         { title: 'Julio', field: 'jul', render: (rows) => meses(rows.jul, 'jul', 'Julio', rows) },
         { title: 'Agosto', field: 'ago', render: (rows) => meses(rows.ago, 'ago', 'Agosto', rows) },
-        { title: 'Septiembre', field: 'sep', render: (rows) => meses(rows.sep, 'sep', 'Septiembre', rows) },
-        { title: 'Octubre', field: 'oct', render: (rows) => meses(rows.oct, 'oct', 'Octubre', rows) },
-        { title: 'Noviembre', field: 'nov', render: (rows) => meses(rows.nov, 'nov', 'Noviembre', rows) },
-        { title: 'Diciembre', field: 'dic', render: (rows) => meses(rows.dic, 'dic', 'Diciembre', rows) },
     ];
 
     const buscarDetalleDePago = (mopId) =>{

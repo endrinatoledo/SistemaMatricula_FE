@@ -517,6 +517,7 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
         if (paginaCabecera) {
             setFormatFactura(false)
             setPaginaCabecera(false)
+            setlayautPagos(true)
         }
     }
 
