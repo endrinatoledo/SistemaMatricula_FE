@@ -108,6 +108,11 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
         try {
             const monthlyPaymentFamily = (await AxiosInstance.get(`/invoiceHeader/invoice/family/${selectedFamily.famId}/periodo/${periodoSeleccionado.perId}`)).data
             // console.log('monthlyPaymentFamilyyyyyyyyyyyyyyyyyyyyyy', monthlyPaymentFamily)
+            // console.log('monthlyPaymentFamily.data > 0', monthlyPaymentFamily.data > 0)
+
+            // const result = JSON.parse(monthlyPaymentFamily)
+            // console.log('result.data > 0', result.data > 0)
+
             if (monthlyPaymentFamily.ok === true && monthlyPaymentFamily.data.length > 0) {
                 setResultadoPagos(monthlyPaymentFamily.data)
             }
@@ -120,6 +125,8 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
     }
 
     const clasificarData = () => {
+
+        // console.log('entro aquiiiiiiiiiiiiiiiiiiiiiiiiiiii')
         let dataFinal = [
             { mes: 'Enero', data: [] }, // posicion 0
             { mes: 'Febrero', data: [] },// posicion 1
@@ -268,17 +275,25 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
 
     }, [resultadoPagos]);
 
-    return (
-        <>
-            <Modal
-                hideBackdrop open={statusModalVerPagos}
-                onClose={() => setStatusModalVerPagos(false)}
-                aria-labelledby="child-modal-title" aria-describedby="child-modal-description" >
+    const [open, setOpen] = React.useState(true);
+    const handleOpen = () => setStatusModalVerPagos(true);
+    const handleClose = () => setStatusModalVerPagos(false);
 
+    return (
+
+        <div>
+            <Button onClick={handleOpen}>Open modal</Button>
+            <Modal 
+            hideBackdrop
+                open={statusModalVerPagos}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
                 <Box sx={{ ...style, width: '95%', height: '87%' }}>
                     {
-                        dataClasificada.length > 0
-                            ? <div>
+                         dataClasificada.length > 0 ? 
+                            <div>
                                 <Accordion disabled={dataClasificada[8].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
@@ -424,7 +439,7 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         }
                                     </AccordionDetails>
                                 </Accordion>
-                                <Accordion disabled={dataClasificada[5].data.length > 0 ? false : true}> 
+                                <Accordion disabled={dataClasificada[5].data.length > 0 ? false : true}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel2a-content"
@@ -472,23 +487,23 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                         }
                                     </AccordionDetails>
                                 </Accordion>
-                                
+
                             </div>
-                            : <div> Sin datos para mostrar</div>
+                         : <div> Sin datos para mostrar</div>
+
                     }
-
-
                     <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-end" className={classes.stack}>
-                        <Button variant="outlined" onClick={() => setStatusModalVerPagos(false)}
+                        <Button variant="outlined" onClick={handleClose}
                             color="error">Cerrar</Button>
                     </Stack>
+                    {(alertModal) ?
+                        <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
+                        : null}
                 </Box>
-                {(alertModal) ?
-                    <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
-                    : null}
-            </Modal>
 
-        </>
+            </Modal>
+        </div>
+
     )
 }
 

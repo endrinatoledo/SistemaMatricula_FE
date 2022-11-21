@@ -102,7 +102,7 @@ const FormatoComprobante = ({ numControl, numFact, datosPago, tasaDelDia, datosC
   return (
       <Box sx={{ flexGrow: 1 }}>
           <Grid container >
-              <Grid item xs={8}>
+              {/* <Grid item xs={8}>
                   <ItemIzquierda>
                     <div> A.C.U.E Colegio Nuestra Señora de Lourdes </div>
                     <div> Inscrito en el M.P.P.E. Cod.S0207D0814 </div>
@@ -125,7 +125,7 @@ const FormatoComprobante = ({ numControl, numFact, datosPago, tasaDelDia, datosC
                       <div> <strong>Factura</strong> </div>
                       <div> {numFact}</div>
                   </Item>
-              </Grid>
+              </Grid> */}
               <Grid item xs={8}>
                   <ItemIzquierda>
                     <br /> 

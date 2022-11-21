@@ -157,7 +157,9 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
         { title: 'Descripción Pago', field: 'descripcion', editable: 'never' },
         { title: 'Costo', field: 'costoNeto', type: 'currency' },
         { title: 'Pago', field: 'pago', type: 'currency', validate: rowData => (rowData.pago === undefined || rowData.pago === '' || rowData.pago === null || rowData.pago === 0) ? "Requerido" : rowData.pago > rowData.restante ? 'Monto Excedido' : true },
-        { title: 'Monto Restante', field: 'restante', editable: 'never', type: 'currency' }]
+        { title: 'Monto Restante $', field: 'restante', editable: 'never', type: 'currency' },
+        { title: 'Monto Restante Bs', editable: 'never', type: 'currency', render: rowData => (rowData.pago === undefined || rowData.pago === '' || rowData.pago === null || rowData.pago === 0) ? (parseFloat(rowData.restante) * tasaDelDia.excAmount).toFixed(2) : ''}
+    ]
 
     const datosBase = () => {
         setDatosCabecera({
@@ -297,19 +299,6 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
             setErrorPago(false)
             setMensajeErrorPago('')
             distribicionPorRegistrar.key = nextId()
-
-
-            console.log('uuuuuuuuuuuuuu costooo', parseFloat(distribicionPorRegistrar.costoNeto) )
-            console.log('uuuuuuuuuuuuuu costooo', parseInt(distribicionPorRegistrar.costoNeto))
-            // console.log('uuuuuuuuuuuuuu pagos', parseFloat(pagoPorRegistrar.pago))
-
-            // let dataNueva = {
-            //     key: nextId(),
-            //     student: pagoPorRegistrar.student,
-            //     descripcion: pagoPorRegistrar.descripcion,
-            //     costoNeto: parseInt(pagoPorRegistrar.costoNeto),
-            //     pago: parseFloat(pagoPorRegistrar.pago)
-            // }
             distribicionPorRegistrar.costoNeto = parseFloat(distribicionPorRegistrar.costoNeto)
             distribicionPorRegistrar.pago = parseFloat(distribicionPorRegistrar.pago)
 
@@ -604,7 +593,7 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
 
             const guardarFacturaRes = (await AxiosInstance.post(`/invoiceHeader`, data)).data
 
-            console.log('guardarFacturaRes...................................', guardarFacturaRes)
+            // console.log('guardarFacturaRes...................................', guardarFacturaRes)
 
             if (guardarFacturaRes.ok) {
                 setDatosCompletos({
