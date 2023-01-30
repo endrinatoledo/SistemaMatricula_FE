@@ -21,6 +21,7 @@ import InvoiceHeader from './InvoiceHeader';
 import FormatoComprobante from './FormatoComprobante';
 import ComprobantePDF from './ComprobantePDF';
 import ComprobanteFiscalPDF from './ComprobanteFiscalPDF';
+import GenerarComprobanteFicalFile from './GenerarComprobanteFicalFile';
 
 
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default
@@ -94,7 +95,7 @@ const UseStyles = makeStyles({
     // }
 })
 
-const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFactura, pagosRegistrados, setPagosRegistrados, datosPago, setDatosPago, datosCabecera, setDatosCabecera, selectedFamily, getMensualidadesFamily, families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades }) => {
+const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, setNumLimpiarFactura, pagosRegistrados, setPagosRegistrados, datosPago, setDatosPago, datosCabecera, setDatosCabecera, selectedFamily, getMensualidadesFamily, families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades }) => {
     const classes = UseStyles();
     const [layautPagos, setlayautPagos] = React.useState(false)
     const [circularProgress, setCircularProgress] = React.useState(false)
@@ -139,9 +140,9 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
     const [numFact, setNumFact] = React.useState(null)
     const [numControlFormatoNum, setNumControlFormatoNum] = React.useState(null)
     const [numFactFormatoNum, setNumFactFormatoNum] = React.useState(null)
+    const [montoGeneral, setMontoGeneral] = React.useState(0)
     
-    console.log('datosPago....................', datosPago)
-    // console.log('numFact....................', numFact)
+    console.log('dataDetalle....................', dataDetalle)
 
     const fechaActual = moment(new Date()).format("DD/MM/YYYY")
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
@@ -249,10 +250,25 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
         }
     }
 
+    const calcularMontoGeneral = () => {
+        if (montoTotalBolivares !== 0){
+            const division = montoTotalBolivares / tasaDelDia.excAmount
+            const buscarDecimal = String(division).indexOf('.')
+
+            if (buscarDecimal !== -1){
+                setMontoGeneral((montoTotalBolivares / tasaDelDia.excAmount).toFixed(2) + montoTotalDolares)
+            }else{
+                setMontoGeneral(division + montoTotalDolares)
+            }            
+        }else{
+            setMontoGeneral(montoTotalDolares)
+        }
+    }
+
     const montosDistribuidosTotales = async () => {
-        setMontoTotalDolaresDis(datosPago.reduce((accumulator, object) => {
+        setMontoTotalDolaresDis((datosPago.reduce((accumulator, object) => {
             return Number(accumulator) + Number(object.pago);
-        }, 0))
+        }, 0)).toFixed(2))
 
         setMontoTotalBolivaresDis(((datosPago.reduce((accumulator, object) => {
             return Number(accumulator) + Number(object.pago);
@@ -469,7 +485,7 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
         if (mesesApagar.length > 0) {
             const data = mesesApagar.map(item => {
 
-                console.log('itemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',item)
+                // console.log('itemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',item)
 
                 return {
                     "key": nextId(),
@@ -627,6 +643,35 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
 
     }
 
+    const validarDiferencias = () => {
+        // console.log('entro aquiiiiii')
+        if(montoGeneral !== montoTotalDolaresDis){
+            const montoDiferencia = montoGeneral - montoTotalDolaresDis
+            // console.log('montoDiferencia', montoDiferencia) 
+            // console.log('mensualidades', mensualidades)
+            console.log('datosPago  ', datosPago)
+
+            const filtrarMensualidadesPagadas = dataDetalle.filter(item => item.mopStatus != 1)
+            const filtrarDatosPago = filtrarMensualidadesPagadas.filter(item => {
+                // item.mopStatus != 1
+                if (datosPago.length > 0){
+                    console.log('-----------------**')
+                    for (let index = 0; index < datosPago.length; index++) {
+                        const element = datosPago[index];
+                        if (item.mopId != element.mopId) return item
+                    }
+                    // datosPago.foreach(element => {
+                        
+                    // })
+                }
+                
+            })
+            console.log('filtrarMensualidadesPagadas', filtrarMensualidadesPagadas.length)
+            console.log('filtrarDatosPago', filtrarDatosPago.length)
+
+        }
+    }
+
     React.useEffect(() => {
         handleClose()
     }, [userResponse]);
@@ -670,6 +715,18 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
 
     }, [pagosRegistrados])
 
+    React.useEffect(() => {
+        if (paginaCabecera){
+             calcularMontoGeneral()
+            }
+    }, [paginaCabecera])
+
+    React.useEffect(() => {
+        console.log('uuuuuuuuuuu', montoGeneral)
+        if (montoGeneral !== 0) validarDiferencias()
+    }, [montoGeneral])
+    
+
     return (
         <>
             <Modal
@@ -687,7 +744,8 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
                                 : (mostrarComprobante) 
                                     ? (voucherType === 'COMPROBANTE')
                                         ? <ComprobantePDF numControl={numControl} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
-                                        : <ComprobanteFiscalPDF numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                        : <GenerarComprobanteFicalFile numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                        // <ComprobanteFiscalPDF numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
                                     :
                                     (layautPagos) ?
                                         <div>
@@ -839,8 +897,8 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
                                                             alignItems="flex-end"
                                                             spacing={2} >
                                                             <br />
-                                                            <div> Monto Total $: {montoTotalDolares} </div>
-                                                            <div> Monto Total Bs: {montoTotalBolivares} </div>
+                                                            <div> Monto Total $: {(montoTotalDolares).toFixed(2)} </div>
+                                                            <div> Monto Total Bs: {montoTotalBolivares.toFixed(2)} </div>
                                                         </Stack>
                                                     </Item2>
                                                 </Grid>
@@ -1052,3 +1110,4 @@ const ModalPayments = ({ periodoSeleccionado, numLimpiarFactura, setNumLimpiarFa
 }
 
 export default ModalPayments
+// YY02W2DQ

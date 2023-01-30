@@ -47,7 +47,7 @@ const AddPayment = () => {
     
     const classes = UseStyles();
 
-    // console.log('este es el periodoSeleccionadooooooooooooooooooooooooooooooooooooooo', periodoSeleccionado)
+    console.log('----------------dataDetalle---------------', dataDetalle)
 
     const getFamilyByRepId = async () => {
         try {
@@ -123,7 +123,7 @@ const AddPayment = () => {
 
       const getMensualidadesFamily = async(selectedFamily) =>{
 
-          console.log('----------------dataDetalle---------------',dataDetalle)
+
         
         try {
             const response = (await AxiosInstance.get(`/pagoMensualidades/familia/${selectedFamily.famId}`)).data
@@ -171,7 +171,7 @@ const AddPayment = () => {
             </Box>
             {(alertModal) ?
                 <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
-                : null}
+                : null} 
             {(openModal) ?
                 <ModalFamily periodoSeleccionado={periodoSeleccionado} setPeriodoSeleccionado={setPeriodoSeleccionado} listadoPeriodo={listadoPeriodo} selectedFamily={selectedFamily} setSelectedFamily={setSelectedFamily} openModal={openModal} setOpenModal={setOpenModal} families={families}> </ModalFamily>
                 : null} 
