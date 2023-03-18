@@ -130,7 +130,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     const [paginaCabecera, setPaginaCabecera] = React.useState(false)
     const [formatFactura, setFormatFactura] = React.useState(false)
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500, tarjeta: 600})
-    const [clearFieldDistribucion, setClearFieldDistribucion] = React.useState({ student: 0, descripcion: 100, costoNeto: 200, pago: 300 })
+    const [clearFieldDistribucion, setClearFieldDistribucion] = React.useState({ student: 0, descripcion: 100, costoNeto: 200, pago: 300, restante: 400, montoRestanteAplicadoBol: 500, montoRestanteAplicadoDol:600  })
     const [datosCompletos, setDatosCompletos] = React.useState(null)
     const [mostrarComprobante, setMostrarComprobante] = React.useState(false)
     const [voucherType, setVoucherType] = React.useState(null)
@@ -141,8 +141,12 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     const [numControlFormatoNum, setNumControlFormatoNum] = React.useState(null)
     const [numFactFormatoNum, setNumFactFormatoNum] = React.useState(null)
     const [montoGeneral, setMontoGeneral] = React.useState(0)
-    
-    console.log('dataDetalle....................', dataDetalle)
+    const [replicaDatosPago, setReplicaDatosPago] = React.useState(null)
+    const [montoTotalAdistribuir, setMontoTotalAdistribuir] = React.useState(0)
+    const [botonAplicarPago, setBotonAplicarPago] = React.useState(false)
+    const [statusCostosArray, setStatusCostosArray] = React.useState(false)
+    const [montoSinDistribuir, setMontoSinDistribuir] = React.useState(0)
+
 
     const fechaActual = moment(new Date()).format("DD/MM/YYYY")
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
@@ -229,13 +233,20 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     };
 
     const montosTotales = async () => {
-        setMontoTotalDolares(pagosRegistrados.reduce((accumulator, object) => {
-            return object.moneda === 'Dólares' ? Number(accumulator) + Number(object.monto) : Number(accumulator) + 0;
-        }, 0))
-        setMontoTotalBolivares(pagosRegistrados.reduce((accumulator, object) => {
-            return object.moneda === 'Bolívares' ? Number(accumulator) + Number(object.monto) : Number(accumulator) + 0;
-        }, 0))
-        setConteo(conteo + 1)
+        if (Array.isArray(pagosRegistrados) && pagosRegistrados.length){
+            setMontoTotalDolares(pagosRegistrados.reduce((accumulator, object) => {
+                return object.moneda === 'Dólares' ? Number(accumulator) + Number(object.monto) : Number(accumulator) + 0;
+            }, 0))
+            setMontoTotalBolivares(pagosRegistrados.reduce((accumulator, object) => {
+                return object.moneda === 'Bolívares' ? Number(accumulator) + Number(object.monto) : Number(accumulator) + 0;
+            }, 0))
+            setConteo(conteo + 1)
+        }else{
+            setMontoTotalDolares(0)
+            setMontoTotalBolivares(0)
+            setMontoTotalAdistribuir(0)
+            setBotonAplicarPago(false) 
+        }
     }
 
     const trunc = (x, posiciones = 0) => {
@@ -644,18 +655,12 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     }
 
     const validarDiferencias = () => {
-        // console.log('entro aquiiiiii')
         if(montoGeneral !== montoTotalDolaresDis){
             const montoDiferencia = montoGeneral - montoTotalDolaresDis
-            // console.log('montoDiferencia', montoDiferencia) 
-            // console.log('mensualidades', mensualidades)
-            console.log('datosPago  ', datosPago)
-
             const filtrarMensualidadesPagadas = dataDetalle.filter(item => item.mopStatus != 1)
             const filtrarDatosPago = filtrarMensualidadesPagadas.filter(item => {
                 // item.mopStatus != 1
                 if (datosPago.length > 0){
-                    console.log('-----------------**')
                     for (let index = 0; index < datosPago.length; index++) {
                         const element = datosPago[index];
                         if (item.mopId != element.mopId) return item
@@ -671,6 +676,59 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
 
         }
     }
+
+    const validarCostosArray = () => {
+            const response = replicaDatosPago.filter(item => item.costoNeto == 0);   
+            if(response.length > 0){ setStatusCostosArray(false) }else {setStatusCostosArray(true)}        
+    }
+
+    const calcularMontoTotalAdistribuir = () => {      
+        setMontoTotalAdistribuir((montoTotalDolares * tasaDelDia.excAmount.toFixed(2) + montoTotalBolivares))
+    }
+
+    const aplicarPago = () =>{
+        // console.log('entro a llamar el pago')
+        let copiaMontoTotalAdistribuir = montoTotalAdistribuir
+        let copiaReplicaDatosPago = replicaDatosPago
+        replicaDatosPago.map((element,index) => {
+            const montoRestante = (element.restante * tasaDelDia.excAmount).toFixed(2)
+            if (copiaMontoTotalAdistribuir > montoRestante ){
+                copiaMontoTotalAdistribuir = copiaMontoTotalAdistribuir - montoRestante
+                copiaReplicaDatosPago[index].montoRestanteAplicadoBol = 0
+                copiaReplicaDatosPago[index].montoRestanteAplicadoDol = 0
+            }else{
+                copiaReplicaDatosPago[index].montoRestanteAplicadoBol = montoRestante - copiaMontoTotalAdistribuir
+                copiaReplicaDatosPago[index].montoRestanteAplicadoDol = ((montoRestante - copiaMontoTotalAdistribuir) / tasaDelDia.excAmount).toFixed(2)
+                copiaMontoTotalAdistribuir = 0
+                return false 
+            }    
+        })
+        setReplicaDatosPago(copiaReplicaDatosPago)
+        setMontoSinDistribuir(copiaMontoTotalAdistribuir)
+        setClearFieldDistribucion({
+            ...clearFieldDistribucion,
+            montoRestanteAplicadoBol: (clearFieldDistribucion.montoRestanteAplicadoBol + 1),
+            montoRestanteAplicadoDol: (clearFieldDistribucion.montoRestanteAplicadoDol + 1)
+            })
+
+        console.log('estooooooooooooooooooooooooo', replicaDatosPago)
+        console.log('copiaMontoTotalAdistribuirrrrrrrrrrrrrrrrrr', copiaMontoTotalAdistribuir)
+
+    }
+
+    React.useEffect(() => {
+        if (montoTotalDolares || montoTotalBolivares){
+             calcularMontoTotalAdistribuir()
+            }
+    }, [montoTotalDolares, montoTotalBolivares]);
+
+    React.useEffect(() => {
+        if (montoTotalAdistribuir && statusCostosArray) { setBotonAplicarPago(true) } else { setBotonAplicarPago(false) } 
+    }, [montoTotalAdistribuir, statusCostosArray]);
+
+    // React.useEffect(() => {
+    //     if (botonAplicarPago) aplicarPago()
+    // }, [botonAplicarPago]);
 
     React.useEffect(() => {
         handleClose()
@@ -695,8 +753,15 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     }, [1])
 
     React.useEffect(() => {
-        // console.log('..............................', datosPago)
+        setReplicaDatosPago(datosPago)
     }, [datosPago])
+    React.useEffect(() => {
+        setClearFieldDistribucion({
+                costoNeto: (clearFieldDistribucion.costoNeto + 1),
+                pago: (clearFieldDistribucion.pago + 1),
+                restante: (clearFieldDistribucion.restante + 1)
+            })
+    }, [replicaDatosPago])
 
     React.useEffect(() => {
         if (valorMensualidad) { ordenarDatosPago() }
@@ -712,7 +777,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     }, [distribicionPorRegistrar])
 
     React.useEffect(() => {
-
+        montosTotales()
     }, [pagosRegistrados])
 
     React.useEffect(() => {
@@ -722,7 +787,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     }, [paginaCabecera])
 
     React.useEffect(() => {
-        console.log('uuuuuuuuuuu', montoGeneral)
+        // console.log('uuuuuuuuuuu', montoGeneral)
         if (montoGeneral !== 0) validarDiferencias()
     }, [montoGeneral])
     
@@ -744,8 +809,8 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                 : (mostrarComprobante) 
                                     ? (voucherType === 'COMPROBANTE')
                                         ? <ComprobantePDF numControl={numControl} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
-                                        : <GenerarComprobanteFicalFile numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
-                                        // <ComprobanteFiscalPDF numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                        // : <GenerarComprobanteFicalFile numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                        : <ComprobanteFiscalPDF numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
                                     :
                                     (layautPagos) ?
                                         <div>
@@ -882,12 +947,9 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                         let array = pagosRegistrados
                                                                         const newArray = array.filter((item) => item.id !== rowData.id)
                                                                         setPagosRegistrados(newArray)
-                                                                        setTimeout(() => {
-                                                                            montosTotales()
-
-                                                                        }, 2000);
-
-
+                                                                        // setTimeout(() => {
+                                                                        //     montosTotales()
+                                                                        // }, 2000);
                                                                     }
                                                                 }
                                                             ]}
@@ -1036,6 +1098,125 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                 }}
 
                                                             />
+                                                            <Button disabled={!botonAplicarPago} variant="contained" onClick={() => aplicarPago()}
+                                                                            color="info">Aplicar Pago</Button>
+                                                            {(Array.isArray(replicaDatosPago) && replicaDatosPago.length )  
+                                                                ? replicaDatosPago.map((item, index)=>(
+                                                                    <>
+                                                                        <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                                            <TextField
+                                                                                sx={{ width: '50%' }}
+                                                                                InputProps={{ readOnly: true }}
+                                                                                value={item.student}
+                                                                                id="student"
+                                                                                label="Estudiante"
+                                                                                variant="standard"
+                                                                            />
+                                                                            <TextField
+                                                                                sx={{ width: '40%' }}
+                                                                                InputProps={{ readOnly: true }}
+                                                                                value={item.descripcion}
+                                                                                id="description"
+                                                                                label="Descripcion"
+                                                                                variant="standard"
+                                                                            />
+                                                                        </Stack>
+                                                                        <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                                            
+                                                                             {item.montoPagado != 0
+                                                                                ? <TextField
+                                                                                    sx={{ width: '10%' }}
+                                                                                    InputProps={{ readOnly: true }}
+                                                                                    value={item.costoNeto}
+                                                                                    id="costo"
+                                                                                    label="Costo $"
+                                                                                    variant="standard"
+                                                                                />
+                                                                                :  
+                                                                                <TextField
+                                                                                    sx={{ width: '10%' }}
+                                                                                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                                                                                    type="number"
+                                                                                    id="costo"
+                                                                                    label="Costo $"
+                                                                                    variant="standard"
+                                                                                onChange={e => {
+                                                                                        let arrayDataPago = replicaDatosPago
+                                                                                        arrayDataPago[index].costoNeto = Number(e.target.value)
+                                                                                        arrayDataPago[index].restante = Number(e.target.value) - item.montoPagado
+                                                                                        setReplicaDatosPago(arrayDataPago)
+                                                                                        setClearFieldDistribucion(
+                                                                                            {
+                                                                                                restante: (clearFieldDistribucion.restante + 1)
+                                                                                            })
+                                                                                        validarCostosArray()
+                                                                                        // console.log('replicapagosssssss', replicaDatosPago)
+                                                                                    }}
+                                                                                />     
+                                                                            }                                                                       
+                                                                            
+                                                                            <TextField
+                                                                                sx={{ width: '10%' }}
+                                                                                InputProps={{ readOnly: true }}
+                                                                                value={item.montoPagado}
+                                                                                id="montoPagado"
+                                                                                label="Monto Pagado"
+                                                                                variant="standard"
+                                                                            />
+                                                                            {item.montoPagado != 0
+                                                                                ? <TextField
+                                                                                    sx={{ width: '10%' }}
+                                                                                    InputProps={{ readOnly: true }}
+                                                                                    value={item.costoNeto ? item.restante : 0}
+                                                                                    id="montorestanteDol"
+                                                                                    label="Monto Restante $"
+                                                                                    variant="standard"
+                                                                                >
+                                                                                    {/* {item.restante} */}
+                                                                                </TextField>
+                                                                                : <TextField
+                                                                                    key={clearFieldDistribucion.restante}
+                                                                                    sx={{ width: '15%' }}
+                                                                                    InputProps={{ readOnly: true }}
+                                                                                    value={item.costoNeto ? item.restante : 0}
+                                                                                    id="montorestanteDol"
+                                                                                    label="Monto Restante $"
+                                                                                    variant="standard"
+                                                                                />
+                                                                                }
+                                                                            
+                                                                            <TextField
+                                                                                sx={{ width: '15%' }}
+                                                                                InputProps={{ readOnly: true }}
+                                                                                value={(item.restante * tasaDelDia.excAmount).toFixed(2)}
+                                                                                id="montorestanteDol"
+                                                                                label="Monto Restante Bs"
+                                                                                variant="standard"
+                                                                            />
+                                                                            <TextField
+                                                                                sx={{ width: '15%' }}
+                                                                                InputProps={{ readOnly: true }}
+                                                                                value={(item.montoRestanteAplicadoDol ? item.montoRestanteAplicadoDol : 0)}
+                                                                                id="montoAplicadoDol"
+                                                                                label="Monto restante aplicado $"
+                                                                                variant="standard"
+                                                                            />
+                                                                            <TextField
+                                                                                sx={{ width: '15%' }}
+                                                                                InputProps={{ readOnly: true }}
+                                                                                value={(item.montoRestanteAplicadoBol ? item.montoRestanteAplicadoBol : 0)}
+                                                                                id="montorestantebS"
+                                                                                label="Monto restante aplicado Bs"
+                                                                                variant="standard"
+                                                                            />
+                                                                        </Stack>
+                                                                    </>
+                                                                ))
+                                                                :<></>
+
+                                                            }
+                                                            
+
                                                             <Stack className={classes.stack} direction="column"
                                                                 justifyContent="flex-end"
                                                                 alignItems="flex-end"
