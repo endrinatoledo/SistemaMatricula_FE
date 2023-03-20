@@ -288,14 +288,24 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     }
 
     const montosDistribuidosTotales = async () => {
-        setMontoTotalDolaresDis((datosPago.reduce((accumulator, object) => {
-            return Number(accumulator) + Number(object.pago);
+        // setMontoTotalDolaresDis((datosPago.reduce((accumulator, object) => {
+        //     return Number(accumulator) + Number(object.pago);
+        // }, 0)).toFixed(2))
+
+        // setMontoTotalBolivaresDis(((datosPago.reduce((accumulator, object) => {
+        //     return Number(accumulator) + Number(object.pago);
+        // }, 0)) * tasaDelDia.excAmount).toFixed(2))
+        // setConteo(conteo + 1)
+
+        setMontoTotalDolaresDis((replicaDatosPago.reduce((accumulator, object) => {
+            return Number(accumulator) + Number(object.restante);
         }, 0)).toFixed(2))
 
-        setMontoTotalBolivaresDis(((datosPago.reduce((accumulator, object) => {
-            return Number(accumulator) + Number(object.pago);
+        setMontoTotalBolivaresDis(((replicaDatosPago.reduce((accumulator, object) => {
+            return Number(accumulator) + Number(object.restante);
         }, 0)) * tasaDelDia.excAmount).toFixed(2))
         setConteo(conteo + 1)
+
     }
     const agregarPago = () => {
 
@@ -763,7 +773,9 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
             pagoAplicadoDol: (clearFieldDistribucion.pagoAplicadoDol + 1),
             pagoAplicadoBol: (clearFieldDistribucion.pagoAplicadoBol + 1)
             })
+        
         setStatusPagosAplicados(true)
+        
     }
 
     React.useEffect(() => {
@@ -1142,10 +1154,19 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                 }}
 
                                                             /> */}
-                                                            <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                            <Stack className={classes.stack} direction="column"
+                                                                justifyContent="flex-end"
+                                                                alignItems="flex-end"
+                                                                spacing={2} >
+                                                                <div> Tasa del día : {tasaDelDia !== 0 ? <> {(tasaDelDia.excAmount).toFixed(2)} Bs. {moment(tasaDelDia.excDate).format("DD/MM/YYYY")} </> : ''}  </div>
+                                                                <div> Monto Restante a Pagar $: {montoTotalDolaresDis} </div>
+                                                                <div> Monto Restante a Pagar Bs: {montoTotalBolivaresDis} </div>
                                                                 <Button disabled={!botonAplicarPago} variant="contained" onClick={() => aplicarPago()}
                                                                     color="info">Aplicar Pago</Button>
                                                             </Stack>
+                                                            {/* <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                                
+                                                            </Stack> */}
                                                             
                                                             {(Array.isArray(replicaDatosPago) && replicaDatosPago.length )  
                                                                 ? replicaDatosPago.map((item, index)=>(
@@ -1197,6 +1218,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                                                 restante: (clearFieldDistribucion.restante + 1)
                                                                                             })
                                                                                         validarCostosArray()
+                                                                                        montosDistribuidosTotales()
                                                                                         // console.log('replicapagosssssss', replicaDatosPago)
                                                                                     }}
                                                                                 />     
@@ -1287,14 +1309,14 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                             }
                                                             
 
-                                                            <Stack className={classes.stack} direction="column"
+                                                            {/* <Stack className={classes.stack} direction="column"
                                                                 justifyContent="flex-end"
                                                                 alignItems="flex-end"
                                                                 spacing={2} >
                                                                 <div> Tasa del día : {tasaDelDia !== 0 ? <> {(tasaDelDia.excAmount).toFixed(2)} Bs. {moment(tasaDelDia.excDate).format("DD/MM/YYYY")} </>: ''}  </div>
-                                                                {/* <div> Monto Total Distribuido $: {montoTotalDolaresDis} </div>
-                                                                <div> Monto Total Distribuido Bs: {montoTotalBolivaresDis} </div> */}
-                                                            </Stack>
+                                                                <div> Monto Restante a Pagar $: {montoTotalDolaresDis} </div>
+                                                                <div> Monto Restante a Pagar Bs: {montoTotalBolivaresDis} </div>
+                                                            </Stack> */}
 
                                                         </>
 
