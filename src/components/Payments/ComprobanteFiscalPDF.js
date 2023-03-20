@@ -30,10 +30,11 @@ const styles = StyleSheet.create({
     },
 })
 
-const ComprobanteFiscalPDF = ({ numFact, datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
+const ComprobanteFiscalPDF = ({ replicaDatosPago, numFact, datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
     const [montos, setMontos] = React.useState([])
     const [total, setTotal] = React.useState(null)
     const [destallesDePagos, setDestallesDePagos] = React.useState(null)
+    console.log('stos son mis datos completos', datosCompletos)
 
     const bancosYreferencias = () => {
         let descripcion = ''
@@ -112,7 +113,7 @@ const ComprobanteFiscalPDF = ({ numFact, datosCompletos, datosPago, tasaDelDia, 
                             {/*render a single page*/}
                             <Page size="A4" style={styles.page}>
                                 <View style={{
-                                    marginTop: '55px', marginLeft: '45px', marginRight: '45px', marginBottom: '35'
+                                    marginTop: '10px', marginLeft: '5px', marginRight: '5px', marginBottom: '35'
                                     // paddingTop:"15px", paddingRight:'15px', paddingLeft:'15px'
                                 }}>
                                     <View style={{ display: "flex", flexDirection: 'row' }}>
@@ -124,7 +125,7 @@ const ComprobanteFiscalPDF = ({ numFact, datosCompletos, datosPago, tasaDelDia, 
 
                                         </View>
                                         <View style={{ flex: 1 }}>
-                                            <View style={{ top: '20%' }}>
+                                            <View style={{ top: '10%' }}>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Fecha</Text>
@@ -132,13 +133,15 @@ const ComprobanteFiscalPDF = ({ numFact, datosCompletos, datosPago, tasaDelDia, 
                                             </View>
                                         </View>
                                         <View style={{ flex: 1 }}>
-                                            <View style={{ top: '20%' }}>
+                                            <View style={{ top: '10%' }}>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Fiscal </Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {numFact} </Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'rigth' }}> Fiscal </Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'rigth' }}> {numFact} </Text>
                                             </View>
                                         </View>
                                     </View>
@@ -188,7 +191,8 @@ const ComprobanteFiscalPDF = ({ numFact, datosCompletos, datosPago, tasaDelDia, 
                                                 datosCompletos !== null
                                                     ? <View >
                                                         {datosCompletos.cuerpo.map(item =>
-                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {(item.pago * tasaDelDia.excAmount).toFixed(2)}  </Text>)
+                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}>{item.pagoAplicadoBol}</Text>)
+                                                            // <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {(item.pago * tasaDelDia.excAmount).toFixed(2)}  </Text>)
                                                         }
                                                     </View>
                                                     : null

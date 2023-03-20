@@ -130,7 +130,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     const [paginaCabecera, setPaginaCabecera] = React.useState(false)
     const [formatFactura, setFormatFactura] = React.useState(false)
     const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500, tarjeta: 600})
-    const [clearFieldDistribucion, setClearFieldDistribucion] = React.useState({ student: 0, descripcion: 100, costoNeto: 200, pago: 300, restante: 400, montoRestanteAplicadoBol: 500, montoRestanteAplicadoDol:600  })
+    const [clearFieldDistribucion, setClearFieldDistribucion] = React.useState({ student: 0, descripcion: 100, costoNeto: 200, pago: 300, restante: 400, montoRestanteAplicadoBol: 500, montoRestanteAplicadoDol: 600, pagoAplicadoDol: 700, pagoAplicadoBol:800  })
     const [datosCompletos, setDatosCompletos] = React.useState(null)
     const [mostrarComprobante, setMostrarComprobante] = React.useState(false)
     const [voucherType, setVoucherType] = React.useState(null)
@@ -141,13 +141,15 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     const [numControlFormatoNum, setNumControlFormatoNum] = React.useState(null)
     const [numFactFormatoNum, setNumFactFormatoNum] = React.useState(null)
     const [montoGeneral, setMontoGeneral] = React.useState(0)
-    const [replicaDatosPago, setReplicaDatosPago] = React.useState(null)
+    const [replicaDatosPago, setReplicaDatosPago] = React.useState([])
     const [montoTotalAdistribuir, setMontoTotalAdistribuir] = React.useState(0)
     const [botonAplicarPago, setBotonAplicarPago] = React.useState(false)
     const [statusCostosArray, setStatusCostosArray] = React.useState(false)
     const [montoSinDistribuir, setMontoSinDistribuir] = React.useState(0)
+    const [statusPagosAplicados, setStatusPagosAplicados] = React.useState(false)
 
 
+    console.log('datosPago', datosPago)
     const fechaActual = moment(new Date()).format("DD/MM/YYYY")
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
     { title: 'Método pago', field: 'metodoPago', render: (rows) => <>{rows.metodoPago.payName}</> },
@@ -246,6 +248,15 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
             setMontoTotalBolivares(0)
             setMontoTotalAdistribuir(0)
             setBotonAplicarPago(false) 
+            setStatusPagosAplicados(false)
+            setReplicaDatosPago(datosPago)
+            setClearFieldDistribucion({
+                ...clearFieldDistribucion,
+                montoRestanteAplicadoBol: (clearFieldDistribucion.montoRestanteAplicadoBol + 1),
+                montoRestanteAplicadoDol: (clearFieldDistribucion.montoRestanteAplicadoDol + 1),
+                pagoAplicadoDol: (clearFieldDistribucion.pagoAplicadoDol + 1),
+                pagoAplicadoBol: (clearFieldDistribucion.pagoAplicadoBol + 1)
+            })
         }
     }
 
@@ -303,6 +314,9 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
             setPagosRegistrados(data)
             limpiarFormularioAgregarPago()
             montosTotales()
+            validarCostosArray()
+            // validarCostosArray()
+            
         }
     };
 
@@ -346,7 +360,11 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                 student: (clearFieldDistribucion.student + 1),
                 descripcion: (clearFieldDistribucion.descripcion + 1),
                 costoNeto: (clearFieldDistribucion.costoNeto + 1),
-                pago: (clearFieldDistribucion.pago + 1)
+                pago: (clearFieldDistribucion.pago + 1),
+                montoRestanteAplicadoBol: (clearFieldDistribucion.montoRestanteAplicadoBol + 1),
+                montoRestanteAplicadoDol: (clearFieldDistribucion.montoRestanteAplicadoDol + 1),
+                pagoAplicadoDol: (clearFieldDistribucion.pagoAplicadoDol + 1),
+                pagoAplicadoBol: (clearFieldDistribucion.pagoAplicadoBol + 1)
             })
     }
 
@@ -496,7 +514,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
         if (mesesApagar.length > 0) {
             const data = mesesApagar.map(item => {
 
-                // console.log('itemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',item)
+                console.log('itemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',item)
 
                 return {
                     "key": nextId(),
@@ -505,13 +523,13 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                     "student": `${item.student} -> ${item.detallePago.level.levName} `,
                     "descripcion": `Mensualidad ${item.nombreMes}`,
                     // "nivel": item.detallePago.level.levName,
-                    "costo": valorMensualidad,
-                    "costoNeto": valorMensualidad?.cmeAmount,
+                    "costo": item.detallePago.mopAmountPaid != 0 ? item.detallePago.mopAmount : 0,
+                    "costoNeto": item.detallePago.mopAmountPaid != 0 ? item.detallePago.mopAmount : 0,
                     "moneda": null,
                     "metodoPago": null,
-                    "pago": 0,
+                    "pago": item.mopAmountPaid,
                     "montoPagado": Number(item.detallePago.mopAmountPaid),
-                    "restante": Number(valorMensualidad.cmeAmount) - item.detallePago.mopAmountPaid,
+                    "restante": item.detallePago.mopAmountPaid != 0 ? Number(item.detallePago.mopAmount) - item.detallePago.mopAmountPaid : 0,
                     "descripcionPago": ""
                 }
             })
@@ -568,18 +586,32 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     }
 
     const validarGuardar = () => {
-
-        if (pagosRegistrados.length === 0 || datosPago.length === 0) {
+        //LOGICA NUEVA
+        if (pagosRegistrados.length === 0 || replicaDatosPago.length === 0 || !statusPagosAplicados) {
             return true
 
         } else {
-            const found = datosPago.find(element => element.pago === 0);
+            const found = replicaDatosPago.find(element => element.pagoAplicadoDol === 0);
             if (found !== '' && found !== null && found !== undefined) {
                 return true
             } else {
                 return false
             }
         }
+
+
+        //LOGICA VIEJA
+        // if (pagosRegistrados.length === 0 || datosPago.length === 0) {
+        //     return true
+
+        // } else {
+        //     const found = datosPago.find(element => element.pago === 0);
+        //     if (found !== '' && found !== null && found !== undefined) {
+        //         return true
+        //     } else {
+        //         return false
+        //     }
+        // }
     }
 
     const confirmarCancelarRegistroDePago = () => {
@@ -610,7 +642,8 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
             numControl:numControlFormatoNum,
             numFact:numFactFormatoNum,
             cabecera: datosCabecera,
-            cuerpo: datosPago,
+            cuerpo: replicaDatosPago,
+            // cuerpo: datosPago, //logica vieja
             familia: families,
             detallePagos: pagosRegistrados,
             periodo: periodoSeleccionado,
@@ -625,7 +658,8 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
             if (guardarFacturaRes.ok) {
                 setDatosCompletos({
                     cabecera: datosCabecera,
-                    cuerpo: datosPago,
+                    cuerpo: replicaDatosPago,
+                    // cuerpo: datosPago,
                     familia: families,
                     detallePagos: pagosRegistrados
                 })
@@ -678,8 +712,19 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     }
 
     const validarCostosArray = () => {
-            const response = replicaDatosPago.filter(item => item.costoNeto == 0);   
-            if(response.length > 0){ setStatusCostosArray(false) }else {setStatusCostosArray(true)}        
+        console.log('entro a validar validarCostosArray', replicaDatosPago)
+        if (replicaDatosPago.length > 0){
+            const response = replicaDatosPago.filter(item => item.costoNeto == 0);
+            console.log('esta respuesta', response)
+            if (response.length > 0) { 
+                setStatusCostosArray(false) 
+                setStatusPagosAplicados(false) 
+            } else {
+                 setStatusCostosArray(true)
+                 
+                 } 
+        }
+                   
     }
 
     const calcularMontoTotalAdistribuir = () => {      
@@ -687,19 +732,25 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     }
 
     const aplicarPago = () =>{
-        // console.log('entro a llamar el pago')
-        let copiaMontoTotalAdistribuir = montoTotalAdistribuir
-        let copiaReplicaDatosPago = replicaDatosPago
+        let copiaMontoTotalAdistribuir = 0
+        copiaMontoTotalAdistribuir = montoTotalAdistribuir
+        let copiaReplicaDatosPago = []
+        copiaReplicaDatosPago = replicaDatosPago
         replicaDatosPago.map((element,index) => {
-            const montoRestante = (element.restante * tasaDelDia.excAmount).toFixed(2)
-            if (copiaMontoTotalAdistribuir > montoRestante ){
+            const montoRestante = element.restante * tasaDelDia.excAmount
+            if (copiaMontoTotalAdistribuir >= montoRestante ){
                 copiaMontoTotalAdistribuir = copiaMontoTotalAdistribuir - montoRestante
+
                 copiaReplicaDatosPago[index].montoRestanteAplicadoBol = 0
                 copiaReplicaDatosPago[index].montoRestanteAplicadoDol = 0
+                copiaReplicaDatosPago[index].pagoAplicadoDol = element.costoNeto
+                copiaReplicaDatosPago[index].pagoAplicadoBol = montoRestante
             }else{
                 copiaReplicaDatosPago[index].montoRestanteAplicadoBol = montoRestante - copiaMontoTotalAdistribuir
-                copiaReplicaDatosPago[index].montoRestanteAplicadoDol = ((montoRestante - copiaMontoTotalAdistribuir) / tasaDelDia.excAmount).toFixed(2)
-                copiaMontoTotalAdistribuir = 0
+                copiaReplicaDatosPago[index].montoRestanteAplicadoDol = (montoRestante - copiaMontoTotalAdistribuir) / tasaDelDia.excAmount
+                copiaReplicaDatosPago[index].pagoAplicadoDol = copiaMontoTotalAdistribuir / tasaDelDia.excAmount
+                copiaReplicaDatosPago[index].pagoAplicadoBol =  copiaMontoTotalAdistribuir
+                
                 return false 
             }    
         })
@@ -708,12 +759,11 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
         setClearFieldDistribucion({
             ...clearFieldDistribucion,
             montoRestanteAplicadoBol: (clearFieldDistribucion.montoRestanteAplicadoBol + 1),
-            montoRestanteAplicadoDol: (clearFieldDistribucion.montoRestanteAplicadoDol + 1)
+            montoRestanteAplicadoDol: (clearFieldDistribucion.montoRestanteAplicadoDol + 1),
+            pagoAplicadoDol: (clearFieldDistribucion.pagoAplicadoDol + 1),
+            pagoAplicadoBol: (clearFieldDistribucion.pagoAplicadoBol + 1)
             })
-
-        console.log('estooooooooooooooooooooooooo', replicaDatosPago)
-        console.log('copiaMontoTotalAdistribuirrrrrrrrrrrrrrrrrr', copiaMontoTotalAdistribuir)
-
+        setStatusPagosAplicados(true)
     }
 
     React.useEffect(() => {
@@ -725,10 +775,6 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     React.useEffect(() => {
         if (montoTotalAdistribuir && statusCostosArray) { setBotonAplicarPago(true) } else { setBotonAplicarPago(false) } 
     }, [montoTotalAdistribuir, statusCostosArray]);
-
-    // React.useEffect(() => {
-    //     if (botonAplicarPago) aplicarPago()
-    // }, [botonAplicarPago]);
 
     React.useEffect(() => {
         handleClose()
@@ -759,7 +805,11 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
         setClearFieldDistribucion({
                 costoNeto: (clearFieldDistribucion.costoNeto + 1),
                 pago: (clearFieldDistribucion.pago + 1),
-                restante: (clearFieldDistribucion.restante + 1)
+                restante: (clearFieldDistribucion.restante + 1),
+                montoRestanteAplicadoBol: (clearFieldDistribucion.montoRestanteAplicadoBol + 1),
+                montoRestanteAplicadoDol: (clearFieldDistribucion.montoRestanteAplicadoDol + 1),
+                pagoAplicadoDol: (clearFieldDistribucion.pagoAplicadoDol + 1),
+                pagoAplicadoBol: (clearFieldDistribucion.pagoAplicadoBol + 1)
             })
     }, [replicaDatosPago])
 
@@ -777,7 +827,9 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     }, [distribicionPorRegistrar])
 
     React.useEffect(() => {
+        console.log('entro a ver aqui')
         montosTotales()
+        validarCostosArray()
     }, [pagosRegistrados])
 
     React.useEffect(() => {
@@ -805,12 +857,12 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                         (paginaCabecera)
                             ? <InvoiceHeader setVoucherType={setVoucherType} datosBase={datosBase} setDatosCabecera={setDatosCabecera} datosCabecera={datosCabecera} Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago} />
                             : (formatFactura)
-                                ? <FormatoComprobante numControl={numControl} numFact={numFact} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                ? <FormatoComprobante replicaDatosPago={replicaDatosPago} numControl={numControl} numFact={numFact} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
                                 : (mostrarComprobante) 
                                     ? (voucherType === 'COMPROBANTE')
-                                        ? <ComprobantePDF numControl={numControl} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                        ? <ComprobantePDF replicaDatosPago={replicaDatosPago} numControl={numControl} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
                                         // : <GenerarComprobanteFicalFile numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
-                                        : <ComprobanteFiscalPDF numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                        : <ComprobanteFiscalPDF replicaDatosPago={replicaDatosPago} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
                                     :
                                     (layautPagos) ?
                                         <div>
@@ -947,6 +999,13 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                         let array = pagosRegistrados
                                                                         const newArray = array.filter((item) => item.id !== rowData.id)
                                                                         setPagosRegistrados(newArray)
+                                                                        setClearFieldDistribucion({
+                                                                            ...clearFieldDistribucion,
+                                                                            montoRestanteAplicadoBol: (clearFieldDistribucion.montoRestanteAplicadoBol + 1),
+                                                                            montoRestanteAplicadoDol: (clearFieldDistribucion.montoRestanteAplicadoDol + 1),
+                                                                            pagoAplicadoDol: (clearFieldDistribucion.pagoAplicadoDol + 1),
+                                                                            pagoAplicadoBol: (clearFieldDistribucion.pagoAplicadoBol + 1)
+                                                                        })
                                                                         // setTimeout(() => {
                                                                         //     montosTotales()
                                                                         // }, 2000);
@@ -969,7 +1028,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                         <h5 className={classes.title}>Distribución de Pago</h5>
 
                                                         <>
-                                                            <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                            {/* <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                                                 <Autocomplete
                                                                     key={clearFieldDistribucion.student}
                                                                     sx={{ width: '33%' }}
@@ -978,7 +1037,6 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                         <TextField {...params} label="Estudiantes" variant="standard"
                                                                         />
                                                                     )}
-                                                                    // value={item.moneda}
                                                                     getOptionLabel={(option) => option.student}
                                                                     onChange={(event, newValue) => {
                                                                         setDistribicionPorRegistrar({ ...distribicionPorRegistrar, student: newValue ? newValue.student : '' })
@@ -996,7 +1054,6 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                     )}
                                                                     getOptionLabel={(option) => option.icoName}
                                                                     onChange={(event, newValue) => {
-                                                                        // console.log('conceptoooooooooooooooooo', newValue)
                                                                         setDistribicionPorRegistrar({ ...distribicionPorRegistrar, descripcion: newValue ? newValue.icoName : '' })
                                                                     }}
                                                                     required
@@ -1016,7 +1073,6 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                     key={clearFieldDistribucion.costoNeto}
                                                                     sx={{ width: '21%' }}
                                                                     required
-                                                                    // inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                                                                     id="costoF"
                                                                     label="Costo"
                                                                     variant="standard"
@@ -1042,22 +1098,10 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                         setDistribicionPorRegistrar({ ...distribicionPorRegistrar, pago: e.target.value })
                                                                     }}
                                                                 />
-                                                                {/* <TextField
-                                                                    disabled={validarTarjeta()}
-                                                                    sx={{ width: '21%' }}
-                                                                    required
-                                                                    key={clearField.tarjeta}
-                                                                    // value={}
-                                                                    id="restanteF"
-                                                                    label="Monto restante"
-                                                                    variant="standard"
-                                                                    onChange={e => {
-                                                                        setPagoPorRegistrar({ ...pagoPorRegistrar, tarjeta: e.target.value })
-                                                                    }}
-                                                                />                                                                 */}
-                                                            </Stack>
+                                                                
+                                                            </Stack> */}
                                                             
-                                                            <MaterialTable title={'Distribución de Pagos'}
+                                                            {/* <MaterialTable title={'Distribución de Pagos'}
                                                                 data={datosPago}
                                                                 columns={columnsDisPago}
                                                                 options={{
@@ -1097,9 +1141,12 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                     })
                                                                 }}
 
-                                                            />
-                                                            <Button disabled={!botonAplicarPago} variant="contained" onClick={() => aplicarPago()}
-                                                                            color="info">Aplicar Pago</Button>
+                                                            /> */}
+                                                            <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                                <Button disabled={!botonAplicarPago} variant="contained" onClick={() => aplicarPago()}
+                                                                    color="info">Aplicar Pago</Button>
+                                                            </Stack>
+                                                            
                                                             {(Array.isArray(replicaDatosPago) && replicaDatosPago.length )  
                                                                 ? replicaDatosPago.map((item, index)=>(
                                                                     <>
@@ -1122,10 +1169,10 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                             />
                                                                         </Stack>
                                                                         <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
-                                                                            
+                                                                            {console.log()}
                                                                              {item.montoPagado != 0
                                                                                 ? <TextField
-                                                                                    sx={{ width: '10%' }}
+                                                                                    sx={{ width: '20%' }}
                                                                                     InputProps={{ readOnly: true }}
                                                                                     value={item.costoNeto}
                                                                                     id="costo"
@@ -1134,7 +1181,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                                 />
                                                                                 :  
                                                                                 <TextField
-                                                                                    sx={{ width: '10%' }}
+                                                                                    sx={{ width: '20%' }}
                                                                                     inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                                                                                     type="number"
                                                                                     id="costo"
@@ -1156,18 +1203,18 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                             }                                                                       
                                                                             
                                                                             <TextField
-                                                                                sx={{ width: '10%' }}
+                                                                                sx={{ width: '20%' }}
                                                                                 InputProps={{ readOnly: true }}
                                                                                 value={item.montoPagado}
                                                                                 id="montoPagado"
-                                                                                label="Monto Pagado"
+                                                                                label="Monto Pagado $"
                                                                                 variant="standard"
                                                                             />
                                                                             {item.montoPagado != 0
                                                                                 ? <TextField
-                                                                                    sx={{ width: '10%' }}
+                                                                                    sx={{ width: '20%' }}
                                                                                     InputProps={{ readOnly: true }}
-                                                                                    value={item.costoNeto ? item.restante : 0}
+                                                                                    value={item.restante}
                                                                                     id="montorestanteDol"
                                                                                     label="Monto Restante $"
                                                                                     variant="standard"
@@ -1176,9 +1223,9 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                                 </TextField>
                                                                                 : <TextField
                                                                                     key={clearFieldDistribucion.restante}
-                                                                                    sx={{ width: '15%' }}
+                                                                                    sx={{ width: '20%' }}
                                                                                     InputProps={{ readOnly: true }}
-                                                                                    value={item.costoNeto ? item.restante : 0}
+                                                                                    value={item.restante}
                                                                                     id="montorestanteDol"
                                                                                     label="Monto Restante $"
                                                                                     variant="standard"
@@ -1186,26 +1233,49 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                                 }
                                                                             
                                                                             <TextField
-                                                                                sx={{ width: '15%' }}
+                                                                                sx={{ width: '20%' }}
                                                                                 InputProps={{ readOnly: true }}
                                                                                 value={(item.restante * tasaDelDia.excAmount).toFixed(2)}
                                                                                 id="montorestanteDol"
                                                                                 label="Monto Restante Bs"
                                                                                 variant="standard"
                                                                             />
+                                                                            
+                                                                        </Stack>
+                                                                        <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                                                             <TextField
-                                                                                sx={{ width: '15%' }}
+                                                                                key={clearFieldDistribucion.pagoAplicadoDol}
+                                                                                sx={{ width: '20%' }}
                                                                                 InputProps={{ readOnly: true }}
-                                                                                value={(item.montoRestanteAplicadoDol ? item.montoRestanteAplicadoDol : 0)}
-                                                                                id="montoAplicadoDol"
+                                                                                value={(item.pagoAplicadoDol ? Number(item.pagoAplicadoDol).toFixed(2): 0)}
+                                                                                id="pagoAplicadoDol"
+                                                                                label="Pago aplicado $"
+                                                                                variant="standard"
+                                                                            />
+                                                                            <TextField
+                                                                                key={clearFieldDistribucion.pagoAplicadoBol}
+                                                                                sx={{ width: '20%' }}
+                                                                                InputProps={{ readOnly: true }}
+                                                                                value={(item.pagoAplicadoBol ? Number(item.pagoAplicadoBol).toFixed(2) : 0)}
+                                                                                id="pagoAplicadoBol"
+                                                                                label="Pago aplicado Bs"
+                                                                                variant="standard"
+                                                                            />
+                                                                            <TextField
+                                                                                key={clearFieldDistribucion.montoRestanteAplicadoDol}
+                                                                                sx={{ width: '20%' }}
+                                                                                InputProps={{ readOnly: true }}
+                                                                                value={(item.montoRestanteAplicadoDol ? Number(item.montoRestanteAplicadoDol).toFixed(2) : 0)}
+                                                                                id="montoRestanteAplicadoDol"
                                                                                 label="Monto restante aplicado $"
                                                                                 variant="standard"
                                                                             />
                                                                             <TextField
-                                                                                sx={{ width: '15%' }}
+                                                                                key={clearFieldDistribucion.montoRestanteAplicadoBol}
+                                                                                sx={{ width: '20%' }}
                                                                                 InputProps={{ readOnly: true }}
-                                                                                value={(item.montoRestanteAplicadoBol ? item.montoRestanteAplicadoBol : 0)}
-                                                                                id="montorestantebS"
+                                                                                value={(item.montoRestanteAplicadoBol ? Number(item.montoRestanteAplicadoBol).toFixed(2): 0)}
+                                                                                id="montoRestanteAplicadoBol"
                                                                                 label="Monto restante aplicado Bs"
                                                                                 variant="standard"
                                                                             />
@@ -1222,8 +1292,8 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                 alignItems="flex-end"
                                                                 spacing={2} >
                                                                 <div> Tasa del día : {tasaDelDia !== 0 ? <> {(tasaDelDia.excAmount).toFixed(2)} Bs. {moment(tasaDelDia.excDate).format("DD/MM/YYYY")} </>: ''}  </div>
-                                                                <div> Monto Total Distribuido $: {montoTotalDolaresDis} </div>
-                                                                <div> Monto Total Distribuido Bs: {montoTotalBolivaresDis} </div>
+                                                                {/* <div> Monto Total Distribuido $: {montoTotalDolaresDis} </div>
+                                                                <div> Monto Total Distribuido Bs: {montoTotalBolivaresDis} </div> */}
                                                             </Stack>
 
                                                         </>

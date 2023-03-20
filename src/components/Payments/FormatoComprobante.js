@@ -27,8 +27,7 @@ const ItemDerecha = styled(Paper)(({ theme }) => ({
 }));
 
 
-
-const FormatoComprobante = ({ numControl, numFact, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
+const FormatoComprobante = ({ replicaDatosPago, numControl, numFact, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
 
     const [montos, setMontos] = React.useState([])
     const [total, setTotal] = React.useState(null)
@@ -91,7 +90,8 @@ const FormatoComprobante = ({ numControl, numFact, datosPago, tasaDelDia, datosC
 
     React.useEffect(() => {
         ordenarMontos()
-        if (datosPago.length > 0) { bancosYreferencias ()}
+        if (replicaDatosPago.length > 0) { bancosYreferencias() }
+        // if (datosPago.length > 0) { bancosYreferencias ()} //logica vieja
     }, [1])
 
     React.useEffect(() => {
@@ -155,13 +155,14 @@ const FormatoComprobante = ({ numControl, numFact, datosPago, tasaDelDia, datosC
                   </Item>
               </Grid>
               {
-                  datosPago.length > 0  
+                  replicaDatosPago.length > 0  
+                //   datosPago.length > 0  
                     ? <> 
                       <Grid item xs={10}>
                           <ItemIzquierda>
                             <br />
                             {
-                                    datosPago.map(item => <>
+                                      replicaDatosPago.map(item => <>
                                         <div> {item.descripcion} {item.student} </div>
                                     </>)                                        
                             }
@@ -172,8 +173,8 @@ const FormatoComprobante = ({ numControl, numFact, datosPago, tasaDelDia, datosC
                       <Grid item xs={2}>
                           <ItemDerecha>
                             <br />
-                                  {datosPago.map(item => <>
-                                      <div> {(item.pago * tasaDelDia.excAmount).toFixed(2)}  </div>
+                                  {replicaDatosPago.map(item => <>
+                                      <div> {item.pagoAplicadoBol}  </div>
                                   </>)}
                                 
                             <br />

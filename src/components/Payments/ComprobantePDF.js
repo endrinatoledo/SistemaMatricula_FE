@@ -30,8 +30,10 @@ const styles = StyleSheet.create({
     },
 })
 
-const ComprobantePDF = ({ numControl, numFact, datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
+const ComprobantePDF = ({ replicaDatosPago, numControl, numFact, datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
 
+    console.log('stos son mis datos completos', datosCompletos)
+    console.log('replicaDatosPago.................', replicaDatosPago)
     //PULGADAS : 9.5  - 5.5
     //CENTIMETROS: 24.13 - 13.97
     //MILIMETROS: 228.6 - 139.7
@@ -117,7 +119,7 @@ const ComprobantePDF = ({ numControl, numFact, datosCompletos, datosPago, tasaDe
                             {/*render a single page*/}
                             <Page size="A4" style={styles.page}>
                                 <View style={{
-                                    marginTop: '55px', marginLeft: '45px', marginRight: '45px', marginBottom: '35'
+                                    marginTop: '10px', marginLeft: '5px', marginRight: '5px', marginBottom: '35'
                                     // paddingTop:"15px", paddingRight:'15px', paddingLeft:'15px'
                                 }}>
                                     <View style={{ display: "flex", flexDirection: 'row' }}>
@@ -129,13 +131,13 @@ const ComprobantePDF = ({ numControl, numFact, datosCompletos, datosPago, tasaDe
 
                                         </View>
                                         <View style={{ flex: 1 }}>
-                                            <View style={{ top: '20%' }}>
+                                            <View style={{ top: '10%' }}>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Fecha</Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {datosCompletos.cabecera?.date !== undefined ? datosCompletos.cabecera.date : ''}</Text>
                                             </View>
                                         </View>
                                         <View style={{ flex: 1 }}>
-                                            <View style={{ top: '20%' }}>
+                                            <View style={{ top: '10%' }}>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Nro. de Control</Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {numControl}</Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> Factura</Text>
@@ -190,7 +192,8 @@ const ComprobantePDF = ({ numControl, numFact, datosCompletos, datosPago, tasaDe
                                                 datosCompletos !== null
                                                     ? <View >
                                                         {datosCompletos.cuerpo.map(item =>
-                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {(item.pago * tasaDelDia.excAmount).toFixed(2)}  </Text>)
+                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {item.pagoAplicadoBol}  </Text>)
+                                                            // <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {(item.pago * tasaDelDia.excAmount).toFixed(2)}  </Text>)
                                                         }
                                                     </View>
                                                     : null
