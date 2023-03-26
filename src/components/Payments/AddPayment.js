@@ -1,10 +1,12 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import SearchRepresentative from './SearchRepresentative'
+import Search from './Search'
 import PaymentMethodTable from './PaymentMethodTable'
 import TabsPayments from './TabsPayments'
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import ModalFamily from './ModalFamily';
+import ModalStudents from './ModalStudents';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import TablaMensualidades from './TablaMensualidades';
@@ -31,23 +33,27 @@ const UseStyles = makeStyles({
 const AddPayment = () => {
 
     const [representativeData, setRepresentativeData] = React.useState([])
+    const [studentData, setStudentData] = React.useState([])
     const [identification, setIdentification] = React.useState({ repIdType: null, repIdentificationNumber: '' })
     const [representativeFound, setRepresentativeFound] = React.useState(false)
+    const [studentFound, setStudentFound] = React.useState(false)
     const [alertModal, setAlertModal] = React.useState(false)
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
     const [families, setFamilies] = React.useState([])
     const [openModal, setOpenModal] = React.useState(false)
+    const [openModalEstudents, setOpenModalEstudents] = React.useState(false)
     const [selectedFamily, setSelectedFamily] = React.useState(null)
     const [exchangeRate, setExchangeRate] = React.useState(null)
     const [mensualidades, setMensualidades] = React.useState([])
     const [dataDetalle, setDataDetalle] = React.useState([])
     const [listadoPeriodo, setListadoPeriodo] = React.useState([])
     const [periodoSeleccionado, setPeriodoSeleccionado] = React.useState(null)
-    
+    const [filtroEstudiante, setFiltroEstudiante] = React.useState({ tIdentif: null, identif: '', pNombre: '', pApellido: '', sApellido: '' })
+    const [estudianteSeleccionado, setEstudianteSeleccionado] = React.useState(null)
     const classes = UseStyles();
 
-    console.log('----------------dataDetalle---------------', dataDetalle)
+    console.log('estudianteSeleccionado-----------------------', estudianteSeleccionado)
 
     const getFamilyByRepId = async () => {
         try {
@@ -66,23 +72,37 @@ const AddPayment = () => {
             setAlertModal(true)
         }
     }
+    const getFamilyByStudentId = async () => {
+        try {
+            const resultFamiles = (await AxiosInstance.get(`/representativeStudent/family/studentId/${estudianteSeleccionado.idStuden}`)).data
+            if (resultFamiles.ok === true) {
+                setFamilies(resultFamiles.data)
+                // setOpenModal(true)
+                setOpenModalEstudents(false)
+                getMensualidadesFamily(estudianteSeleccionado)
+            } else {
+                setMessage(resultFamiles.message)
+                setAlertType("error")
+                setAlertModal(true)
+            }
+        } catch {
+            setMessage('Error**')
+            setAlertType("error")
+            setAlertModal(true)
+        }
+    }
 
     const getPeriodos = async () => {
 
         try {
             const resultPeriods = (await AxiosInstance.get("/periods")).data
-
-            // console.log('todos los periodos', resultPeriods)
-
             if (resultPeriods.ok === true) {
                 setListadoPeriodo(resultPeriods.data)
             }
         } catch {
             setMessage('Error de Conexion')
             setAlertModal(true)
-
         }
-
     }
 
     const getStudentPaymentSchemaFamId = async () => {
@@ -123,23 +143,27 @@ const AddPayment = () => {
 
       const getMensualidadesFamily = async(selectedFamily) =>{
 
-
+          console.log('esto llegoooo en la familia', selectedFamily)
+          if (selectedFamily != null){
+              console.log('entro a la validacion', selectedFamily)
+              try {
+                  const response = (await AxiosInstance.get(`/pagoMensualidades/familia/${selectedFamily.famId}`)).data
+                  console.log('respuesta de consultar familia', response)
+                  if (response.ok === true && response.data.length > 0) {
+                      setMensualidades(response.data)
+                      setDataDetalle(response.dataDetalle)
+                  } else {
+                      setAlertType("error")
+                      setMessage('Sin mensualidades para mostrar')
+                      setAlertModal(true)
+                  }
+              } catch (error) {
+                  setMessage('Error al consultar mensualidades por familia')
+                  setAlertType("error")
+                  setAlertModal(true)
+              }
+          }
         
-        try {
-            const response = (await AxiosInstance.get(`/pagoMensualidades/familia/${selectedFamily.famId}`)).data
-            if (response.ok === true && response.data.length > 0) {
-                setMensualidades(response.data)
-                setDataDetalle(response.dataDetalle)
-            }else{
-                setAlertType("error")
-                setMessage('Sin mensualidades para mostrar')
-                setAlertModal(true)
-            }
-        } catch (error) {
-            setMessage('Error al consultar mensualidades por familia')
-            setAlertType("error")
-            setAlertModal(true)
-        }
       }
 
       React.useEffect(() => {
@@ -154,19 +178,45 @@ const AddPayment = () => {
         }
     }, [representativeData])
     React.useEffect(() => {
+        console.log('llego a Validar')
+        if (studentData.length === 1) {
+            getMensualidadesFamily(studentData)
+        } else if (studentData.length > 1) {
+            setOpenModalEstudents(true)
+        }
+    }, [studentData])
+
+    
+    React.useEffect(() => {
         latestExchangeRate()
         getPeriodos()
     }, [0])
 
+    React.useEffect(() => {
+        // latestExchangeRate()
+        // getPeriodos()
+        if (estudianteSeleccionado != null){
+            getFamilyByStudentId()
+            
+            
+        }
+        
+    }, [estudianteSeleccionado])
+    
     
 
     return (
         <>
             <Box>
-                <SearchRepresentative setPeriodoSeleccionado={setPeriodoSeleccionado} setSelectedFamily={setSelectedFamily} representativeFound={representativeFound}
+                <Search studentData={studentData} setStudentData={setStudentData} filtroEstudiante={filtroEstudiante} studentFound={studentFound} setStudentFound={setStudentFound} setFiltroEstudiante={setFiltroEstudiante} etPeriodoSeleccionado={setPeriodoSeleccionado} setSelectedFamily={setSelectedFamily} representativeFound={representativeFound}
                     setRepresentativeFound={setRepresentativeFound} identification={identification}
                     setIdentification={setIdentification} representativeData={representativeData}
-                    setRepresentativeData={setRepresentativeData} setMensualidades={setMensualidades}/>
+                    setRepresentativeData={setRepresentativeData} setMensualidades={setMensualidades} />
+
+                {/* <SearchRepresentative setPeriodoSeleccionado={setPeriodoSeleccionado} setSelectedFamily={setSelectedFamily} representativeFound={representativeFound}
+                    setRepresentativeFound={setRepresentativeFound} identification={identification}
+                    setIdentification={setIdentification} representativeData={representativeData}
+                    setRepresentativeData={setRepresentativeData} setMensualidades={setMensualidades}/> */}
 
             </Box>
             {(alertModal) ?
@@ -174,7 +224,12 @@ const AddPayment = () => {
                 : null} 
             {(openModal) ?
                 <ModalFamily periodoSeleccionado={periodoSeleccionado} setPeriodoSeleccionado={setPeriodoSeleccionado} listadoPeriodo={listadoPeriodo} selectedFamily={selectedFamily} setSelectedFamily={setSelectedFamily} openModal={openModal} setOpenModal={setOpenModal} families={families}> </ModalFamily>
-                : null} 
+                : null
+                }
+            {(openModalEstudents)
+                ? <ModalStudents periodoSeleccionado={periodoSeleccionado} listadoPeriodo={listadoPeriodo} setPeriodoSeleccionado={setPeriodoSeleccionado} setEstudianteSeleccionado={setEstudianteSeleccionado} studentData={studentData} openModalEstudents={openModalEstudents} setOpenModalEstudents={setOpenModalEstudents}></ModalStudents>
+            : null
+            } 
             {
                 (mensualidades.length > 0 && exchangeRate !== null && periodoSeleccionado !== null) 
                 ? <>

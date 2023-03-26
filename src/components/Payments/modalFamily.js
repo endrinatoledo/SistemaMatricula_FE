@@ -72,7 +72,9 @@ const ModalFamily = ({ periodoSeleccionado, setPeriodoSeleccionado, listadoPerio
               />
             )}
             getOptionLabel={(option) => option.families.famName}
-            onChange={(event, newValue) => {setSelectedFamily(newValue) }}
+            onChange={(event, newValue) => {
+              console.log('esta es la familia Seleccionada', newValue)
+              setSelectedFamily(newValue) }}
             required
             noOptionsText={'Sin Opciones'}
             sx={{ width: '80%' }}

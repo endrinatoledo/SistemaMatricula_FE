@@ -34,13 +34,12 @@ const ComprobanteFiscalPDF = ({ replicaDatosPago, numFact, datosCompletos, datos
     const [montos, setMontos] = React.useState([])
     const [total, setTotal] = React.useState(null)
     const [destallesDePagos, setDestallesDePagos] = React.useState(null)
-    console.log('stos son mis datos completos', datosCompletos)
+    // console.log('stos son mis datos completos', datosCompletos)
 
     const bancosYreferencias = () => {
         let descripcion = ''
 
         pagosRegistrados.forEach(element => {
-            // console.log('element', element)
             if (element.metodoPago.payName != 'EFECTIVO') {
                 if (element.banco !== null) descripcion = `${descripcion} Banco: ${element.banco.banName} `
                 if (element.referencia !== null) descripcion = `${descripcion} Referencia: ${element.referencia} `
@@ -134,14 +133,14 @@ const ComprobanteFiscalPDF = ({ replicaDatosPago, numFact, datosCompletos, datos
                                         </View>
                                         <View style={{ flex: 1 }}>
                                             <View style={{ top: '10%' }}>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> </Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'rigth' }}> Fiscal </Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
-                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'rigth' }}> {numFact} </Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'rigth',paddingLeft:'55px', marginLeft:'55px' }}> Fiscal </Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'center' }}> {''}</Text>
+                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'rigth', paddingLeft:'45px', marginLeft:'45px' }}> {numFact} </Text>
                                             </View>
                                         </View>
                                     </View>
@@ -191,7 +190,7 @@ const ComprobanteFiscalPDF = ({ replicaDatosPago, numFact, datosCompletos, datos
                                                 datosCompletos !== null
                                                     ? <View >
                                                         {datosCompletos.cuerpo.map(item =>
-                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}>{item.pagoAplicadoBol}</Text>)
+                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}>{(item.pagoAplicadoBol).toFixed(2)}</Text>)
                                                             // <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {(item.pago * tasaDelDia.excAmount).toFixed(2)}  </Text>)
                                                         }
                                                     </View>
