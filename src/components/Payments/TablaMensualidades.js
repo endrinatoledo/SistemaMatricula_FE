@@ -6,6 +6,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ModalPayments from './ModalPayments';
 import ModalVerPagos from './ModalVerPagos';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import ModalExoneracionMeses from './ModalExoneracionMeses';
+
 
 const TablaMensualidades = ({ periodoSeleccionado, selectedFamily, getMensualidadesFamily, families, mensualidades, dataDetalle }) => {
 
@@ -16,6 +19,8 @@ const TablaMensualidades = ({ periodoSeleccionado, selectedFamily, getMensualida
     const [mesesApagar, setMesesApagar] = React.useState([])
     const [pagosRegistrados, setPagosRegistrados] = React.useState([])
     const [statusModalVerPagos, setStatusModalVerPagos] = React.useState(false)
+    const [modalExoneracion, setModalExoneracion] = React.useState(false)
+
     const columns = [
         { title: 'Estudiante', field: 'student' },
         { title: 'Septiembre', field: 'sep', render: (rows) => meses(rows.sep, 'sep', 'Septiembre', rows) },
@@ -38,6 +43,7 @@ const TablaMensualidades = ({ periodoSeleccionado, selectedFamily, getMensualida
     }
 
     const limpiarFormularioFactura = () => {
+        console.log('vino aqui', selectedFamily)
         setPagosRegistrados([])
         setDatosPago([])
         setMesesApagar([])
@@ -125,6 +131,14 @@ const TablaMensualidades = ({ periodoSeleccionado, selectedFamily, getMensualida
                             setStatusModalVerPagos(true)
                         }
                     },
+                    {
+                        icon: () => <RemoveCircleIcon />,
+                        tooltip: 'Exonerar Mensualidad',
+                        isFreeAction: true,
+                        onClick: () => {
+                            setModalExoneracion(true)
+                        }
+                    },
                 ]}
             />
             {(pagoModal)
@@ -134,6 +148,12 @@ const TablaMensualidades = ({ periodoSeleccionado, selectedFamily, getMensualida
             {(statusModalVerPagos) ?
                 <ModalVerPagos periodoSeleccionado={periodoSeleccionado} selectedFamily={selectedFamily} statusModalVerPagos={statusModalVerPagos} setStatusModalVerPagos={setStatusModalVerPagos} />
                 : null}   
+            {(statusModalVerPagos) ?
+                <ModalVerPagos periodoSeleccionado={periodoSeleccionado} selectedFamily={selectedFamily} statusModalVerPagos={statusModalVerPagos} setStatusModalVerPagos={setStatusModalVerPagos} />
+                : null} 
+            {(modalExoneracion)
+                ? <ModalExoneracionMeses limpiarFormularioFactura={limpiarFormularioFactura} mesesApagar={mesesApagar} modalExoneracion={modalExoneracion} setModalExoneracion={setModalExoneracion} dataDetalle={dataDetalle} periodoSeleccionado={periodoSeleccionado} numLimpiarFactura={numLimpiarFactura} setNumLimpiarFactura={setNumLimpiarFactura} pagosRegistrados={pagosRegistrados} setPagosRegistrados={setPagosRegistrados} datosPago={datosPago} setDatosPago={setDatosPago} datosCabecera={datosCabecera} setDatosCabecera={setDatosCabecera} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} setMesesApagar={setMesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
+                : null} 
         </>
     )
 }
