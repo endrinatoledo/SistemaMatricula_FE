@@ -21,7 +21,7 @@ import Logout from './Logout';
 import UserList from '../Users/UserList';
 import RepresentativeList from '../Representative/RepresentativeList';
 import StudentsList from '../Student/StudentsList'
-import RolesList from '../Roles/RolesList';
+// import RolesList from '../Roles/RolesList';
 import PeriodsList from '../Periods/PeriodsList';
 import FamiliesList from '../Families/FamiliesList';
 import LevelsList from '../Levels/LevelsList';
@@ -172,17 +172,17 @@ const Dashboard= () => {
                   <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                   {
                     <Routes>
-                      <Route path="/"element={<UserList />} ></Route>
+                      <Route path="/" element={<ExchangeRatesList />} ></Route>
                       <Route path="/usuarios"element={<UserList />} ></Route>
                       <Route path="/estudiantes"element={<StudentsList />} ></Route>
                       <Route path="/familias"element={<FamiliesList />} ></Route>
-                      <Route path="/colegio"element={<RepresentativeList />} ></Route>
+                      {/* <Route path="/colegio"element={<RepresentativeList />} ></Route> */}
                       <Route path="/metodosdepago"element={<PaymentMethodsList />} ></Route>
                       <Route path="/conceptosdefactura"element={<InvoiceConceptsList />} ></Route>
                       <Route path="/niveles"element={<LevelsList />} ></Route>
                       <Route path="/representantes"element={<RepresentativeList />} ></Route>
-                      <Route path="/roles"element={<RolesList />} ></Route>
-                      <Route path="/secciones"element={<SectionsList />} ></Route>
+                      {/* <Route path="/roles"element={<RolesList />} ></Route> */}
+                      {/* <Route path="/secciones"element={<SectionsList />} ></Route> */}
                       <Route path="/periodos"element={<PeriodsList />} ></Route>
                       <Route path="/agregarperiodo"element={<AddPeriod />} ></Route>
                       <Route path="/tasas"element={<ExchangeRatesList />} ></Route>
@@ -202,7 +202,7 @@ const Dashboard= () => {
                       <Route path="/verperiodo/:perid"element={<SeePeriod />} ></Route>  
                       <Route path="/editarperiodo/:perid"element={<EditPeriod />} ></Route>       
                       <Route path="/bancos"element={<BanksList />} ></Route>                
-                      <Route path="/costomensualidades" element={<CostoMensualidades />} ></Route>   
+                      {/* <Route path="/costomensualidades" element={<CostoMensualidades />} ></Route>    */}
                       <Route path="/comprobantepdf" element={<ComprobantePDF />} ></Route>   
 
                                      

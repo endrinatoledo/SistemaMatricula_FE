@@ -8,6 +8,10 @@ import { NavLink } from 'react-router-dom'
 import { makeStyles } from '@mui/styles';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import TableLevels from './TableLevels';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
 const AxiosInstance = require("../utils/request").default;
 
 
@@ -31,7 +35,10 @@ const UseStyles = makeStyles({
     marginTop: '5%'
   },
 });
-
+const style = {
+  width: '100%',
+  bgcolor: 'background.paper',
+};
 const AddPeriod = () => {
 
   const [Reload, SetReload] = React.useState(0);
@@ -46,9 +53,13 @@ const AddPeriod = () => {
   const [levelsMap, setLevelsMap] = React.useState([]) //descartado: DE NIVELES MAPEADOS
   const [statusCcircularProgress, setStatusCcircularProgress] = React.useState(false)
   const [emptyPeriod, setEmptyPeriod] = React.useState(false)
+  const [mostrarRespuesta, setMostrarRespuesta] = React.useState(false)
+  const [resultGuardar, setResultGuardar] = React.useState([])
   const [periodObject, setPeriodObject] = React.useState(
     { startYear: 0, inputStartYear: false }
   )
+  const today = new Date();
+  const anoActual = today.getFullYear();
   const mode = 'add'
   const classes = UseStyles();
 
@@ -104,36 +115,109 @@ const AddPeriod = () => {
 
     } catch (error) {
       console.log('Error al guardar periodo', error)
-      setMessage('Debe seleccionar al menos una sección')
+      setMessage('Error al guardar periodo')
       setAlertType('error')
       setAlertModal(true)
     }
 
   }
 
+  const guardarNuevo= async () => {
+    try {
+      setStatusCcircularProgress(true)
+      const result = await (await AxiosInstance.post("/periods", periodObject)).data
+      console.log('result de crear periodo', result)
+      setTimeout(() => {
+        setStatusCcircularProgress(false)
+        if (result.ok) {
+          setResultGuardar(result.data)
+          setMostrarRespuesta(true)
+          setShowTable(false)
+          setButtonI(true)
+        }else{
+          setMessage('Error al guardar periodo')
+          setAlertType('error')
+          setAlertModal(true)
+        }
+        //   setMessage(result.data.message)
+        //   setAlertType('success')
+        //   setAlertModal(true)
+        //   window.location = '/periodos';
+
+        // } else if (result.message === 'Error al crear Periodo') {
+        //   setMessage(result.message)
+        //   setAlertType('error')
+        //   setAlertModal(true)
+        // } else {
+        //   setMessage(result.message)
+        //   setAlertType('error')
+        //   setAlertModal(true)
+        // }
+      }, 1000);
+
+    } catch (error) {
+      console.log('Error al guardar periodo', error)
+      setMessage('Debe seleccionar al menos una sección')
+      setAlertType('error')
+      setAlertModal(true)
+    }
+  }
+
+  const MostrarDetallePeriodo = () => {
+
+    return(
+      <List sx={style} component="nav" aria-label="mailbox folders">
+        {
+          resultGuardar.length > 0
+          ? resultGuardar.map(item => (
+            <>
+              <ListItem>
+                <ListItemText primary={item} />
+              </ListItem>
+              <Divider light />
+            </>
+            )
+          )
+            : <>
+              <ListItem>
+                <ListItemText primary='Sin detalle para mostrar' />
+              </ListItem>
+              <Divider light />
+            </>
+        }
+      </List>
+
+    )
+  }
 
   const searchPeriod = async () => {
-    try {
-      const data = (await AxiosInstance.get(`/periods/startYear/${periodObject.startYear}`)).data
-      if (data.message === 'Periodo registrado') {
+    if (Number(periodObject.startYear) !== anoActual){
+      setMessage('Debe agregar el año actual')
+      setAlertType('error')
+      setAlertModal(true)
+    }else{
+      try {
+        const data = (await AxiosInstance.get(`/periods/startYear/${periodObject.startYear}`)).data
+        if (data.message === 'Periodo registrado') {
 
-        setMessage(data.message)
-        setAlertType('error')
-        setAlertModal(true)
-        setPeriodObject({ ...periodObject, inputStartYear: false })
-        setShowTable(false)
-      } else
-        if (data.message === 'Periodo no registrado') {
-          setShowTable(true)
+          setMessage(data.message)
+          setAlertType('error')
+          setAlertModal(true)
+          setPeriodObject({ ...periodObject, inputStartYear: false })
+          setShowTable(false)
+        } else
+          if (data.message === 'Periodo no registrado') {
+            setShowTable(true)
 
-          setPeriodObject({ ...periodObject, inputStartYear: true })
-        }
+            setPeriodObject({ ...periodObject, inputStartYear: true })
+          }
 
-    } catch {
-      console.log('***no')
+      } catch {
+        console.log('***no')
         setMessage('Error de conexión al validar periodo')
         setAlertType('error')
         setAlertModal(true)
+      }
     }
 
   }
@@ -190,8 +274,8 @@ const AddPeriod = () => {
   }
 
   React.useEffect(() => {
-    getAllSections()
-    getAllLevels()
+    // getAllSections()
+    // getAllLevels()
   }, [Reload]);
 
   React.useEffect(() => {
@@ -223,16 +307,27 @@ const AddPeriod = () => {
         <Button variant="outlined" size="small"
           disabled={buttonI} onClick={() => searchPeriod()}
         >Validar Periodo</Button>
+        {
+          (showTable) ?
+            <Button variant="contained"
+              onClick={guardarNuevo}
+              color="success">Guardar</Button>
+            : null
+        }
       </Stack>
 
-      {
+      
+      {/* {
         (showTable && allLevels.length > 0 && allSections.length > 0) ?
           <>
             <TableLevels mode={mode} levelsMap={levelsMap} setLevelsMap={setLevelsMap} periodObject={periodObject} setPeriodObject={setPeriodObject} allLevels={allLevels} setAllLevels={setAllLevels}
               allSections={allSections} setAllSections={setAllSections} />
           </>
           : null
-      }
+      } */}
+      {(mostrarRespuesta)
+      ? <MostrarDetallePeriodo />
+      :null}
       {(alertModal) ?
         <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
         : null}
@@ -245,12 +340,13 @@ const AddPeriod = () => {
           <Stack spacing={2} className={classes.stack} alignItems="flex-end" direction="row" justifyContent="center">
             <NavLink to='/periodos' >
               <Button variant="outlined"
-                color="error">Cancelar</Button>
+                color="error">Salir</Button>
             </NavLink>
-            <Button variant="contained"
+            {/* <Button variant="contained"
               // disabled={disableButtonSave} 
-              onClick={saveNewPeriod}
-              color="success">Guardar</Button>
+              // onClick={saveNewPeriod}
+              onClick={guardarNuevo}
+              color="success">Guardar</Button> */}
 
           </Stack>
       }

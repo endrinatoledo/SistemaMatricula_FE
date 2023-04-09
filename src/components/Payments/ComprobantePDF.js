@@ -192,7 +192,7 @@ const ComprobantePDF = ({ replicaDatosPago, numControl, numFact, datosCompletos,
                                                 datosCompletos !== null
                                                     ? <View >
                                                         {datosCompletos.cuerpo.map(item =>
-                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {item.pagoAplicadoBol}  </Text>)
+                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {parseFloat(item.pagoAplicadoBol).toFixed(2)}  </Text>)
                                                             // <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {(item.pago * tasaDelDia.excAmount).toFixed(2)}  </Text>)
                                                         }
                                                     </View>

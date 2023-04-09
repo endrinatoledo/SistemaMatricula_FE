@@ -174,7 +174,7 @@ const FormatoComprobante = ({ replicaDatosPago, numControl, numFact, datosPago, 
                           <ItemDerecha>
                             <br />
                                   {replicaDatosPago.map(item => <>
-                                      <div> {item.pagoAplicadoBol}  </div>
+                                      <div> {parseFloat(item.pagoAplicadoBol).toFixed(2)}  </div>
                                   </>)}
                                 
                             <br />

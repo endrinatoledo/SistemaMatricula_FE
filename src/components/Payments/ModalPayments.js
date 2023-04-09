@@ -747,13 +747,16 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
         let copiaReplicaDatosPago = []
         copiaReplicaDatosPago = replicaDatosPago
         replicaDatosPago.map((element,index) => {
+
+            console.log('element-*-*-*-*-*-*-*-', element)
+
             const montoRestante = element.restante * tasaDelDia.excAmount
             if (copiaMontoTotalAdistribuir >= montoRestante ){
                 copiaMontoTotalAdistribuir = copiaMontoTotalAdistribuir - montoRestante
 
                 copiaReplicaDatosPago[index].montoRestanteAplicadoBol = 0
                 copiaReplicaDatosPago[index].montoRestanteAplicadoDol = 0
-                copiaReplicaDatosPago[index].pagoAplicadoDol = element.costoNeto
+                copiaReplicaDatosPago[index].pagoAplicadoDol = element.restante
                 copiaReplicaDatosPago[index].pagoAplicadoBol = montoRestante
             }else{
                 copiaReplicaDatosPago[index].montoRestanteAplicadoBol = montoRestante - copiaMontoTotalAdistribuir

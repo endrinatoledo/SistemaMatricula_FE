@@ -21,13 +21,12 @@ const UserList = () => {
     { title: 'Apellido', field: 'usuLastName',headerStyle:{ },validate:rowData=>(rowData.usuLastName === undefined || rowData.usuLastName === '')?"Requerido":true },
 
     { title: 'Correo', field: 'usuEmail', type:'email',headerStyle:{ },validate:rowData=>(rowData.usuEmail === undefined || rowData.usuEmail === '')?"Requerido":true },
-    // { title: 'usuPassword', field: 'usuPassword',headerStyle:{ paddingLeft:'30%'},validate:rowData=>(rowData.usuPassword === undefined || rowData.usuPassword === '')?"Requerido":true },
     { title: 'Rol', field: 'rolId',lookup:rolLookup,
     validate:rowData=>(rowData.rolId === undefined || rowData.rolId === '')?"Requerido":true },
+    { title: 'Estatus', field: 'usuStatus', cellStyle:{paddingLeft:'5%'}, headerStyle:{paddingLeft:'5%'}, 
+    lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.usuStatus === undefined)?"Requerido":true },
+    { title: 'Contraseña', field: 'usuPassword', align: 'center', width: 100, cellStyle: { paddingLeft: '5%' }, headerStyle: { paddingLeft: '5%' }, validate: rowData => (rowData.usuPassword === undefined || rowData.usuPassword === '') ? "Requerido" : true },
 
-
-    { title: 'Estatus', field: 'usuStatus', cellStyle:{paddingLeft:'5%'}, headerStyle:{paddingLeft:'5%'}, width: 200, 
-    lookup: {1: 'Activo', 2:'Inactivo'}, validate:rowData=>(rowData.usuStatus === undefined)?"Requerido":true }
 
   ];
   const allRolesActives = async () => {

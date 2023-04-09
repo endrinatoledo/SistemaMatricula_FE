@@ -101,14 +101,14 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
     const [resultadoPagos, setResultadoPagos] = React.useState([]);
     const [dataClasificada, setDataClasificada] = React.useState([]);
 
-    // console.log('dataClasificada--------------------', dataClasificada)
+    console.log('dataClasificada--------------------', dataClasificada)
 
     const consultarPagos = async () => {
 
         try {
             const monthlyPaymentFamily = (await AxiosInstance.get(`/invoiceHeader/invoice/family/${selectedFamily.famId}/periodo/${periodoSeleccionado.perId}`)).data
             // console.log('monthlyPaymentFamilyyyyyyyyyyyyyyyyyyyyyy', monthlyPaymentFamily)
-            // console.log('monthlyPaymentFamily.data > 0', monthlyPaymentFamily.data > 0)
+            console.log('monthlyPaymentFamily', monthlyPaymentFamily)
 
             // const result = JSON.parse(monthlyPaymentFamily)
             // console.log('result.data > 0', result.data > 0)
@@ -251,7 +251,9 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
                                 <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-start">
                                     <Stack spacing={0.5} alignItems="flex-end" direction="column" justifyContent="flex-start">
                                         <div><b>Conceptos de pago y montos:</b> </div>
-                                        {item.cuerpo.map((element, index) => <div> {`${element.indDescripcion} ${element.indStuName} : Bs. ${(parseFloat(element.indpagado) * parseFloat(element.indtasa)).toFixed(2) }`}</div>)}
+                                        {/* {item.cuerpo.map((element, index) => <div> {`${element.indDescripcion} ${element.indStuName} : Bs. ${(parseFloat(element.indpagado) * parseFloat(element.indtasa)).toFixed(2) }`}</div>)} */}
+                                        {item.cuerpo.map((element, index) => <div> {`${element.indDescripcion} ${element.indStuName} : Bs. ${element.indMontoAgregadoBol != null ? (parseFloat(element.indMontoAgregadoBol)).toFixed(2) : 0}`}</div>)}
+
                                         <div><b>Formas de pago:</b> </div>
                                         {item.pago.map((element, index) => <div> {`${element.paymentMethodsPay.payName} : Bs. ${element.depCurrency === 'Dólares' ? (parseFloat(element.depAmount) * parseFloat(element.deptasa)).toFixed(2) : (element.depAmount).toFixed(2) } `}</div>)}
                                     </Stack>                                

@@ -148,9 +148,9 @@ const TablaMensualidades = ({ periodoSeleccionado, selectedFamily, getMensualida
             {(statusModalVerPagos) ?
                 <ModalVerPagos periodoSeleccionado={periodoSeleccionado} selectedFamily={selectedFamily} statusModalVerPagos={statusModalVerPagos} setStatusModalVerPagos={setStatusModalVerPagos} />
                 : null}   
-            {(statusModalVerPagos) ?
+            {/* {(statusModalVerPagos) ?
                 <ModalVerPagos periodoSeleccionado={periodoSeleccionado} selectedFamily={selectedFamily} statusModalVerPagos={statusModalVerPagos} setStatusModalVerPagos={setStatusModalVerPagos} />
-                : null} 
+                : null}  */}
             {(modalExoneracion)
                 ? <ModalExoneracionMeses limpiarFormularioFactura={limpiarFormularioFactura} mesesApagar={mesesApagar} modalExoneracion={modalExoneracion} setModalExoneracion={setModalExoneracion} dataDetalle={dataDetalle} periodoSeleccionado={periodoSeleccionado} numLimpiarFactura={numLimpiarFactura} setNumLimpiarFactura={setNumLimpiarFactura} pagosRegistrados={pagosRegistrados} setPagosRegistrados={setPagosRegistrados} datosPago={datosPago} setDatosPago={setDatosPago} datosCabecera={datosCabecera} setDatosCabecera={setDatosCabecera} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} setMesesApagar={setMesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
                 : null} 
