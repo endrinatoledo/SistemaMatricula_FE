@@ -48,7 +48,7 @@ import EditPeriod from '../Periods/EditPeriod';
 import BanksList from '../Banks/BanksList';
 import CostoMensualidades from '../CostoMensualidades/CostoMensualidadesList';
 import ComprobantePDF from '../Payments/ComprobantePDF';
-
+import CompaniesList from '../Companies/CompaniesList'
 const drawerWidth = 240;
  
 const AppBar = styled(MuiAppBar, {
@@ -201,7 +201,8 @@ const Dashboard= () => {
                       <Route path="/reportesmatricula"element={<EnrollmentReports />} ></Route>
                       <Route path="/verperiodo/:perid"element={<SeePeriod />} ></Route>  
                       <Route path="/editarperiodo/:perid"element={<EditPeriod />} ></Route>       
-                      <Route path="/bancos"element={<BanksList />} ></Route>                
+                      <Route path="/bancos"element={<BanksList />} ></Route>            
+                      <Route path="/companias" element={<CompaniesList />} ></Route>       
                       {/* <Route path="/costomensualidades" element={<CostoMensualidades />} ></Route>    */}
                       <Route path="/comprobantepdf" element={<ComprobantePDF />} ></Route>   
 
