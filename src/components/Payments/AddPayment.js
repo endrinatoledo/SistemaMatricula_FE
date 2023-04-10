@@ -1,16 +1,11 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import SearchRepresentative from './SearchRepresentative'
 import Search from './Search'
-import PaymentMethodTable from './PaymentMethodTable'
-import TabsPayments from './TabsPayments'
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import ModalFamily from './ModalFamily';
 import ModalStudents from './ModalStudents';
-import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import TablaMensualidades from './TablaMensualidades';
-const { standardMessages } = require('../commonComponents/MessagesAndLabels')
 const AxiosInstance = require("../utils/request").default;
 const UseStyles = makeStyles({
     typography: {
@@ -53,8 +48,6 @@ const AddPayment = () => {
     const [estudianteSeleccionado, setEstudianteSeleccionado] = React.useState(null)
     const classes = UseStyles();
 
-    console.log('estudianteSeleccionado-----------------------', estudianteSeleccionado)
-
     const getFamilyByRepId = async () => {
         try {
             const resultFamiles = (await AxiosInstance.get(`/representativeStudent/family/representativeId/${representativeData.repId}`)).data
@@ -75,6 +68,7 @@ const AddPayment = () => {
     const getFamilyByStudentId = async () => {
         try {
             const resultFamiles = (await AxiosInstance.get(`/representativeStudent/family/studentId/${estudianteSeleccionado.idStuden}`)).data
+            
             if (resultFamiles.ok === true) {
                 setFamilies(resultFamiles.data)
                 // setOpenModal(true)
@@ -143,12 +137,12 @@ const AddPayment = () => {
 
       const getMensualidadesFamily = async(selectedFamily) =>{
 
-          console.log('esto llegoooo en la familia', selectedFamily)
+        //   console.log('esto llegoooo en la familia', selectedFamily)
           if (selectedFamily != null){
-              console.log('entro a la validacion', selectedFamily)
+            //   console.log('entro a la validacion', selectedFamily)
               try {
                   const response = (await AxiosInstance.get(`/pagoMensualidades/familia/${selectedFamily.famId}`)).data
-                  console.log('respuesta de consultar familia', response)
+                //   console.log('respuesta de consultar familia', response)
                   if (response.ok === true && response.data.length > 0) {
                       setMensualidades(response.data)
                       setDataDetalle(response.dataDetalle)
@@ -178,7 +172,6 @@ const AddPayment = () => {
         }
     }, [representativeData])
     React.useEffect(() => {
-        console.log('llego a Validar')
         if (studentData.length === 1) {
             getMensualidadesFamily(studentData)
         } else if (studentData.length > 1) {

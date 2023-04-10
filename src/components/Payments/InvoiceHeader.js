@@ -7,7 +7,9 @@ import Stack from '@mui/material/Stack';
 import LoadingButtons from '../commonComponents/LoadingButton';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import moment from 'moment';
+import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
+
+const AxiosInstance = require("../utils/request").default;
 const UseStyles = makeStyles({
     stack: {
         marginTop: 40
@@ -51,10 +53,72 @@ const UseStyles = makeStyles({
 const InvoiceHeader = ({ setVoucherType, datosBase, setDatosCabecera, datosCabecera, Item2, pagosRegistrados, datosPago}) => {
 
     const classes = UseStyles();
+    const [alertModal, setAlertModal] = React.useState(false)
+    const [message, setMessage] = React.useState()
+    const [alertType, setAlertType] = React.useState('');
+    const [openModal, setOpenModal] = React.useState(false)
 
-    // React.useEffect(() => {
-    //     datosBase()
-    // }, [1])
+    const tipoBusqueda = [
+        { id: 1, title: 'Representante' },
+        { id: 2, title: 'Compañía' }
+    ]
+
+    const [busquedaSeleccionada, setBusquedaSeleccionada] = React.useState({ id: 1, title: 'Representante' })
+    const [companiaSeleccionada, setCompaniaSeleccionada] = React.useState()
+    const [datosRepresentante, setDatosRepresentante] = React.useState(datosCabecera)
+    const [companiesList, setCompaniesList] = React.useState([])
+
+    const getCompanies= async () => {
+        try {
+            const resultCompanies = (await AxiosInstance.get(`/companies/allCompanies/active`)).data
+            console.log('resultCompanies', resultCompanies)
+
+            if (resultCompanies.ok === true) {
+                setCompaniesList(resultCompanies.data)
+                setOpenModal(true)
+            } else {
+                setMessage(resultCompanies.message)
+                setAlertType("error")
+                setAlertModal(true)
+            }
+        } catch {
+            setMessage('Error consultando compañias')
+            setAlertType("error")
+            setAlertModal(true)
+        }
+    }
+    React.useEffect(() => {
+        if (busquedaSeleccionada.id === 1) {
+            setDatosCabecera(datosRepresentante)
+            setCompaniaSeleccionada()
+        }else{
+            setDatosCabecera({
+                ...datosCabecera,
+                address: '',
+                identificacion: '',
+                phones: '',
+                razonSocial: '',
+            })
+        }
+    }, [busquedaSeleccionada.id])
+
+    React.useEffect(() => {
+        getCompanies()
+    }, [])
+
+    React.useEffect(() => {
+        if (companiaSeleccionada){
+            setDatosCabecera({
+                ...datosCabecera,
+                address: companiaSeleccionada.comDirection,
+                identificacion: companiaSeleccionada.comRif,
+                phones: companiaSeleccionada.comPhone,
+                razonSocial: companiaSeleccionada.comName,
+            })
+        }
+    }, companiaSeleccionada)
+
+    
 
   return (
     <div>
@@ -62,6 +126,45 @@ const InvoiceHeader = ({ setVoucherType, datosBase, setDatosCabecera, datosCabec
         <Grid item xs={12}>
                   {datosCabecera ? 
                       <Item2>
+                          <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                              <Autocomplete
+                              options={tipoBusqueda}
+                              renderInput={(params) => (
+                                  <TextField {...params} variant="standard" label="Tipo de Búsqueda" />
+                              )}
+                              value={busquedaSeleccionada}
+                              getOptionLabel={(option) => option.title}
+                              onChange={(event, newValue) => {
+                                  setBusquedaSeleccionada(newValue)
+                              }}
+                              required
+                              noOptionsText={'Sin Opciones'}
+                              sx={{ width: '15%' }}
+                              id="clear-on-escape"
+                          />
+                          {
+                            (busquedaSeleccionada.id == 2)
+                                      ? <Autocomplete
+                                          options={companiesList}
+                                          renderInput={(params) => (
+                                              <TextField {...params} variant="standard" label="Seleccionar Compañía" />
+                                          )}
+                                          value={companiaSeleccionada}
+                                          getOptionLabel={(option) => option.comName}
+                                          onChange={(event, newValue) => {
+                                              setCompaniaSeleccionada(newValue)
+                                          }}
+                                          required
+                                          noOptionsText={'Sin Opciones'}
+                                          sx={{ width: '35%' }}
+                                          id="clear-on-escape"
+                                      />
+                            : null
+                          }
+                          </Stack>
+
+                          
+
                           <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                               <TextField
                                   sx={{ width: '38%' }}
@@ -158,9 +261,6 @@ const InvoiceHeader = ({ setVoucherType, datosBase, setDatosCabecera, datosCabec
                                   required
                                   id="clear-on-escape"
                               />
-
-
-
                               {/* <TextField
                                                 // error={errorMontoDP}
                                                 // helperText={mensajeErrorMontoDP}
@@ -175,12 +275,12 @@ const InvoiceHeader = ({ setVoucherType, datosBase, setDatosCabecera, datosCabec
                                                     // setPagoPorRegistrar({ ...pagoPorRegistrar, monto: e.target.value })                      
                                                 }}
                                             /> */}
-
-
                           </Stack>
+                          {(alertModal) ?
+                              <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
+                              : null} 
                       </Item2>
-                : null}
-            
+                : null}   
         </Grid>
       </Grid>
     </div>
