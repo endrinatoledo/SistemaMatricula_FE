@@ -32,7 +32,7 @@ const TablaMensualidades = ({ periodoSeleccionado, selectedFamily, getMensualida
         { title: 'Marzo', field: 'mar', render: (rows) => meses(rows.mar, 'mar', 'Marzo', rows) },
         { title: 'Abril', field: 'abr', render: (rows) => meses(rows.abr, 'abr', 'Abril', rows) },
         { title: 'Mayo', field: 'may', render: (rows) => meses(rows.may, 'may', 'Mayo', rows) },
-        { title: 'Junio', field: 'jun', render: (rows) => meses(rows.abr, 'abr', 'Junio', rows) },
+        { title: 'Junio', field: 'jun', render: (rows) => meses(rows.jun, 'jun', 'Junio', rows) },
         { title: 'Julio', field: 'jul', render: (rows) => meses(rows.jul, 'jul', 'Julio', rows) },
         { title: 'Agosto', field: 'ago', render: (rows) => meses(rows.ago, 'ago', 'Agosto', rows) },
     ];
