@@ -64,10 +64,11 @@ const CollectionReports = () => {
   const [nombreSeccion, setNombreSeccion] = React.useState(null)
   const [nombreArchivo, setNombreArchivo] = React.useState(null)
   const [nombreReporte, setNombreReporte] = React.useState(null)
-
+  const [rangoFechas, setRangoFechas] = React.useState({fechaI:null, fechaF:null})
   const reportType = [
     { id: 10, title: 'Resumen mensualidades' },
     { id: 11, title: 'Resumen morosos' },
+    { id: 12, title: 'Clasificación de pagos' },
   ]
 
   const getAllPeriod = async () => {
@@ -118,7 +119,26 @@ const CollectionReports = () => {
         sheetName: "Estudiantes"
       })
     }
+    if (reportTypeSelected.id === 12) {}
+    setNombreArchivo(`Reporte_clasificacion_pagos}.xlsx`)
 
+    setColumns([
+      { title: 'Fecha', field: 'fecha' },
+      { title: '$ Efectivo', field: 'dolEfect', type: 'currency' },
+      // { title: '$ Trans', field: 'dolTran'},
+      // { title: '$ Pto V.', field: 'dolPun' },
+      { title: 'Bol Efectivo', field: 'bolEfect', type: 'currency' },
+      { title: 'Bol Transferencia', field: 'bolTran', type: 'currency' },
+      { title: 'Bol Pto Venta', field: 'bolPun', type: 'currency' },
+    ])
+
+    setExcelStructure({
+      fileName: `Reporte_clasificacion_pagos.xlsx`,
+      columns: [["Fecha", "$ Efectivo",
+      //  "$ Transferencia", "$ Pto Venta", 
+       "Bol Efectivo", "Bol Transferencia", "Bol Pto Venta"]],
+      sheetName: "Clasificacion de pagos"
+    })
   }
 
   const searchReport = async () => {
@@ -127,7 +147,8 @@ const CollectionReports = () => {
     let data = {
       periodo: periodSelected,
       level: null,
-      section: null
+      section: null,
+      fechas:null
     }
     if (reportTypeSelected.id === 11) {
 
@@ -145,6 +166,12 @@ const CollectionReports = () => {
       if (sectionSelected !== null) {
         data.section = sectionSelected.section;
       }
+
+    }
+    if (reportTypeSelected.id === 12) {
+
+      url = `/reports/clasificacion/pagos`
+      data.fechas = rangoFechas;
 
     }
 
@@ -209,10 +236,28 @@ const CollectionReports = () => {
   }, [periodSelected]);
 
   React.useEffect(() => {
-    if (periodSelected === null || reportTypeSelected === null || levelSelected === null || sectionSelected === null) {
-      setSearchButton(true)
-    } else {
-      setSearchButton(false)
+    if (reportTypeSelected !== null ) { // Si existe un reporte seleccionado
+      if (reportTypeSelected.id == 11 || reportTypeSelected.id == 10) {
+        setRangoFechas({ fechaI: null, fechaF: null })
+        if (periodSelected === null || reportTypeSelected === null || levelSelected === null || sectionSelected === null) {
+          setSearchButton(true)
+        } else {
+          setSearchButton(false)
+        }
+      }
+
+      if (reportTypeSelected.id == 12) {
+        setLevelSelected(null)
+        setSectionSelected(null)
+        if (rangoFechas.fechaI === null || rangoFechas.fechaF === null) {
+          setSearchButton(true)
+        } else {
+          setSearchButton(false)
+        }
+      }
+    }else{ // si no hay reporte seleccionado
+      // console.log('entro por reporte no seleccionado')
+      setRangoFechas({ fechaI: null, fechaF: null })
     }
   }, [reportTypeSelected]);
 
@@ -223,6 +268,18 @@ const CollectionReports = () => {
       setSearchButton(false)
     }
   }, [levelSelected]);
+
+  React.useEffect(() => {
+    if (reportTypeSelected !== null) { // Si existe un reporte seleccionado
+      if (reportTypeSelected.id == 12 && rangoFechas.fechaI !== null && rangoFechas.fechaF !== null) {
+        
+        setSearchButton(false)
+      } else {
+        setSearchButton(true)
+      }
+    }
+
+  }, [rangoFechas]);
 
   React.useEffect(() => {
     if (periodSelected === null || reportTypeSelected === null || levelSelected === null || sectionSelected === null) {
@@ -314,6 +371,46 @@ const CollectionReports = () => {
                     noOptionsText={'Sin Opciones'}
                     sx={{ width: '20%' }}
                     id="clear-on-escape"
+                  />
+                </Stack>
+              </>
+              : null
+            }
+            {(reportTypeSelected?.id === 12)
+              ? <>
+                <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
+                  
+                  <TextField
+                    required
+                    // inputRef={defaultValue}
+                    type='date'
+                    id="repDateOfBirth"
+                    label="Fecha Inicio"
+                    variant="standard"
+                    sx={{ width: '20%' }}
+                    // value={(editRepresentative) ? selectedRepresentative.repDateOfBirth : representativeObject.repDateOfBirth}
+                    InputLabelProps={{ shrink: true }}
+                    // helperText={(representativeObject.repDateOfBirth === null || representativeObject.repDateOfBirth === '') ? requiredField : ''}
+                    // error={orfRepDateOfBirth}
+                    onChange={e => {
+                      setRangoFechas({ ...rangoFechas, fechaI: e.target.value ? e.target.value : null })
+                    }}
+                  />
+                  <TextField
+                    required
+                    // inputRef={defaultValue}
+                    type='date'
+                    id="repDateOfBirth"
+                    label="Fecha Fin"
+                    variant="standard"
+                    sx={{ width: '20%' }}
+                    // value={(editRepresentative) ? selectedRepresentative.repDateOfBirth : representativeObject.repDateOfBirth}
+                    InputLabelProps={{ shrink: true }}
+                    // helperText={(representativeObject.repDateOfBirth === null || representativeObject.repDateOfBirth === '') ? requiredField : ''}
+                    // error={orfRepDateOfBirth}
+                    onChange={e => {
+                      setRangoFechas({ ...rangoFechas, fechaF: e.target.value ? e.target.value : null })
+                    }}
                   />
                 </Stack>
               </>
