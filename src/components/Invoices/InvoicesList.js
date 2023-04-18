@@ -1,6 +1,5 @@
 import React from 'react'
 import { makeStyles } from '@mui/styles';
-
 import MaterialTable from '@material-table/core';
 import LocalPrintshopRoundedIcon from '@mui/icons-material/LocalPrintshopRounded';
 import Box from '@mui/material/Box';
@@ -46,43 +45,23 @@ const UseStyles = makeStyles({
 const InvoicesList = () => {
   const classes = UseStyles();
   const [listPeriods, setListPeriods] = React.useState([])
-  const [periodSelected, setPeriodSelected] = React.useState(null)
   const [message, setMessage] = React.useState('')
   const [alertType, setAlertType] = React.useState('');
   const [alertModal, setAlertModal] = React.useState(false)
   const [filtroSeleccionado, setFiltroSeleccionado] = React.useState(null)
   const [searchButton, setSearchButton] = React.useState(true)
-  const [filtrosValue, setFiltrosValue] = React.useState({'period':null, 'mes':null, 'numCompro':null,'rif':null,'razonSocial':null})
+  const [filtrosValue, setFiltrosValue] = React.useState({ 'period': null, 'numCompro': null, 'rif': null, 'razonSocial': null, 'fechaI': null, 'fechaF': null })
+  const [filtrosForm, setFiltrosForm] = React.useState({ 'period': 0, 'numCompro': 2000, 'rif': 3000, 'razonSocial': 4000, 'fechaI': 5000, 'fechaF': 1000 })
+  const [dataSource, setDataSource] = React.useState([])
+
   const columns = [
-    { title: 'Num Control', field: '' },
-    { title: 'Num Fact', field: '' },
-    { title: 'CI/RIF', field: '' },
-    { title: 'Razón Social', field: '' },
-    { title: 'Fecha', field: '' },
-    { title: 'Monto Total', field: '' }]
+    { title: 'Num Control', field: 'numControl' },
+    { title: 'Num Fact', field: 'numFact' },
+    { title: 'CI/RIF', field: 'ciRif' },
+    { title: 'Razón Social', field: 'razon' },
+    { title: 'Fecha', field: 'fecha' }]
 
-  const Filtro = [
-    // { id: 1, title: 'Meses' },
-    { id: 2, title: 'Num Comprobante' },
-    // { id: 3, title: 'CI/RIF' },
-    // { id: 4, title: 'Razón Social' },
-  ]
-
-  const Meses = [
-    { id: 9, title: 'Septiembre' },
-    { id: 10, title: 'Octubre' },
-    { id: 11, title: 'Noviembre' },
-    { id: 12, title: 'Diciembre' },
-    { id: 1, title: 'Enero' },
-    { id: 2, title: 'Febrero' },
-    { id: 3, title: 'Marzo' },
-    { id: 4, title: 'Abril' },
-    { id: 5, title: 'Mayo' },
-    { id: 6, title: 'Junio' },
-    { id: 7, title: 'Julio' },
-    { id: 8, title: 'Agosto' },
-
-  ]
+  console.log('filtrosValue', filtrosValue)
 
   const getAllPeriod = async () => {
 
@@ -106,35 +85,13 @@ const InvoicesList = () => {
   }
 
   const searchInvoices = async () => {
-    // tableColumns(reportTypeSelected)
-    // let url = ``
-    // let data = {
-    //   periodo: periodSelected,
-    //   level: null,
-    //   section: null
-    // }
-    // if (reportTypeSelected.id === 1) {
 
-    //   url = `/reports/levelsection`
-    //   data.level = levelSelected.level;
-    //   if (sectionSelected !== null) {
-    //     data.section = sectionSelected.section;
-    //   }
+    const result = (await AxiosInstance.post('/invoice/filtro', filtrosValue)).data
+    console.log('entro con esto', result)
 
-    // } else
-    //   if (reportTypeSelected.id === 2) {
-    //     url = `/reports/statistics`
-    //   } else
-    //     if (reportTypeSelected.id === 3) {
-    //       url = `/reports/familypayroll`
-    //     } else
-    //       if (reportTypeSelected.id === 4) {
-    //         url = `/reports/schoolinsurance`
-    //       }
-
-    // const result = (await AxiosInstance.post(url, data)).data
-
-    // if (result.ok === true) {
+    if (result.ok === true) {
+      setDataSource(result.data)
+    }
 
     //   setDataReport(result.data)
     //   // setSeeTable(true)
@@ -146,9 +103,30 @@ const InvoicesList = () => {
     // }
 
   } 
+
+  const limpiarForm = () =>{
+    setFiltrosValue({ 'numCompro': null, 'rif': null, 'razonSocial': null, 'fechaI': null, 'fechaF': null })
+    setFiltrosForm({ 'numCompro': filtrosForm.numCompro + 1, 'rif': filtrosForm.rif + 1, 'razonSocial': filtrosForm.razonSocial + 1, 'fechaI': filtrosForm.fechaI + 1, 'fechaF': filtrosForm.fechaF + 1 })
+
+  }
   React.useEffect(() => {
     getAllPeriod()
   }, [0]);
+
+  React.useEffect(() => {
+    if (filtrosValue.period == null){
+      setSearchButton(true)
+    }else{
+      if (filtrosValue.fechaF == null && filtrosValue.fechaI == null && filtrosValue.numCompro == null && filtrosValue.rif == null && filtrosValue.razonSocial == null) {
+        setSearchButton(true)
+      } else {
+        setSearchButton(false)
+      }
+    }
+    
+  }, [filtrosValue]);
+
+
 
   return (
     <>
@@ -159,94 +137,158 @@ const InvoicesList = () => {
             <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
 
               <Autocomplete
+                key={filtrosForm.period}
                 options={listPeriods}
                 renderInput={(params) => (
                   <TextField {...params} variant="standard" label="Periodo" />
                 )}
-                value={periodSelected}
+                value={filtrosValue.period}
                 getOptionLabel={(option) => `${option.perStartYear} - ${option.perEndYear}`}
                 onChange={(event, newValue) => {
-                  // setPeriodSelected(newValue)
-                  setFiltrosValue({ ...filtrosValue, 'period': newValue ? newValue : null})
+                  setFiltrosValue({ ...filtrosValue, 'period': newValue ? newValue : null })
                 }}
                 required
                 noOptionsText={'Sin Opciones'}
-                sx={{ width: '20%' }}
+                sx={{ width: '15%' }}
                 id="clear-on-escape"
               />
               <TextField
-                // InputProps={{ readOnly: true }}
-                // value={familyData.famCode}
+                key={filtrosForm.numCompro}
                 id="numComprobante"
                 label="Numero Comprobante"
                 variant="standard"
                 onChange={e => {
-                  setFiltrosValue({ ...filtrosValue, 'numCompro': e.target.value ? e.target.value : null })
+                  setFiltrosValue({ ...filtrosValue, 'numCompro': e.target.value && (e.target.value).trim() != ''  ? e.target.value : null })
+                }}
+                sx={{ width: '15%' }}
+
+              />
+              <TextField
+                key={filtrosForm.fechaI}
+                type='date'
+                id="fechaI"
+                label="Fecha Inicio"
+                variant="standard"
+                sx={{ width: '15%' }}
+                InputLabelProps={{ shrink: true }}
+                onChange={e => {
+                  setFiltrosValue({ ...filtrosValue, 'fechaI': e.target.value && (e.target.value).trim() != ''  ? e.target.value : null })
                 }}
               />
-              {/* <Autocomplete
-                options={Filtro}
-                renderInput={(params) => (
-                  <TextField {...params} variant="standard" label="Buscar por" />
-                )}
-                value={filtroSeleccionado}
-                getOptionLabel={(option) => `${option.title}`}
-                onChange={(event, newValue) => {
-                  setFiltroSeleccionado(newValue)
+              <TextField
+                key={filtrosForm.fechaF}                
+                type='date'
+                id="fechaF"
+                label="Fecha Fin"
+                variant="standard"
+                sx={{ width: '15%' }}
+                InputLabelProps={{ shrink: true }}
+                onChange={e => {
+                  setFiltrosValue({ ...filtrosValue, 'fechaF': e.target.value && (e.target.value).trim() != ''  ? e.target.value : null })
                 }}
-                required
-
-                noOptionsText={'Sin Opciones'}
-                sx={{ width: '40%' }}
-                id="clear-on-escape"
-              /> */}
+              />
               <Button variant="outlined" size="small"
                 disabled={searchButton}
                 onClick={() => searchInvoices()}
               >Buscar</Button>
+              <Button variant="outlined" size="small"
+                onClick={() => limpiarForm()}
+              >Limpiar</Button>
             </Stack>
             <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
-
-              <Autocomplete
-                options={Meses}
-                renderInput={(params) => (
-                  <TextField {...params} variant="standard" label="Meses" />
-                )}
-                value={periodSelected}
-                getOptionLabel={(option) => option.title}
-                onChange={(event, newValue) => {
-                  setFiltrosValue({ ...filtrosValue, 'mes': newValue ? newValue : null })
-                }}
-                required
-                noOptionsText={'Sin Opciones'}
-                sx={{ width: '20%' }}
-                id="clear-on-escape"
-              />
               <TextField
-                // InputProps={{ readOnly: true }}
-                // value={familyData.famCode}
+                key={filtrosForm.rif}
                 id="rif"
                 label="CI/RIF"
                 variant="standard"
                 onChange={e => {
-                  setFiltrosValue({ ...filtrosValue, 'rif': e.target.value ? e.target.value : null })
+                  setFiltrosValue({ ...filtrosValue, 'rif': e.target.value && (e.target.value).trim() != ''  ? e.target.value : null })
                 }}
+                sx={{ width: '15%' }}
               />
               <TextField
-                // InputProps={{ readOnly: true }}
-                // value={familyData.famCode}
+                key={filtrosForm.razonSocial}
                 id="razon"
                 label="Razón Social"
                 variant="standard"
-                sx={{ width: '40%' }}
+                sx={{ width: '31%' }}
                 onChange={e => {
-                  setFiltrosValue({ ...filtrosValue, 'razonSocial': e.target.value ? e.target.value : null })
+                  setFiltrosValue({ ...filtrosValue, 'razonSocial': e.target.value && (e.target.value).trim() != ''  ? e.target.value : null })
                 }}
               />
             </Stack>
           </>
           : null
         }
+        {(dataSource.length > 0)
+        ? <>
+            <MaterialTable title={'Métodos de Pago'}
+              data={dataSource}
+              columns={columns}
+              // actions={[
+              //   {
+              //     icon: () => <FilterList />,
+              //     tooltip: "Activar Filtros",
+              //     onClick: () => setFiltering(!filtering),
+              //     isFreeAction: true
+              //   }
+              // ]}
+              options={{
+                width: 300,
+                actionsCellStyle: { paddingLeft: 50, paddingRight: 50 },
+                // filtering: filtering,
+                actionsColumnIndex: -1,
+                addRowPosition: 'first',
+                headerStyle: {
+                  backgroundColor: "#007bff",
+                  color: "#FFF",
+                  fontWeight: 'normal',
+                  fontSize: 18,
+                  textAlign: "center",
+                },
+                filterCellStyle: {
+
+                }
+              }}
+              // editable={{
+              //   onRowAdd: (newRow) => new Promise((resolve, reject) => {
+
+              //     AxiosInstance.post(`/paymentmethod/`, newRow)
+              //       .then(resp => {
+              //         setTimeout(() => {
+              //           if (resp.data.ok === true) {
+              //             setAlertType("success")
+              //             setMessage(resp.data.message)
+              //             setAlertModal(true)
+              //             fillTable()
+              //             resolve()
+              //           } else {
+              //             setMessage(resp.data.message)
+              //             setAlertType("error")
+              //             setAlertModal(true)
+              //             reject()
+              //           }
+
+              //         }, 2000);
+
+              //       })
+              //       .catch((err) => {
+              //         setTimeout(() => {
+              //           setMessage(standardMessages.connectionError)
+              //           setAlertType("error")
+              //           setAlertModal(true)
+              //           fillTable()
+              //           reject()
+              //         }, 2000);
+              //       });
+              //   }),
+              // }}
+            />
+            {(alertModal) ?
+              <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
+              : null}
+        </>
+        :null}
       </Box>
     </>
   )
