@@ -5,23 +5,14 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
-import LoadingButtons from '../commonComponents/LoadingButton';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import nextId from "react-id-generator";
 import { styled } from '@mui/material/styles';
-import EditIcon from '@mui/icons-material/Edit';
-import MaterialTable from '@material-table/core';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import moment from 'moment';
 
 const AxiosInstance = require("../utils/request").default;
 
@@ -108,7 +99,7 @@ const ModalVerPagos = ({ periodoSeleccionado, selectedFamily, statusModalVerPago
         try {
             const monthlyPaymentFamily = (await AxiosInstance.get(`/invoiceHeader/invoice/family/${selectedFamily.famId}/periodo/${periodoSeleccionado.perId}`)).data
             // console.log('monthlyPaymentFamilyyyyyyyyyyyyyyyyyyyyyy', monthlyPaymentFamily)
-            console.log('monthlyPaymentFamily', monthlyPaymentFamily)
+            console.log('monthlyPaymentFamily......................', monthlyPaymentFamily)
 
             // const result = JSON.parse(monthlyPaymentFamily)
             // console.log('result.data > 0', result.data > 0)

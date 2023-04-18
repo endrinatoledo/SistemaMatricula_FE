@@ -8,6 +8,9 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Button from '@mui/material/Button';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+const ModalFactura = require('./ModalFactura').default 
+// import ModalFactura from './ModalFactura';
 const AxiosInstance = require("../utils/request").default;
 
 
@@ -48,11 +51,12 @@ const InvoicesList = () => {
   const [message, setMessage] = React.useState('')
   const [alertType, setAlertType] = React.useState('');
   const [alertModal, setAlertModal] = React.useState(false)
-  const [filtroSeleccionado, setFiltroSeleccionado] = React.useState(null)
   const [searchButton, setSearchButton] = React.useState(true)
   const [filtrosValue, setFiltrosValue] = React.useState({ 'period': null, 'numCompro': null, 'rif': null, 'razonSocial': null, 'fechaI': null, 'fechaF': null })
   const [filtrosForm, setFiltrosForm] = React.useState({ 'period': 0, 'numCompro': 2000, 'rif': 3000, 'razonSocial': 4000, 'fechaI': 5000, 'fechaF': 1000 })
   const [dataSource, setDataSource] = React.useState([])
+  const [modalFacturaValue, setModalFacturaValue] = React.useState(false);
+  const [facturaSeleccionada, setFacturaSeleccionada] = React.useState(null);
 
   const columns = [
     { title: 'Num Control', field: 'numControl' },
@@ -225,14 +229,29 @@ const InvoicesList = () => {
             <MaterialTable title={'Métodos de Pago'}
               data={dataSource}
               columns={columns}
-              // actions={[
-              //   {
-              //     icon: () => <FilterList />,
-              //     tooltip: "Activar Filtros",
-              //     onClick: () => setFiltering(!filtering),
-              //     isFreeAction: true
-              //   }
-              // ]}
+              actions={[
+                {
+                  icon: () => <LocalPrintshopRoundedIcon />,
+                  tooltip: 'Reimprimir',
+                  onClick: (event, rowData) => {
+                    console.log('factura seleccionada',rowData)
+                    setFacturaSeleccionada(rowData)
+                    setModalFacturaValue(true)
+                    
+                    // window.location = `verinscripcion/${rowData.id}`;
+                  }
+                },
+                {
+                  icon: () => <HighlightOffIcon />,
+                  tooltip: 'Anular',
+                  onClick: (event, rowData) => {
+                    // window.location = `verinscripcion/${rowData.id}`;
+                    setFacturaSeleccionada(rowData)
+                    console.log('factura seleccionada', rowData)
+                    setModalFacturaValue(true)
+                  }
+                }
+              ]}
               options={{
                 width: 300,
                 actionsCellStyle: { paddingLeft: 50, paddingRight: 50 },
@@ -284,6 +303,9 @@ const InvoicesList = () => {
               //   }),
               // }}
             />
+            {(modalFacturaValue)
+              ?  <ModalFactura facturaSeleccionada={facturaSeleccionada} setFacturaSeleccionada={setFacturaSeleccionada} modalFacturaValue={modalFacturaValue} setModalFacturaValue={setModalFacturaValue} />
+            :null}
             {(alertModal) ?
               <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
               : null}
