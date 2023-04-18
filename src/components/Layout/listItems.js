@@ -21,7 +21,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import RequestPageRoundedIcon from '@mui/icons-material/RequestPageRounded';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-
+import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 
 export const CollectionListItems = () => {
 
@@ -42,6 +42,16 @@ export const CollectionListItems = () => {
             </ListItemButton>
           </List>
         </NavLink>
+      <NavLink to='/facturas'>
+        <List component="div" disablePadding>
+          <ListItemButton sx={{ pl: 2 }} >
+            <ListItemIcon>
+              <ReceiptLongRoundedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Facturas" />
+          </ListItemButton>
+        </List>
+      </NavLink>
       <NavLink to='/conceptosdefactura'>
         <List component="div" disablePadding>
           <ListItemButton sx={{ pl: 2 }} >

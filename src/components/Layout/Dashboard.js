@@ -49,6 +49,7 @@ import BanksList from '../Banks/BanksList';
 import CostoMensualidades from '../CostoMensualidades/CostoMensualidadesList';
 import ComprobantePDF from '../Payments/ComprobantePDF';
 import CompaniesList from '../Companies/CompaniesList'
+import InvoicesList from '../Invoices/InvoicesList'
 const drawerWidth = 240;
  
 const AppBar = styled(MuiAppBar, {
@@ -205,7 +206,9 @@ const Dashboard= () => {
                       <Route path="/companias" element={<CompaniesList />} ></Route>       
                       {/* <Route path="/costomensualidades" element={<CostoMensualidades />} ></Route>    */}
                       <Route path="/comprobantepdf" element={<ComprobantePDF />} ></Route>   
+                      <Route path="/facturas" element={<InvoicesList />} ></Route>   
 
+                        
                                      
                     </Routes> 
                   }
