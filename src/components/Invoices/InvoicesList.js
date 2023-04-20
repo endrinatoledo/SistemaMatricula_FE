@@ -57,6 +57,7 @@ const InvoicesList = () => {
   const [dataSource, setDataSource] = React.useState([])
   const [modalFacturaValue, setModalFacturaValue] = React.useState(false);
   const [facturaSeleccionada, setFacturaSeleccionada] = React.useState(null);
+  const [tipoAccion, setTipoAccion] = React.useState(null);
 
   const columns = [
     { title: 'Num Control', field: 'numControl' },
@@ -237,6 +238,7 @@ const InvoicesList = () => {
                     console.log('factura seleccionada',rowData)
                     setFacturaSeleccionada(rowData)
                     setModalFacturaValue(true)
+                    setTipoAccion('reimprimir')
                     
                     // window.location = `verinscripcion/${rowData.id}`;
                   }
@@ -249,6 +251,8 @@ const InvoicesList = () => {
                     setFacturaSeleccionada(rowData)
                     console.log('factura seleccionada', rowData)
                     setModalFacturaValue(true)
+                    setTipoAccion('Anular')
+
                   }
                 }
               ]}
@@ -304,7 +308,7 @@ const InvoicesList = () => {
               // }}
             />
             {(modalFacturaValue)
-              ?  <ModalFactura facturaSeleccionada={facturaSeleccionada} setFacturaSeleccionada={setFacturaSeleccionada} modalFacturaValue={modalFacturaValue} setModalFacturaValue={setModalFacturaValue} />
+              ? <ModalFactura tipoAccion={tipoAccion} setTipoAccion={setTipoAccion} facturaSeleccionada={facturaSeleccionada} setFacturaSeleccionada={setFacturaSeleccionada} modalFacturaValue={modalFacturaValue} setModalFacturaValue={setModalFacturaValue} />
             :null}
             {(alertModal) ?
               <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
