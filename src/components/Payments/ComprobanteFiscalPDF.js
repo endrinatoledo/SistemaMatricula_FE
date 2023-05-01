@@ -34,7 +34,6 @@ const ComprobanteFiscalPDF = ({ replicaDatosPago, numFact, datosCompletos, datos
     const [montos, setMontos] = React.useState([])
     const [total, setTotal] = React.useState(null)
     const [destallesDePagos, setDestallesDePagos] = React.useState(null)
-    // console.log('stos son mis datos completos', datosCompletos)
 
     const bancosYreferencias = () => {
         let descripcion = ''

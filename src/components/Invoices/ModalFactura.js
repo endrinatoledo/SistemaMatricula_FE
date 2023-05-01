@@ -91,12 +91,11 @@ const ModalFactura = ({ paginaCabecera, setPaginaCabecera, formatFactura, setFor
     const [alertType, setAlertType] = React.useState('');
     const [companiaSeleccionada, setCompaniaSeleccionada] = React.useState();
     const [companiesList, setCompaniesList] = React.useState([])
-    const [busquedaSeleccionada, setBusquedaSeleccionada] = React.useState({ id: 1, title: 'Representante'})
+    const [busquedaSeleccionada, setBusquedaSeleccionada] = React.useState({ id: 1, title: 'Datos originales'})
     const [keyValue, setKeyValue] = React.useState({ 'fecha': 0, 'cirif': 2000, 'razonSocial': 3000, 'telefonos': 4000, 'direccion': 5000 })
     const [pagosRegistrados, setPagosRegistrados] = React.useState();
     const [datosPago, setDatosPago] = React.useState();
     const tasaDelDia = { excAmount: parseFloat(facturaSeleccionada.cuerpo[0].indtasa) };
-    const [datosCabecera, setDatosCabecera] = React.useState();
     const [formatoImpresion, setFormatoImpresion] = React.useState(null);
     const [datosCompletos, setDatosCompletos] = React.useState(null);
     const [numControl, setNumControl] = React.useState(null);
@@ -118,7 +117,6 @@ const ModalFactura = ({ paginaCabecera, setPaginaCabecera, formatFactura, setFor
     console.log('facturaSeleccionada', facturaSeleccionada);
 
     const rellenarConCeros = (number) => {
-        console.log('--------*****', typeof number)
         var numberOutput = Math.abs(number); /* Valor absoluto del número */
         var length = number.toString().length; /* Largo del número */
         var zero = "0"; /* String de cero */
@@ -145,8 +143,6 @@ const ModalFactura = ({ paginaCabecera, setPaginaCabecera, formatFactura, setFor
         setVoucherType(null)
         setPaginaCabecera(true)
     }
-
-    console.log('-----------------', typeof facturaSeleccionada.numControl)
 
 const mapearPagosRegistrados = () =>{
     const result = facturaSeleccionada.pago.map((item,index) =>{
@@ -214,11 +210,6 @@ const mapearPagosRegistrados = () =>{
         return descripcion.substring(0, descripcion.length - 2)
     }
 
-    const mapeoDataCabecera = () => {
-        // setDatosCabecera
-
-    }
-
     const mapearCuerpo = () => {
         const result = facturaSeleccionada.cuerpo.map((item,index) =>
             {
@@ -227,42 +218,21 @@ const mapearPagosRegistrados = () =>{
                 "student": item.indStuNam,
                 "descripcion": item.indDescripcion,
                 "costo": item.indcosto,
-                "pagoAplicadoBol": item.indMontoAgregadoBol
+                "pagoAplicadoBol": parseFloat(item.indMontoAgregadoBol)
             }
             })
         return result
     }
 
-
-
     const mapearDatosPago = () => {
         const result = facturaSeleccionada.cuerpo.map((item,index) =>{
             return  {
                 "key": `id${index}`,
-                    // "mopId": 2501,
-                    // "mes": "feb",
-                    // "student": "Victoria  Montilla Diaz -> 4TO. AÑO ",
-                    // "descripcion": "Mensualidad Febrero",
-                    // "costo": 20,
-                    // "costoNeto": 20,
-                    // "moneda": null,
-                    // "metodoPago": null,
-                    // "montoPagado": 5,
-                    // "restante": 15,
-                    // "descripcionPago": "",
-                    // "montoRestanteAplicadoBol": 289.68,
-                    // "montoRestanteAplicadoDol": 11.8769987699877,
-                    // "pagoAplicadoDol": 3.1230012300123002,
-                    // "pagoAplicadoBol": 76.17
                 }
-            
-            
         })
         return result
     }
     const formatoAimprimir = () => {
-
-
         setPaginaCabecera(false)
         setDatosCompletos(
             {
@@ -277,10 +247,6 @@ const mapearPagosRegistrados = () =>{
                 "cuerpo": mapearCuerpo()
             }
         )
-        setPagosRegistrados(mapearPagosRegistrados())
-        setDatosPago(mapearDatosPago())
-        setNumFact(rellenarConCeros(Number(facturaSeleccionada.numFact)))
-        setNumControl(`00-${rellenarConCeros(Number(facturaSeleccionada.numControl))}`)
         setTimeout(() => {
             setFormatoImpresion(voucherType);
         }, 2000);
@@ -331,16 +297,14 @@ const mapearPagosRegistrados = () =>{
     React.useEffect(() => {
         getCompanies()
         validarCabecera()
+        setPagosRegistrados(mapearPagosRegistrados())
+        setDatosPago(mapearDatosPago())
+        setNumFact(rellenarConCeros(Number(facturaSeleccionada.numFact)))
+        setNumControl(`00-${rellenarConCeros(Number(facturaSeleccionada.numControl))}`)
     }, [])
     React.useEffect(() => {
         validarCabecera()
     }, [voucherType])
-
-    React.useEffect(() => {
-        if(!botonSiguiente){
-            mapeoDataCabecera()
-        }
-    }, [botonSiguiente])
 
     React.useEffect(() => {
 
@@ -359,7 +323,6 @@ const mapearPagosRegistrados = () =>{
 
     return (
         <div>
-            {/* <Button onClick={handleOpen}>Open modal</Button> */}
             <Modal
                 open={modalFacturaValue}
                 onClose={handleClose}
@@ -550,17 +513,20 @@ const mapearPagosRegistrados = () =>{
                                 ? <ComprobantePDF replicaDatosPago={[]} numControl={numControl} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} pagosRegistrados={pagosRegistrados}/>
                                 : (formatoImpresion === 'FACTURA FISCAL')
                                 ?
-                                <ComprobanteFiscalPDF />
+                                    <ComprobanteFiscalPDF replicaDatosPago={[]} numControl={numControl} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} pagosRegistrados={pagosRegistrados} />
                             : null
                         : null}
                     
                         <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-end" className={classes.stack}>
                             <Button variant="outlined" onClick={handleClose}
                                 color="error">Cerrar</Button>
-                            <Button variant="contained" 
-                            disabled={botonSiguiente}
-                            onClick={() => formatoAimprimir()}
+                        {paginaCabecera ?
+                            <Button variant="contained"
+                                disabled={botonSiguiente}
+                                onClick={() => formatoAimprimir()}
                                 color="success">Siguiente</Button>
+                        : null}
+                            
                         </Stack>
                         
                     
