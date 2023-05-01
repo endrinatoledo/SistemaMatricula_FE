@@ -58,7 +58,8 @@ const InvoicesList = () => {
   const [modalFacturaValue, setModalFacturaValue] = React.useState(false);
   const [facturaSeleccionada, setFacturaSeleccionada] = React.useState(null);
   const [tipoAccion, setTipoAccion] = React.useState(null);
-
+  const [formatFactura, setFormatFactura] = React.useState(false)
+  const [paginaCabecera, setPaginaCabecera] = React.useState(true)
   const columns = [
     { title: 'Num Control', field: 'numControl' },
     { title: 'Num Fact', field: 'numFact' },
@@ -66,14 +67,14 @@ const InvoicesList = () => {
     { title: 'Razón Social', field: 'razon' },
     { title: 'Fecha', field: 'fecha' }]
 
-  console.log('filtrosValue', filtrosValue)
+  // console.log('filtrosValue', filtrosValue)
 
   const getAllPeriod = async () => {
 
     try {
       const resultPeriods = (await AxiosInstance.get(`/periods/`)).data
 
-      console.log('resultPeriods', resultPeriods)
+      // console.log('resultPeriods', resultPeriods)
       if (resultPeriods.ok === true && resultPeriods.data) {
         setListPeriods(resultPeriods.data)
       }
@@ -92,7 +93,7 @@ const InvoicesList = () => {
   const searchInvoices = async () => {
 
     const result = (await AxiosInstance.post('/invoice/filtro', filtrosValue)).data
-    console.log('entro con esto', result)
+    // console.log('entro con esto', result)
 
     if (result.ok === true) {
       setDataSource(result.data)
@@ -235,9 +236,10 @@ const InvoicesList = () => {
                   icon: () => <LocalPrintshopRoundedIcon />,
                   tooltip: 'Reimprimir',
                   onClick: (event, rowData) => {
-                    console.log('factura seleccionada',rowData)
+                    // console.log('factura seleccionada',rowData)
                     setFacturaSeleccionada(rowData)
                     setModalFacturaValue(true)
+                    setFormatFactura(true)
                     setTipoAccion('reimprimir')
                     
                     // window.location = `verinscripcion/${rowData.id}`;
@@ -249,7 +251,7 @@ const InvoicesList = () => {
                   onClick: (event, rowData) => {
                     // window.location = `verinscripcion/${rowData.id}`;
                     setFacturaSeleccionada(rowData)
-                    console.log('factura seleccionada', rowData)
+                    // console.log('factura seleccionada', rowData)
                     setModalFacturaValue(true)
                     setTipoAccion('Anular')
 
@@ -308,7 +310,7 @@ const InvoicesList = () => {
               // }}
             />
             {(modalFacturaValue)
-              ? <ModalFactura tipoAccion={tipoAccion} setTipoAccion={setTipoAccion} facturaSeleccionada={facturaSeleccionada} setFacturaSeleccionada={setFacturaSeleccionada} modalFacturaValue={modalFacturaValue} setModalFacturaValue={setModalFacturaValue} />
+              ? <ModalFactura paginaCabecera={paginaCabecera} setPaginaCabecera={setPaginaCabecera} formatFactura={formatFactura} setFormatFactura={setFormatFactura} tipoAccion={tipoAccion} setTipoAccion={setTipoAccion} facturaSeleccionada={facturaSeleccionada} setFacturaSeleccionada={setFacturaSeleccionada} modalFacturaValue={modalFacturaValue} setModalFacturaValue={setModalFacturaValue} />
             :null}
             {(alertModal) ?
               <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
