@@ -9,18 +9,7 @@ import LoadingButtons from '../commonComponents/LoadingButton';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField, { textFieldClasses } from '@mui/material/TextField';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import { styled } from '@mui/material/styles';
-import MaterialTable from '@material-table/core';
-
 import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
-import moment from 'moment';
-import FormatoComprobante from '../Payments/FormatoComprobante';
 import ComprobantePDF from '../Payments/ComprobantePDF';
 import ComprobanteFiscalPDF from '../Payments/ComprobanteFiscalPDF';
 
@@ -83,7 +72,7 @@ const UseStyles = makeStyles({
         // marginBottom:40,
     }
 })
-const ModalFactura = ({ paginaCabecera, setPaginaCabecera, formatFactura, setFormatFactura, tipoAccion, setTipoAccion, facturaSeleccionada, setFacturaSeleccionada, modalFacturaValue, setModalFacturaValue }) => {
+const ModalFactura = ({ setDataSource, paginaCabecera, setPaginaCabecera, formatFactura, setFormatFactura, tipoAccion, setTipoAccion, facturaSeleccionada, setFacturaSeleccionada, modalFacturaValue, setModalFacturaValue }) => {
     const classes = UseStyles();
     const [botonSiguiente, setBotonSiguiente] = React.useState(null)
     const [alertModal, setAlertModal] = React.useState(false)
@@ -100,6 +89,10 @@ const ModalFactura = ({ paginaCabecera, setPaginaCabecera, formatFactura, setFor
     const [datosCompletos, setDatosCompletos] = React.useState(null);
     const [numControl, setNumControl] = React.useState(null);
     const [numFact, setNumFact] = React.useState(null);
+    const [statusCcircularProgress, setStatusCcircularProgress] = React.useState(false)
+    const [idInvoiceHeader, setIdInvoiceHeader] = React.useState(null)
+    const [idIMop, setIdMop] = React.useState([])
+
 
     const [nuevaCabecera, setNuevaCabecera] = React.useState({ 
         'fecha': facturaSeleccionada.fecha, 
@@ -113,7 +106,6 @@ const ModalFactura = ({ paginaCabecera, setPaginaCabecera, formatFactura, setFor
         { id: 2, title: 'Compañía' }
     ]
     const [voucherType, setVoucherType] = React.useState(null);
-    console.log('companiaSeleccionada', companiaSeleccionada);
     console.log('facturaSeleccionada', facturaSeleccionada);
 
     const rellenarConCeros = (number) => {
@@ -165,8 +157,6 @@ const mapearPagosRegistrados = () =>{
     const getCompanies = async () => {
         try {
             const resultCompanies = (await AxiosInstance.get(`/companies/allCompanies/active`)).data
-            console.log('resultCompanies', resultCompanies)
-
             if (resultCompanies.ok === true) {
                 setCompaniesList(resultCompanies.data)
                 // setOpenModal(true)
@@ -232,6 +222,38 @@ const mapearPagosRegistrados = () =>{
         })
         return result
     }
+    const anularFactura = async() =>{
+        if (idIMop.length){
+            try {
+                const result = (await AxiosInstance.put(`/invoiceHeader/anular/inh/${idInvoiceHeader}`, {arrayIdMop: idIMop})).data
+                console.log('result', result)
+                setTimeout(() => {
+                    setStatusCcircularProgress(false)
+                    if (result.ok == true) {
+                        setMessage(result.message)
+                        setAlertType('success')
+                        setAlertModal(true)
+                        setDataSource([]);
+                        handleClose();
+// logica de cerrar modal
+                    } else if (result.ok === false) {
+                        setMessage(result.message)
+                        setAlertType('error')
+                        setAlertModal(true)
+                    }
+                }, 2000);
+            } catch (error) {
+                setMessage('Error al anular factura')
+                setAlertType('error')
+                setAlertModal(true)
+            }
+        }else{
+            setMessage('Seleccione factura a anular')
+            setAlertType('error')
+            setAlertModal(true) 
+        }
+    }
+    
     const formatoAimprimir = () => {
         setPaginaCabecera(false)
         setDatosCompletos(
@@ -261,6 +283,14 @@ const mapearPagosRegistrados = () =>{
         }else{
             setBotonSiguiente(false)
         }
+    }
+
+    const arrayIdMop = () => { //almacena los id de los idMop
+
+        const result = facturaSeleccionada.cuerpo.map(item => {
+            return { mopId: item.mopId, montoDol: item.indMontoAgregadoDol }
+        })
+        return result
     }
 
     React.useEffect(() => {
@@ -301,6 +331,8 @@ const mapearPagosRegistrados = () =>{
         setDatosPago(mapearDatosPago())
         setNumFact(rellenarConCeros(Number(facturaSeleccionada.numFact)))
         setNumControl(`00-${rellenarConCeros(Number(facturaSeleccionada.numControl))}`)
+        setIdInvoiceHeader(facturaSeleccionada.cabecera.inhId)
+        setIdMop(arrayIdMop())
     }, [])
     React.useEffect(() => {
         validarCabecera()
@@ -329,138 +361,145 @@ const mapearPagosRegistrados = () =>{
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={{ ...style, width: '95%', height: '87%' }}>
+                <Box sx={{ ...style, width: '95%', height:  tipoAccion == 'reimprimir' ? '87%' : '50%'   }}>
                     {(paginaCabecera)
                     ? <>
                             <Typography variant='h5' component='h1' className={classes.title}>
                                 Datos de factura
                             </Typography>
-                            <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
-                                <Autocomplete
-                                    // key={clearField.moneda}
-                                    disableClearable
-                                    sx={{ width: '15%' }}
-                                    options={['COMPROBANTE', 'FACTURA FISCAL']}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Tipo de comprobante" variant="standard"
-                                        />
-                                    )}
-                                    value={voucherType}
-                                    getOptionSelected={(option, value) => option === value}
-                                    getOptionLabel={(option) => option}
-                                    onChange={(event, newValue) => {
-                                        console.log('este compro', newValue)
-                                        setVoucherType(newValue)
-                                    }}
-                                    required
-                                    id="clear-on-escape"
-                                />
-                                <Autocomplete
-                                    disableClearable
-                                    options={tipoBusqueda}
-                                    renderInput={(params) => (
-                                        <TextField {...params} variant="standard" label="Tipo de Búsqueda" />
-                                    )}
-                                    value={busquedaSeleccionada ? busquedaSeleccionada : null}
-                                    getOptionLabel={(option) => option.title}
-                                    onChange={(event, newValue) => {
-                                        setBusquedaSeleccionada(newValue)
-                                    }}
-                                    required
-                                    noOptionsText={'Sin Opciones'}
-                                    sx={{ width: '15%' }}
-                                    id="clear-on-escape"
-                                />
-                                {
-                                    (busquedaSeleccionada !== null && busquedaSeleccionada.id === 2)
-                                        ? <Autocomplete
-                                            disableClearable
-                                            options={companiesList}
-                                            renderInput={(params) => (
-                                                <TextField {...params} variant="standard" label="Seleccionar Compañía" />
-                                            )}
-                                            value={companiaSeleccionada}
-                                            getOptionLabel={(option) => option.comName}
-                                            onChange={(event, newValue) => {
-                                                setCompaniaSeleccionada(newValue)
-                                            }}
-                                            required
-                                            noOptionsText={'Sin Opciones'}
-                                            sx={{ width: '35%' }}
-                                            id="clear-on-escape"
-                                        />
-                                        : null
-                                }
-                            </Stack>
-                            <div >
-                                <Stack spacing={2} direction="row"
-                                    justifyContent="flex-start"
-                                    alignfacturaSeleccionadas="flex-start" className={classes.title}>
+                            {tipoAccion == 'reimprimir' ?
+                            <> 
+                                    <div >
+                                        <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                            <Autocomplete
+                                                // key={clearField.moneda}
+                                                disableClearable
+                                                sx={{ width: '15%' }}
+                                                options={['COMPROBANTE', 'FACTURA FISCAL']}
+                                                renderInput={(params) => (
+                                                    <TextField {...params} label="Tipo de comprobante" variant="standard"
+                                                    />
+                                                )}
+                                                value={voucherType}
+                                                getOptionSelected={(option, value) => option === value}
+                                                getOptionLabel={(option) => option}
+                                                onChange={(event, newValue) => {
+                                                    console.log('este compro', newValue)
+                                                    setVoucherType(newValue)
+                                                }}
+                                                required
+                                                id="clear-on-escape"
+                                            />
+                                            <Autocomplete
+                                                disableClearable
+                                                options={tipoBusqueda}
+                                                renderInput={(params) => (
+                                                    <TextField {...params} variant="standard" label="Tipo de Búsqueda" />
+                                                )}
+                                                value={busquedaSeleccionada ? busquedaSeleccionada : null}
+                                                getOptionLabel={(option) => option.title}
+                                                onChange={(event, newValue) => {
+                                                    setBusquedaSeleccionada(newValue)
+                                                }}
+                                                required
+                                                noOptionsText={'Sin Opciones'}
+                                                sx={{ width: '15%' }}
+                                                id="clear-on-escape"
+                                            />
+                                            {
+                                                (busquedaSeleccionada !== null && busquedaSeleccionada.id === 2)
+                                                    ? <Autocomplete
+                                                        disableClearable
+                                                        options={companiesList}
+                                                        renderInput={(params) => (
+                                                            <TextField {...params} variant="standard" label="Seleccionar Compañía" />
+                                                        )}
+                                                        value={companiaSeleccionada}
+                                                        getOptionLabel={(option) => option.comName}
+                                                        onChange={(event, newValue) => {
+                                                            setCompaniaSeleccionada(newValue)
+                                                        }}
+                                                        required
+                                                        noOptionsText={'Sin Opciones'}
+                                                        sx={{ width: '35%' }}
+                                                        id="clear-on-escape"
+                                                    />
+                                                    : null
+                                            }
+                                        </Stack>
+                                        <Stack spacing={2} direction="row"
+                                            justifyContent="flex-start"
+                                            alignfacturaSeleccionadas="flex-start" className={classes.title}>
 
-                                    <TextField
-                                        key={keyValue.fecha}
-                                        value={nuevaCabecera.fecha}
-                                        id="fecha"
-                                        label="Fecha"
-                                        variant="standard"
-                                        onChange={e => {
-                                            setNuevaCabecera({ ...nuevaCabecera, fecha: e.target.value && (e.target.value).trim() != '' ? e.target.value : null })
-                                        }}
-                                        sx={{ width: '10%' }}
-                                    />
-                                    <TextField
-                                        key={keyValue.cirif}
-                                        value={nuevaCabecera.cirif}
-                                        id="rif"
-                                        label="CI/RIF"
-                                        variant="standard"
-                                        onChange={e => {
-                                            setNuevaCabecera({ ...nuevaCabecera, cirif: e.target.value && (e.target.value).trim() != '' ? e.target.value : null })
-                                        }}
-                                        sx={{ width: '15%' }}
-                                    />
-                                    <TextField
-                                        key={keyValue.telefonos}
-                                        value={nuevaCabecera.telefonos}
-                                        id="tlf"
-                                        label="Teléfonos"
-                                        variant="standard"
-                                        onChange={e => {
-                                            setNuevaCabecera({ ...nuevaCabecera, telefonos: e.target.value && (e.target.value).trim() != '' ? e.target.value : null })
-                                        }}
-                                        sx={{ width: '25%' }}
-                                    />
+                                            <TextField
+                                                key={keyValue.fecha}
+                                                value={nuevaCabecera.fecha}
+                                                id="fecha"
+                                                label="Fecha"
+                                                variant="standard"
+                                                onChange={e => {
+                                                    setNuevaCabecera({ ...nuevaCabecera, fecha: e.target.value && (e.target.value).trim() != '' ? e.target.value : null })
+                                                }}
+                                                sx={{ width: '10%' }}
+                                            />
+                                            <TextField
+                                                key={keyValue.cirif}
+                                                value={nuevaCabecera.cirif}
+                                                id="rif"
+                                                label="CI/RIF"
+                                                variant="standard"
+                                                onChange={e => {
+                                                    setNuevaCabecera({ ...nuevaCabecera, cirif: e.target.value && (e.target.value).trim() != '' ? e.target.value : null })
+                                                }}
+                                                sx={{ width: '15%' }}
+                                            />
+                                            <TextField
+                                                key={keyValue.telefonos}
+                                                value={nuevaCabecera.telefonos}
+                                                id="tlf"
+                                                label="Teléfonos"
+                                                variant="standard"
+                                                onChange={e => {
+                                                    setNuevaCabecera({ ...nuevaCabecera, telefonos: e.target.value && (e.target.value).trim() != '' ? e.target.value : null })
+                                                }}
+                                                sx={{ width: '25%' }}
+                                            />
 
-                                </Stack>
-                                <Stack spacing={2} direction="row"
-                                    justifyContent="flex-start"
-                                    alignfacturaSeleccionadas="flex-start" className={classes.title}>
-                                    <TextField
-                                        key={keyValue.razonSocial}
-                                        value={nuevaCabecera.razonSocial}
-                                        id="razonSocial"
-                                        label="Razón Social"
-                                        variant="standard"
-                                        onChange={e => {
-                                            setNuevaCabecera({ ...nuevaCabecera, razonSocial: e.target.value && (e.target.value).trim() != '' ? e.target.value : null })
+                                        </Stack>
+                                        <Stack spacing={2} direction="row"
+                                            justifyContent="flex-start"
+                                            alignfacturaSeleccionadas="flex-start" className={classes.title}>
+                                            <TextField
+                                                key={keyValue.razonSocial}
+                                                value={nuevaCabecera.razonSocial}
+                                                id="razonSocial"
+                                                label="Razón Social"
+                                                variant="standard"
+                                                onChange={e => {
+                                                    setNuevaCabecera({ ...nuevaCabecera, razonSocial: e.target.value && (e.target.value).trim() != '' ? e.target.value : null })
 
-                                        }}
-                                        sx={{ width: '31%' }}
-                                    />
+                                                }}
+                                                sx={{ width: '31%' }}
+                                            />
 
-                                    <TextField
-                                        key={keyValue.direccion}
-                                        value={nuevaCabecera.direccion}
-                                        id="dir"
-                                        label="Dirección"
-                                        variant="standard"
-                                        onChange={e => {
-                                            setNuevaCabecera({ ...nuevaCabecera, direccion: e.target.value && (e.target.value).trim() != '' ? e.target.value : null })
-                                        }}
-                                        sx={{ width: '31%' }}
-                                    />
+                                            <TextField
+                                                key={keyValue.direccion}
+                                                value={nuevaCabecera.direccion}
+                                                id="dir"
+                                                label="Dirección"
+                                                variant="standard"
+                                                onChange={e => {
+                                                    setNuevaCabecera({ ...nuevaCabecera, direccion: e.target.value && (e.target.value).trim() != '' ? e.target.value : null })
+                                                }}
+                                                sx={{ width: '31%' }}
+                                            />
 
-                                </Stack>
+                                        </Stack>
+                                    </div>
+                            </>
+                            : null}
+                            
+                            
                                 <Stack spacing={2} direction="row"
                                     justifyContent="space-between"
                                     alignfacturaSeleccionadas="flex-start">
@@ -504,7 +543,7 @@ const mapearPagosRegistrados = () =>{
                                     </Box>
                                 </Stack>
                                 <Divider className={classes.div} />
-                            </div>
+                            
                     </>
 
                         : (formatoImpresion != null) 
@@ -517,21 +556,30 @@ const mapearPagosRegistrados = () =>{
                             : null
                         : null}
                     
-                        <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-end" className={classes.stack}>
-                            <Button variant="outlined" onClick={handleClose}
-                                color="error">Cerrar</Button>
-                        {paginaCabecera ?
-                            <Button variant="contained"
-                                disabled={botonSiguiente}
-                                onClick={() => formatoAimprimir()}
-                                color="success">Siguiente</Button>
-                        : null}
-                            
-                        </Stack>
-                        
+                    {
+                        (statusCcircularProgress) ?
+                            <Stack className={classes.stack} spacing={2} alignItems="flex-end" direction="row" justifyContent="center">
+                                <LoadingButtons message={'Anulando'} />
+                            </Stack>
+                            :
+                            <Stack spacing={2} alignItems="flex-end" direction="row" justifyContent="flex-end" className={classes.stack}>
+                                <Button variant="outlined" onClick={handleClose}
+                                    color="error">Cerrar</Button>
+                                {paginaCabecera && tipoAccion != 'ver' ?
+                                    <Button variant="contained"
+                                        disabled={tipoAccion == 'reimprimir' ? botonSiguiente : false}
+                                        onClick={() => tipoAccion == 'reimprimir' ? formatoAimprimir() : anularFactura()}
+                                        color="success"> {tipoAccion == 'reimprimir' ? 'Reimprimir' : 'Anular'}</Button>
+                                    : null}
+
+                            </Stack>
+                    }
                     
                 </Box>
             </Modal>
+            {(alertModal) ?
+                <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
+                : null}
         </div>
     )
 }

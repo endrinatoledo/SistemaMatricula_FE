@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Button from '@mui/material/Button';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 const ModalFactura = require('./ModalFactura').default 
 // import ModalFactura from './ModalFactura';
@@ -67,14 +68,12 @@ const InvoicesList = () => {
     { title: 'Razón Social', field: 'razon' },
     { title: 'Fecha', field: 'fecha' }]
 
-  // console.log('filtrosValue', filtrosValue)
 
   const getAllPeriod = async () => {
 
     try {
       const resultPeriods = (await AxiosInstance.get(`/periods/`)).data
 
-      // console.log('resultPeriods', resultPeriods)
       if (resultPeriods.ok === true && resultPeriods.data) {
         setListPeriods(resultPeriods.data)
       }
@@ -92,11 +91,16 @@ const InvoicesList = () => {
 
   const searchInvoices = async () => {
 
-    const result = (await AxiosInstance.post('/invoice/filtro', filtrosValue)).data
-    // console.log('entro con esto', result)
-
-    if (result.ok === true) {
-      setDataSource(result.data)
+    try {
+      const result = (await AxiosInstance.post('/invoice/filtro', filtrosValue)).data
+      // console.log('aquiiiiiiiiiiiiiiiiiiiii', result)
+      if (result.ok === true) {
+        setDataSource(result.data)
+      }
+    } catch (error) {
+      setMessage('Error al buscar Facturas')
+      setAlertType('error')
+      setAlertModal(true)
     }
 
     //   setDataReport(result.data)
@@ -236,26 +240,29 @@ const InvoicesList = () => {
                   icon: () => <LocalPrintshopRoundedIcon />,
                   tooltip: 'Reimprimir',
                   onClick: (event, rowData) => {
-                    // console.log('factura seleccionada',rowData)
                     setFacturaSeleccionada(rowData)
                     setModalFacturaValue(true)
                     setFormatFactura(true)
-                    setTipoAccion('reimprimir')
-                    
-                    // window.location = `verinscripcion/${rowData.id}`;
+                    setTipoAccion('reimprimir')                    
                   }
                 },
                 {
                   icon: () => <HighlightOffIcon />,
                   tooltip: 'Anular',
                   onClick: (event, rowData) => {
-                    // window.location = `verinscripcion/${rowData.id}`;
                     setFacturaSeleccionada(rowData)
-                    // console.log('factura seleccionada', rowData)
                     setModalFacturaValue(true)
                     setTipoAccion('Anular')
 
                   }
+                },{
+                  icon: () => <VisibilityIcon />,
+                  tooltip: 'Ver',
+                  onClick: (event, rowData) => {
+                    setFacturaSeleccionada(rowData)
+                    setModalFacturaValue(true)
+                    setTipoAccion('ver')
+                  }                  
                 }
               ]}
               options={{
@@ -310,7 +317,7 @@ const InvoicesList = () => {
               // }}
             />
             {(modalFacturaValue)
-              ? <ModalFactura paginaCabecera={paginaCabecera} setPaginaCabecera={setPaginaCabecera} formatFactura={formatFactura} setFormatFactura={setFormatFactura} tipoAccion={tipoAccion} setTipoAccion={setTipoAccion} facturaSeleccionada={facturaSeleccionada} setFacturaSeleccionada={setFacturaSeleccionada} modalFacturaValue={modalFacturaValue} setModalFacturaValue={setModalFacturaValue} />
+              ? <ModalFactura setDataSource={setDataSource} paginaCabecera={paginaCabecera} setPaginaCabecera={setPaginaCabecera} formatFactura={formatFactura} setFormatFactura={setFormatFactura} tipoAccion={tipoAccion} setTipoAccion={setTipoAccion} facturaSeleccionada={facturaSeleccionada} setFacturaSeleccionada={setFacturaSeleccionada} modalFacturaValue={modalFacturaValue} setModalFacturaValue={setModalFacturaValue} />
             :null}
             {(alertModal) ?
               <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
