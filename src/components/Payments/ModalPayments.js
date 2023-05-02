@@ -757,13 +757,13 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                 copiaReplicaDatosPago[index].descripcion = (element.descripcion).replace('Abono ','')
 
             }else{
-                copiaMontoTotalAdistribuir = 0
                 copiaReplicaDatosPago[index].descripcion = `Abono ${(element.descripcion).replace('Abono ', '') }`
                 copiaReplicaDatosPago[index].montoRestanteAplicadoBol = montoRestante - copiaMontoTotalAdistribuir
                 copiaReplicaDatosPago[index].montoRestanteAplicadoDol = (montoRestante - copiaMontoTotalAdistribuir) / tasaDelDia.excAmount
                 copiaReplicaDatosPago[index].pagoAplicadoDol = copiaMontoTotalAdistribuir / tasaDelDia.excAmount
                 copiaReplicaDatosPago[index].pagoAplicadoBol =  copiaMontoTotalAdistribuir
-                
+                copiaMontoTotalAdistribuir = 0
+
                 return false 
             }    
         })
