@@ -145,9 +145,8 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     const [montoTotalAdistribuir, setMontoTotalAdistribuir] = React.useState(0)
     const [botonAplicarPago, setBotonAplicarPago] = React.useState(false)
     const [statusCostosArray, setStatusCostosArray] = React.useState(false)
-    const [montoSinDistribuir, setMontoSinDistribuir] = React.useState(0)
     const [statusPagosAplicados, setStatusPagosAplicados] = React.useState(false)
-
+    const [montoSinAsignar, setMontoSinAsignar] = React.useState(0)
 
     console.log('datosPago', datosPago)
     const fechaActual = moment(new Date()).format("DD/MM/YYYY")
@@ -751,7 +750,6 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
             const montoRestante = element.restante * tasaDelDia.excAmount
             if (copiaMontoTotalAdistribuir >= montoRestante ){
                 copiaMontoTotalAdistribuir = copiaMontoTotalAdistribuir - montoRestante
-
                 copiaReplicaDatosPago[index].montoRestanteAplicadoBol = 0
                 copiaReplicaDatosPago[index].montoRestanteAplicadoDol = 0
                 copiaReplicaDatosPago[index].pagoAplicadoDol = element.restante
@@ -759,6 +757,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                 copiaReplicaDatosPago[index].descripcion = (element.descripcion).replace('Abono ','')
 
             }else{
+                copiaMontoTotalAdistribuir = 0
                 copiaReplicaDatosPago[index].descripcion = `Abono ${(element.descripcion).replace('Abono ', '') }`
                 copiaReplicaDatosPago[index].montoRestanteAplicadoBol = montoRestante - copiaMontoTotalAdistribuir
                 copiaReplicaDatosPago[index].montoRestanteAplicadoDol = (montoRestante - copiaMontoTotalAdistribuir) / tasaDelDia.excAmount
@@ -768,8 +767,9 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                 return false 
             }    
         })
+        setMontoSinAsignar(copiaMontoTotalAdistribuir)
+        
         setReplicaDatosPago(copiaReplicaDatosPago)
-        setMontoSinDistribuir(copiaMontoTotalAdistribuir)
         setClearFieldDistribucion({
             ...clearFieldDistribucion,
             montoRestanteAplicadoBol: (clearFieldDistribucion.montoRestanteAplicadoBol + 1),
@@ -1167,6 +1167,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                 <div> Monto Restante a Pagar Bs: {montoTotalBolivaresDis} </div>
                                                                 <Button disabled={!botonAplicarPago} variant="contained" onClick={() => aplicarPago()}
                                                                     color="info">Aplicar Pago</Button>
+                                                                { montoSinAsignar != 0 ? <div> <b><font COLOR="red">Monto sin distribuir : bs. {montoSinAsignar.toFixed(2)} / $ {(montoSinAsignar / tasaDelDia.excAmount).toFixed(2)}</font></b> </div> : null}
                                                             </Stack>
                                                             {/* <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                                                 
