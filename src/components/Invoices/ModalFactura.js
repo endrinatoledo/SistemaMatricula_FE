@@ -102,7 +102,7 @@ const ModalFactura = ({ setDataSource, paginaCabecera, setPaginaCabecera, format
         'direccion': facturaSeleccionada.cabecera.inhAddress, 
     });
     const tipoBusqueda = [
-        { id: 1, title: 'Representante' },
+        { id: 1, title: 'Datos originales' },
         { id: 2, title: 'Compañía' }
     ]
     const [voucherType, setVoucherType] = React.useState(null);
@@ -222,11 +222,16 @@ const mapearPagosRegistrados = () =>{
         })
         return result
     }
+
+    console.log('AlertModal..................', alertModal)
+    console.log('.....message', message)
+
     const anularFactura = async() =>{
         if (idIMop.length){
             try {
                 const result = (await AxiosInstance.put(`/invoiceHeader/anular/inh/${idInvoiceHeader}`, {arrayIdMop: idIMop})).data
                 console.log('result', result)
+                console.log('.....message', message)
                 setTimeout(() => {
                     setStatusCcircularProgress(false)
                     if (result.ok == true) {
