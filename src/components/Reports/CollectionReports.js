@@ -8,6 +8,7 @@ import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Button from '@mui/material/Button';
 import TableReport from './TableReport';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 const AxiosInstance = require("../utils/request").default;
 
@@ -122,10 +123,32 @@ const CollectionReports = () => {
 
     const fecha = fechaActual()
 
+    if (reportTypeSelected.id === 10 && clasifiReportSelectd.id == 2) {
+      setNombreArchivo(`Resumen_mensualidad_por_estudiantes_${fecha}.xlsx`)
+      setColumns([
+        { title: 'Estudiante', field: 'nombre' },
+        { title: 'Sep', field: 'mopSep', render: (rows) => rows.mopSep !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'Oct', field: 'mopOct', render: (rows) => rows.mopOct !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'Nov', field: 'mopNov', render: (rows) => rows.mopNov !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'Dic', field: 'mopDic', render: (rows) => rows.mopDic !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'Ene', field: 'mopEne', render: (rows) => rows.mopEne !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'Feb', field: 'mopFeb', render: (rows) => rows.mopFeb !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'Mar', field: 'mopMar', render: (rows) => rows.mopMar !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'Abr', field: 'mopAbr', render: (rows) => rows.mopAbr !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'May', field: 'mopMay', render: (rows) => rows.mopMay !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'Jun', field: 'mopJun', render: (rows) => rows.mopJun !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'Jul', field: 'mopJul', render: (rows) => rows.mopJul !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'Ago', field: 'mopAgo', render: (rows) => rows.mopAgo !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+      ])
+      setExcelStructure({
+        fileName: `Resumen_mensualidad_por_estudiantes_${fecha}.xlsx`,
+        columns: [["Estudiante", "Sep", "Oct", "Nov", "Dic", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago"
+        ]],
+        sheetName: "Estudiantes"
+      })
+    }
     if (reportTypeSelected.id === 11) {
       setNombreArchivo(`Reporte_morosos_${nombreNivel}_${nombreSeccion}_${fecha}.xlsx`)
-
-      // setNombreArchivo(`Reporte_morosos_${periodSelected.perStartYear}-${periodSelected.perEndYear}_${nombreNivel}_${nombreSeccion}.xlsx`)
       setColumns([
         { title: 'Estudiante', field: 'nombre' },        
         { title: 'Sep', field: 'mopSep', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
@@ -231,10 +254,10 @@ const CollectionReports = () => {
     }
     if (reportTypeSelected.id === 10) {
       url = `/reports/mensualidades/cobranza`
-      data.level = levelSelected.level;
-      if (sectionSelected !== null) {
-        data.section = sectionSelected.section;
-      }
+      data.level = levelSelected != null ? levelSelected.level : null;
+      data.section = sectionSelected != null ? sectionSelected.section : null;
+      data.etapa = etapaReportSelectd != null ? etapaReportSelectd.id : null;
+      data.clasificacion = clasifiReportSelectd != null ? clasifiReportSelectd.id : null;
     }
     if (reportTypeSelected.id === 12) {
 
@@ -341,19 +364,19 @@ const CollectionReports = () => {
     setDataReport([])
     setColumns([])
     if (reportTypeSelected !== null ) { // Si existe un reporte seleccionado
-      console.log('entro a validacion de reporte lleno')
-      if (reportTypeSelected.id == 11 || reportTypeSelected.id == 10) {
-        console.log('entro a validacion de reporte 10 u 11')
+      // console.log('entro a validacion de reporte lleno')
+      // if (reportTypeSelected.id == 11 || reportTypeSelected.id == 10) {
+      //   console.log('entro a validacion de reporte 10 u 11')
 
-        setRangoFechas({ fechaI: null, fechaF: null })
-        setEtapaReportSelectd(null)
-        setClasifiReportSelectd(null)
-        if (periodSelected === null || levelSelected === null || sectionSelected === null) {
-          setSearchButton(true)
-        } else {
-          setSearchButton(false)
-        }
-      }
+      //   setRangoFechas({ fechaI: null, fechaF: null })
+      //   setEtapaReportSelectd(null)
+      //   setClasifiReportSelectd(null)
+      //   if (periodSelected === null || levelSelected === null || sectionSelected === null) {
+      //     setSearchButton(true)
+      //   } else {
+      //     setSearchButton(false)
+      //   }
+      // }
 
       if (reportTypeSelected.id == 12) {
         console.log('entro a validacion de reporte 12')
@@ -368,7 +391,7 @@ const CollectionReports = () => {
           setSearchButton(false)
         }
       }
-      if (reportTypeSelected.id == 13) {
+      if (reportTypeSelected.id == 13 || reportTypeSelected.id == 10) {
         console.log('entro a validacion de reporte 13')
 
         setRangoFechas({ fechaI: null, fechaF: null })
@@ -584,14 +607,14 @@ const CollectionReports = () => {
               </>
               : null
             }
-            {(reportTypeSelected?.id === 13 )
+            {(reportTypeSelected?.id === 13 || reportTypeSelected?.id === 10)
               ? <>
                 <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
 
                   <Autocomplete
                     disableClearable
                     // key={filtrosForm.period}
-                    options={clasificacionReporte}
+                    options={reportTypeSelected?.id === 13 ? clasificacionReporte : [{ id: 2, title: 'Por Estudiantes' }]}
                     renderInput={(params) => (
                       <TextField {...params} variant="standard" label="Clasificación" />
                     )}
@@ -630,7 +653,7 @@ const CollectionReports = () => {
               </>
               : null
             }
-            {(reportTypeSelected?.id === 10 
+            {/* {(reportTypeSelected?.id === 10 
               // || reportTypeSelected?.id === 11
               
             )
@@ -673,7 +696,7 @@ const CollectionReports = () => {
                 </Stack>
               </>
               : null
-            }
+            } */}
           </>
           : <h5 id="child-modal-title">Sin periodo registrado </h5>
         }
