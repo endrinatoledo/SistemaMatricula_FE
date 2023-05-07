@@ -70,6 +70,9 @@ const CollectionReports = () => {
   const [etapaReportSelectd, setEtapaReportSelectd] = React.useState(null)
   const [labelLevelSection, setLabelLevelSection] = React.useState({level : 0, section:100})
   const [rangoFechas, setRangoFechas] = React.useState({fechaI:null, fechaF:null})
+  const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+  const mesActual = new Date().getMonth();
+  console.log('listLevelsOriginal', listLevelsOriginal)
   const reportType = [
     { id: 10, title: 'Resumen mensualidades' },
     // { id: 11, title: 'Resumen morosos' },
@@ -107,10 +110,20 @@ const CollectionReports = () => {
     }
   }
 
+  const fechaActual = () =>{
+
+    let hoy = new Date();
+    let hora = hoy.getHours() + '_' + hoy.getMinutes() + '_' + hoy.getSeconds();
+    let fecha = hoy.getDate() + '-' + (hoy.getMonth() + 1) + '-' + hoy.getFullYear();
+    return fecha + '_' + hora
+  }
+
   const tableColumns = (reportTypeSelected) => {
 
+    const fecha = fechaActual()
+
     if (reportTypeSelected.id === 11) {
-      setNombreArchivo(`Reporte_morosos_${nombreNivel}_${nombreSeccion}.xlsx`)
+      setNombreArchivo(`Reporte_morosos_${nombreNivel}_${nombreSeccion}_${fecha}.xlsx`)
 
       // setNombreArchivo(`Reporte_morosos_${periodSelected.perStartYear}-${periodSelected.perEndYear}_${nombreNivel}_${nombreSeccion}.xlsx`)
       setColumns([
@@ -138,7 +151,7 @@ const CollectionReports = () => {
       })
     }
     if (reportTypeSelected.id === 12) {
-      setNombreArchivo(`Reporte_clasificacion_pagos}.xlsx`)
+      setNombreArchivo(`Reporte_clasificacion_pagos_${fecha}.xlsx`)
 
       setColumns([
         { title: 'Fecha', field: 'fecha' },
@@ -158,8 +171,30 @@ const CollectionReports = () => {
         sheetName: "Clasificacion de pagos"
       })
     }
-    
+    if (reportTypeSelected.id === 13 && clasifiReportSelectd.id == 2) {
+      setNombreArchivo(`Reporte_Morosos_por_estudiantes_${fecha}.xlsx`);
+
+      setColumns([
+        { title: 'Nivel', field: 'level' },
+        { title: 'Sección', field: 'section' },
+        { title: 'Primer Nombre', field: 'pName' },
+        { title: 'Primer Apellido', field: 'pSurname' },
+        { title: 'Segundo Apellido', field: 'sSurname'},
+        { title: 'Tipo Ident.', field: 'typeInd' },
+        { title: 'Identificación', field: 'identificacion' },
+        { title: 'Familia', field: 'familia'},
+      ])
+      setExcelStructure({
+        fileName: `Reporte_Morosos_por_estudiantes_${fecha}.xlsx`,
+        columns: [["NIVEL", "SECCION", "PRIMER NOMBRE", "PRIMER APELLIDO",
+          "SEGUNDO APELLIDO", "TIPO IDENT", "IDENTIFICACION", "FAMILIA"]],
+        sheetName: `Mes de ${meses[mesActual]}`
+      })
+
+    }
   }
+
+  console.log('data resporteeee',dataReporte)
 
   const searchReport = async () => {
     tableColumns(reportTypeSelected)
@@ -206,7 +241,7 @@ const CollectionReports = () => {
     if (result.ok === true) {
       
       setDataReport(result.data)
-      // setSeeTable(true)
+      setSeeTable(true)
     } else {
       setDataReport([])
       setMessage(result.message)
@@ -634,7 +669,7 @@ const CollectionReports = () => {
         <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
         : null}
       {(seeTable)
-        ? <TableReport periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure} />
+        ? <TableReport periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure} mes={meses[mesActual]} />
         : null}
     </>
   )

@@ -1,17 +1,14 @@
 import * as React from 'react';
 import MaterialTable from '@material-table/core'; 
 import { ExportPdf } from '@material-table/exporters';
-import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
-import FilterList from '@material-ui/icons/FilterList';
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
+
 const DownloadExcel = require('../commonComponents/DownloadExcel').default 
 
-const TableReport = ({periodSelected,reportTypeSelected,columns,dataReporte,excelStructure}) => {
+const TableReport = ({periodSelected,reportTypeSelected,columns,dataReporte,excelStructure, mes}) => {
 
   const [reportName, setReportName] = React.useState('')
-  
+  console.log('--------------dataReporte-----------------', dataReporte)
+
   const reportNameF = () => {
     if(reportTypeSelected.id === 1 ){
       setReportName('Reporte de Estudiantes')
@@ -35,6 +32,10 @@ const TableReport = ({periodSelected,reportTypeSelected,columns,dataReporte,exce
     }else if(reportTypeSelected.id === 10 ){
       setReportName('Reporte de resumen mensualidades')
       return `U.E. Colegio Lourdes, Reporte de resumen mensualidades - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear}`
+
+    } else if (reportTypeSelected.id === 13) {
+      setReportName('Reporte de morosos')
+      return `U.E. Colegio Lourdes, Reporte de morosos - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear} (${mes})`
 
     }
   }
