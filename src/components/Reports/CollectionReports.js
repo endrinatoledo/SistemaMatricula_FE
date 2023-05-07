@@ -192,6 +192,21 @@ const CollectionReports = () => {
       })
 
     }
+    if (reportTypeSelected.id === 13 && clasifiReportSelectd.id == 1) {
+      setNombreArchivo(`Reporte_Morosos_por_familias_${fecha}.xlsx`);
+
+      setColumns([
+        { title: 'Nivel', field: 'level' },
+        { title: 'Sección', field: 'section' },
+        { title: 'Familia', field: 'familia' },
+      ])
+      setExcelStructure({
+        fileName: `Reporte_Morosos_por_estudiantes_${fecha}.xlsx`,
+        columns: [["NIVEL", "SECCION", "FAMILIA"]],
+        sheetName: `Mes de ${meses[mesActual]}`
+      })
+
+    }
   }
 
   console.log('data resporteeee',dataReporte)
@@ -669,7 +684,7 @@ const CollectionReports = () => {
         <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
         : null}
       {(seeTable)
-        ? <TableReport periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure} mes={meses[mesActual]} />
+        ? <TableReport periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure} mes={meses[mesActual]} clasifiReportSelectd={clasifiReportSelectd}/>
         : null}
     </>
   )

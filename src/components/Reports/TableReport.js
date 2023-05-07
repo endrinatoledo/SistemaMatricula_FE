@@ -4,7 +4,7 @@ import { ExportPdf } from '@material-table/exporters';
 
 const DownloadExcel = require('../commonComponents/DownloadExcel').default 
 
-const TableReport = ({periodSelected,reportTypeSelected,columns,dataReporte,excelStructure, mes}) => {
+const TableReport = ({ periodSelected, reportTypeSelected, columns, dataReporte, excelStructure, mes, clasifiReportSelectd }) => {
 
   const [reportName, setReportName] = React.useState('')
   console.log('--------------dataReporte-----------------', dataReporte)
@@ -33,9 +33,13 @@ const TableReport = ({periodSelected,reportTypeSelected,columns,dataReporte,exce
       setReportName('Reporte de resumen mensualidades')
       return `U.E. Colegio Lourdes, Reporte de resumen mensualidades - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear}`
 
-    } else if (reportTypeSelected.id === 13) {
+    } else if (reportTypeSelected.id === 13 && clasifiReportSelectd.id == 2) {
       setReportName('Reporte de morosos')
-      return `U.E. Colegio Lourdes, Reporte de morosos - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear} (${mes})`
+      return `U.E. Colegio Lourdes, Reporte de morosos por estudiantes - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear} (${mes})`
+
+    } else if (reportTypeSelected.id === 13 && clasifiReportSelectd.id == 1) {
+      setReportName('Reporte de morosos')
+      return `U.E. Colegio Lourdes, Reporte de morosos por familias - Año Escolar ${periodSelected.perStartYear}/${periodSelected.perEndYear} (${mes})`
 
     }
   }
