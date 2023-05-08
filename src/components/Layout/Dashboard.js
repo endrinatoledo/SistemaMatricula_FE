@@ -180,7 +180,7 @@ const Dashboard= () => {
                       {/* <Route path="/colegio"element={<RepresentativeList />} ></Route> */}
                       <Route path="/metodosdepago"element={<PaymentMethodsList />} ></Route>
                       <Route path="/conceptosdefactura"element={<InvoiceConceptsList />} ></Route>
-                      <Route path="/niveles"element={<LevelsList />} ></Route>
+                      {/* <Route path="/niveles"element={<LevelsList />} ></Route> */}
                       <Route path="/representantes"element={<RepresentativeList />} ></Route>
                       {/* <Route path="/roles"element={<RolesList />} ></Route> */}
                       {/* <Route path="/secciones"element={<SectionsList />} ></Route> */}

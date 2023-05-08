@@ -259,7 +259,7 @@ export const PeopleListItems = () => {
             </ListItemButton>
           </List>
         </NavLink> */}
-        <NavLink to='/niveles'> 
+        {/* <NavLink to='/niveles'> 
         <List component="div" disablePadding>
             <ListItemButton sx={{ pl: 2 }}>
               <ListItemIcon>
@@ -268,7 +268,7 @@ export const PeopleListItems = () => {
               <ListItemText primary="Niveles" />
             </ListItemButton>
           </List>
-        </NavLink>
+        </NavLink> */}
         {/* <NavLink to='/conceptosdefactura'>
         <List component="div" disablePadding>
             <ListItemButton sx={{ pl: 2 }}>

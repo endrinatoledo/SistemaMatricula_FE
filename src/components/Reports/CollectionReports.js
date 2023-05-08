@@ -73,12 +73,13 @@ const CollectionReports = () => {
   const [rangoFechas, setRangoFechas] = React.useState({fechaI:null, fechaF:null})
   const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
   const mesActual = new Date().getMonth();
-  console.log('listLevelsOriginal', listLevelsOriginal)
+
+  console.log('nombreArchivo', nombreArchivo)
   const reportType = [
-    { id: 10, title: 'Resumen mensualidades' },
+    { id: 10, title: 'Resumen de mensualidades' },
     // { id: 11, title: 'Resumen morosos' },
     { id: 12, title: 'Clasificación de pagos' },
-    { id: 13, title: 'Nuevo Resumen morosos' },
+    { id: 13, title: 'Reporte de morosos' },
   ]
   const clasificacionReporte = [
     { id: 1, title: 'Por Familias' },
@@ -119,62 +120,78 @@ const CollectionReports = () => {
     return fecha + '_' + hora
   }
 
+  const nombreArchivoFunc = () =>{
+    let nombre ='';
+    nombre = `${reportTypeSelected.title} ${clasifiReportSelectd.title}`
+    if (etapaReportSelectd.id == 1){
+      nombre = `${nombre} de todos los grados`
+    }else{
+      if (levelSelected === null && sectionSelected === null) {
+        nombre = `${nombre} de ${etapaReportSelectd.title}`
+      }else{
+        nombre = `${nombre} de ${levelSelected !== null ? levelSelected.level.levName : ''} ${sectionSelected !== null ? sectionSelected.section.secName : ''}`
+      }
+    }  
+    const nombreFinal = nombre.replaceAll(' ','_')
+    setNombreArchivo(nombreFinal)
+  }
   const tableColumns = (reportTypeSelected) => {
-
-    const fecha = fechaActual()
-
     if (reportTypeSelected.id === 10 && clasifiReportSelectd.id == 2) {
-      setNombreArchivo(`Resumen_mensualidad_por_estudiantes_${fecha}.xlsx`)
+
+      // setNombreArchivo(`Resumen_mensualidades_por_estudiantes_${fecha}.xlsx`)
       setColumns([
+        { title: 'Nivel', field: 'level' },
+        { title: 'Secc', field: 'section' },
         { title: 'Estudiante', field: 'nombre' },
-        { title: 'Sep', field: 'mopSep', render: (rows) => rows.mopSep !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
-        { title: 'Oct', field: 'mopOct', render: (rows) => rows.mopOct !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
-        { title: 'Nov', field: 'mopNov', render: (rows) => rows.mopNov !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
-        { title: 'Dic', field: 'mopDic', render: (rows) => rows.mopDic !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
-        { title: 'Ene', field: 'mopEne', render: (rows) => rows.mopEne !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
-        { title: 'Feb', field: 'mopFeb', render: (rows) => rows.mopFeb !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
-        { title: 'Mar', field: 'mopMar', render: (rows) => rows.mopMar !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
-        { title: 'Abr', field: 'mopAbr', render: (rows) => rows.mopAbr !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
-        { title: 'May', field: 'mopMay', render: (rows) => rows.mopMay !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
-        { title: 'Jun', field: 'mopJun', render: (rows) => rows.mopJun !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
-        { title: 'Jul', field: 'mopJul', render: (rows) => rows.mopJul !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
-        { title: 'Ago', field: 'mopAgo', render: (rows) => rows.mopAgo !== 'PAG' ? ' ' : <CheckIcon color="success" /> },
+        { title: 'Sep', field: 'mopSep', render: (rows) => rows.mopSep !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
+        { title: 'Oct', field: 'mopOct', render: (rows) => rows.mopOct !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
+        { title: 'Nov', field: 'mopNov', render: (rows) => rows.mopNov !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
+        { title: 'Dic', field: 'mopDic', render: (rows) => rows.mopDic !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
+        { title: 'Ene', field: 'mopEne', render: (rows) => rows.mopEne !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
+        { title: 'Feb', field: 'mopFeb', render: (rows) => rows.mopFeb !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
+        { title: 'Mar', field: 'mopMar', render: (rows) => rows.mopMar !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
+        { title: 'Abr', field: 'mopAbr', render: (rows) => rows.mopAbr !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
+        { title: 'May', field: 'mopMay', render: (rows) => rows.mopMay !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
+        { title: 'Jun', field: 'mopJun', render: (rows) => rows.mopJun !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
+        { title: 'Jul', field: 'mopJul', render: (rows) => rows.mopJul !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
+        { title: 'Ago', field: 'mopAgo', render: (rows) => rows.mopAgo !== 'PAG' ? <ClearIcon color="error" /> : <CheckIcon color="success" /> },
       ])
       setExcelStructure({
-        fileName: `Resumen_mensualidad_por_estudiantes_${fecha}.xlsx`,
-        columns: [["Estudiante", "Sep", "Oct", "Nov", "Dic", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago"
+        // fileName: `Resumen_mensualidad_por_estudiantes_${fecha}.xlsx`,
+        fileName: `${nombreArchivo}.xlsx`,
+        columns: [["Nivel","Secc","Estudiante", "Sep", "Oct", "Nov", "Dic", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago"
         ]],
         sheetName: "Estudiantes"
       })
     }
-    if (reportTypeSelected.id === 11) {
-      setNombreArchivo(`Reporte_morosos_${nombreNivel}_${nombreSeccion}_${fecha}.xlsx`)
-      setColumns([
-        { title: 'Estudiante', field: 'nombre' },        
-        { title: 'Sep', field: 'mopSep', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-        { title: 'Oct', field: 'mopOct', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-        { title: 'Nov', field: 'mopNov', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-        { title: 'Dic', field: 'mopDic', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-        { title: 'Ene', field: 'mopEne', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-        { title: 'Feb', field: 'mopFeb', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-        { title: 'Mar', field: 'mopMar', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-        { title: 'Abr', field: 'mopAbr', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-        { title: 'May', field: 'mopMay', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-        { title: 'Jun', field: 'mopJun', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-        { title: 'Jul', field: 'mopJul', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-        { title: 'Ago', field: 'mopAgo', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
-      ])
-      setExcelStructure({
-        fileName: `Reporte_morosos_${nombreNivel}-${nombreSeccion}.xlsx`,
-        // columns: [["Nombre", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago"
-        // , "Sep", "Oct", "Nov", "Dic"]],
-        columns: [["Estudiante", "Sep", "Oct", "Nov", "Dic", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago"
-          ]],
-        sheetName: "Estudiantes"
-      })
-    }
+    // if (reportTypeSelected.id === 11) {
+    //   setNombreArchivo(`Reporte_morosos_${nombreNivel}_${nombreSeccion}_${fecha}.xlsx`)
+    //   setColumns([
+    //     { title: 'Estudiante', field: 'nombre' },        
+    //     { title: 'Sep', field: 'mopSep', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //     { title: 'Oct', field: 'mopOct', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //     { title: 'Nov', field: 'mopNov', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //     { title: 'Dic', field: 'mopDic', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //     { title: 'Ene', field: 'mopEne', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //     { title: 'Feb', field: 'mopFeb', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //     { title: 'Mar', field: 'mopMar', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //     { title: 'Abr', field: 'mopAbr', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //     { title: 'May', field: 'mopMay', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //     { title: 'Jun', field: 'mopJun', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //     { title: 'Jul', field: 'mopJul', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //     { title: 'Ago', field: 'mopAgo', render: (rows) => rows.mopEne !== 'X' ? ' ' : <ClearIcon color="error" /> },
+    //   ])
+    //   setExcelStructure({
+    //     fileName: `Reporte_morosos_${nombreNivel}-${nombreSeccion}.xlsx`,
+    //     // columns: [["Nombre", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago"
+    //     // , "Sep", "Oct", "Nov", "Dic"]],
+    //     columns: [["Estudiante", "Sep", "Oct", "Nov", "Dic", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago"
+    //       ]],
+    //     sheetName: "Estudiantes"
+    //   })
+    // }
     if (reportTypeSelected.id === 12) {
-      setNombreArchivo(`Reporte_clasificacion_pagos_${fecha}.xlsx`)
+      // setNombreArchivo(`Reporte_clasificacion_pagos_${fecha}.xlsx`)
 
       setColumns([
         { title: 'Fecha', field: 'fecha' },
@@ -187,7 +204,8 @@ const CollectionReports = () => {
       ])
 
       setExcelStructure({
-        fileName: `Reporte_clasificacion_pagos.xlsx`,
+        // fileName: `Reporte_clasificacion_pagos.xlsx`,
+        fileName: `${nombreArchivo}.xlsx`,
         columns: [["Fecha", "$ Efectivo",
           //  "$ Transferencia", "$ Pto Venta", 
           "Bol Efectivo", "Bol Transferencia", "Bol Pto Venta"]],
@@ -195,7 +213,7 @@ const CollectionReports = () => {
       })
     }
     if (reportTypeSelected.id === 13 && clasifiReportSelectd.id == 2) {
-      setNombreArchivo(`Reporte_Morosos_por_estudiantes_${fecha}.xlsx`);
+      // setNombreArchivo(`Reporte_Morosos_por_estudiantes_${fecha}.xlsx`);
 
       setColumns([
         { title: 'Nivel', field: 'level' },
@@ -208,7 +226,8 @@ const CollectionReports = () => {
         { title: 'Familia', field: 'familia'},
       ])
       setExcelStructure({
-        fileName: `Reporte_Morosos_por_estudiantes_${fecha}.xlsx`,
+        // fileName: `Reporte_Morosos_por_estudiantes_${fecha}.xlsx`,
+        fileName: `${nombreArchivo}.xlsx`,
         columns: [["NIVEL", "SECCION", "PRIMER NOMBRE", "PRIMER APELLIDO",
           "SEGUNDO APELLIDO", "TIPO IDENT", "IDENTIFICACION", "FAMILIA"]],
         sheetName: `Mes de ${meses[mesActual]}`
@@ -216,7 +235,7 @@ const CollectionReports = () => {
 
     }
     if (reportTypeSelected.id === 13 && clasifiReportSelectd.id == 1) {
-      setNombreArchivo(`Reporte_Morosos_por_familias_${fecha}.xlsx`);
+      // setNombreArchivo(`Reporte_Morosos_por_familias_${fecha}.xlsx`);
 
       setColumns([
         { title: 'Nivel', field: 'level' },
@@ -224,7 +243,8 @@ const CollectionReports = () => {
         { title: 'Familia', field: 'familia' },
       ])
       setExcelStructure({
-        fileName: `Reporte_Morosos_por_estudiantes_${fecha}.xlsx`,
+        // fileName: `Reporte_Morosos_por_estudiantes_${fecha}.xlsx`,
+        fileName: `${nombreArchivo}.xlsx`,
         columns: [["NIVEL", "SECCION", "FAMILIA"]],
         sheetName: `Mes de ${meses[mesActual]}`
       })
@@ -232,9 +252,9 @@ const CollectionReports = () => {
     }
   }
 
-  console.log('data resporteeee',dataReporte)
-
   const searchReport = async () => {
+    setSeeTable(false)
+    nombreArchivoFunc()
     tableColumns(reportTypeSelected)
     let url = ``
     let data = {
@@ -275,7 +295,7 @@ const CollectionReports = () => {
     }
 
     const result = (await AxiosInstance.post(url, data)).data
-    console.log('resultttttttttttttttttttt', result)
+    // console.log('resultttttttttttttttttttt', result)
     if (result.ok === true) {
       
       setDataReport(result.data)
@@ -317,7 +337,7 @@ const CollectionReports = () => {
 
   const filtrarNivelesPorEtapa = () =>{
 
-    console.log('listado de niveles originales', listLevelsOriginal)
+    // console.log('listado de niveles originales', listLevelsOriginal)
     if (etapaReportSelectd.title == 'Preescolar'){
       
       const result = listLevelsOriginal.filter(item => item.level.levId < 4 )
@@ -355,6 +375,9 @@ const CollectionReports = () => {
       setSearchButton(false)
     }
   }, [periodSelected]);
+  console.log('---levelSelected---', levelSelected )
+  console.log('**sectionSelected***', sectionSelected)
+  // console.log('+++++', reportTypeSelected)
 
   React.useEffect(() => {
     setLabelLevelSection({ level: labelLevelSection.level + 1, section: labelLevelSection.section + 1 })
@@ -392,13 +415,10 @@ const CollectionReports = () => {
         }
       }
       if (reportTypeSelected.id == 13 || reportTypeSelected.id == 10) {
-        console.log('entro a validacion de reporte 13')
-
         setRangoFechas({ fechaI: null, fechaF: null })
         if ( etapaReportSelectd == null || clasifiReportSelectd == null ) {
           setSearchButton(true)
         } else {
-          console.log('entro acaaaaa')
           setSearchButton(false)
         }
        }
@@ -415,7 +435,7 @@ const CollectionReports = () => {
 
   React.useEffect(() => {
     if (reportTypeSelected !== null) {
-      if (reportTypeSelected.id == 13 && etapaReportSelectd != null && clasifiReportSelectd != null) {
+      if ((reportTypeSelected.id == 13 || reportTypeSelected.id == 10) && etapaReportSelectd != null && clasifiReportSelectd != null) {
         console.log('entro a validacion de etapas y clasificacion ')
         setSearchButton(false)
       } else {
@@ -427,7 +447,7 @@ const CollectionReports = () => {
 
   React.useEffect(() => {
     if (reportTypeSelected !== null) {
-      if (reportTypeSelected.id == 13 && etapaReportSelectd != null) {
+      if ((reportTypeSelected.id == 13 || reportTypeSelected.id == 10) && etapaReportSelectd != null) {
         if (etapaReportSelectd.id !== 1){
           filtrarNivelesPorEtapa()
         }else{
@@ -444,21 +464,21 @@ const CollectionReports = () => {
   }, [etapaReportSelectd]);
 
 
-  React.useEffect(() => {
-    if (reportTypeSelected !== null ){
-      if (reportTypeSelected.id == 10 || reportTypeSelected.id == 11) {
-        console.log('entro a validacion de niveles y secciones de reporte ')
+  // React.useEffect(() => {
+  //   if (reportTypeSelected !== null ){
+  //     if (reportTypeSelected.id == 10 || reportTypeSelected.id == 11) {
+  //       console.log('entro a validacion de niveles y secciones de reporte ')
 
-        if (levelSelected === null || sectionSelected === null) {
-          setSearchButton(true)
-        } else {
-          setSearchButton(false)
-        }
-      }
-    }
+  //       if (levelSelected === null || sectionSelected === null) {
+  //         setSearchButton(true)
+  //       } else {
+  //         setSearchButton(false)
+  //       }
+  //     }
+  //   }
     
     
-  }, [levelSelected, sectionSelected]);
+  // }, [levelSelected, sectionSelected]);
 
   React.useEffect(() => {
     if (reportTypeSelected !== null && reportTypeSelected?.id == 12) { // Si existe un reporte seleccionado
@@ -707,7 +727,7 @@ const CollectionReports = () => {
         <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
         : null}
       {(seeTable)
-        ? <TableReport periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure} mes={meses[mesActual]} clasifiReportSelectd={clasifiReportSelectd}/>
+        ? <TableReport nombreArchivo={nombreArchivo} periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure} mes={meses[mesActual]} clasifiReportSelectd={clasifiReportSelectd}/>
         : null}
     </>
   )
