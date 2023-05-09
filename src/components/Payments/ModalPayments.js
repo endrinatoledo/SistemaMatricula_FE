@@ -217,8 +217,8 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
 
     const cambiarStatusBotonAgregarPago = () => {
 
-        if (pagoPorRegistrar.moneda === null || pagoPorRegistrar.metodoPago === null || pagoPorRegistrar.monto === 0 || pagoPorRegistrar.monto === null
-            || pagoPorRegistrar.monto === '') {
+        if (pagoPorRegistrar.moneda === null || pagoPorRegistrar.metodoPago === null || pagoPorRegistrar.monto == 0 || pagoPorRegistrar.monto == null
+            || pagoPorRegistrar.monto == '') {
             setStatusBotonAgregar(true)
         } else {
             setStatusBotonAgregar(false)
