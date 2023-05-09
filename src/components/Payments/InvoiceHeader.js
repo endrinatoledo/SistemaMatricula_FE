@@ -1,15 +1,13 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import LoadingButtons from '../commonComponents/LoadingButton';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
+import moment from 'moment';
 
-const AxiosInstance = require("../utils/request").default;
+const AxiosInstance = require("../utils/request").default; 
 const UseStyles = makeStyles({
     stack: {
         marginTop: 40
@@ -57,6 +55,20 @@ const InvoiceHeader = ({ setVoucherType, datosBase, setDatosCabecera, datosCabec
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
     const [openModal, setOpenModal] = React.useState(false)
+    const [selectedDate, setSelectedDate] = React.useState(new Date());
+
+    const handleDateChange = (event) => {
+        setSelectedDate(event.target.value);
+    };
+
+    const formatDate = (date1) => {
+        const date = new Date(date1)
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    }
+    const maxDate = formatDate(new Date()); // Establece la fecha máxima en la fecha actual.
 
     const tipoBusqueda = [
         { id: 1, title: 'Representante' },
@@ -107,6 +119,11 @@ const InvoiceHeader = ({ setVoucherType, datosBase, setDatosCabecera, datosCabec
     }, [])
 
     React.useEffect(() => {
+        const nuevaFecha = moment(selectedDate).format("DD/MM/YYYY")
+        setDatosCabecera({ ...datosCabecera, date: nuevaFecha })
+    }, [selectedDate])
+
+    React.useEffect(() => {
         if (companiaSeleccionada){
             setDatosCabecera({
                 ...datosCabecera,
@@ -117,8 +134,6 @@ const InvoiceHeader = ({ setVoucherType, datosBase, setDatosCabecera, datosCabec
             })
         }
     }, companiaSeleccionada)
-
-    
 
   return (
     <div>
@@ -190,14 +205,32 @@ const InvoiceHeader = ({ setVoucherType, datosBase, setDatosCabecera, datosCabec
                                       setDatosCabecera({ ...datosCabecera, identificacion: e.target.value })
                                   }}
                               />
-                              <TextField
+                              {/* <TextField
                                   sx={{ width: '15%' }}
-                                  disabled={true}
+                                  type='date'
+                                //   disabled={true}
                                   value={datosCabecera.date}
                                   // key={clearField.observacion}
+                                  onChange={e => console.log('fechaaa', e.target.value)}
                                   id="date"
                                   label="Fecha"
                                   variant="standard"
+                              /> */}
+                              
+                              <TextField
+                                  variant="standard"
+                                  sx={{ width: '15%' }}
+                                  id="date"
+                                  label="Seleccionar Fecha"
+                                  type="date"
+                                  defaultValue={formatDate(selectedDate)}
+                                  InputLabelProps={{
+                                      shrink: true,
+                                  }}
+                                  inputProps={{
+                                      max: maxDate, // Establece la fecha máxima en el input de fecha.
+                                  }}
+                                  onChange={handleDateChange}
                               />
 
 

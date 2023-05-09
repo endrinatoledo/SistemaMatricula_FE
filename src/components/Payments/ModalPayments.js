@@ -149,7 +149,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     const [montoSinAsignar, setMontoSinAsignar] = React.useState(0)
 
     console.log('datosPago', datosPago)
-    const fechaActual = moment(new Date()).format("DD/MM/YYYY")
+    const fechaActual = moment(new Date()).format("DD-MM-YYYY")
     const columnsPago = [{ title: 'Moneda', field: 'moneda' },
     { title: 'Método pago', field: 'metodoPago', render: (rows) => <>{rows.metodoPago.payName}</> },
     { title: 'Monto', field: 'monto' },
