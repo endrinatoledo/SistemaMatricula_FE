@@ -219,7 +219,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
 
         if (pagoPorRegistrar.moneda === null || pagoPorRegistrar.metodoPago === null || pagoPorRegistrar.monto == 0 || pagoPorRegistrar.monto == null
             || pagoPorRegistrar.monto == '') {
-            setStatusBotonAgregar(true)
+            setStatusBotonAgregar(true)  
         } else {
             setStatusBotonAgregar(false)
         }
@@ -1252,7 +1252,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                                     key={clearFieldDistribucion.restante}
                                                                                     sx={{ width: '20%' }}
                                                                                     InputProps={{ readOnly: true }}
-                                                                                    value={item.restante}
+                                                                                    value={(item.restante).toFixed(2)}
                                                                                     id="montorestanteDol"
                                                                                     label="Monto Restante $"
                                                                                     variant="standard"
