@@ -20,8 +20,8 @@ const data02 = [
     { name: 'Group F', value: 4800 },
 ];
 
-const Colors = ['#ce93d8','#5c6bc0','#b39ddb','#4dd0e1','#f48fb1','pink']
-
+const Colors = ['#1792a4', '#44b4c4', '#4dd0e1', '#80c9c6','#a3d5d1','#c8e5e3']
+// const Colors = ['#ce93d8', '#5c6bc0', '#b39ddb', '#4dd0e1', '#f48fb1', 'pink']
 const GraficoTorta = () => {
 
     return (

@@ -8,6 +8,7 @@ import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Button from '@mui/material/Button';
 import TableReport from './TableReport';
 import GraficoTorta from './graficoTorta';
+import GraficosPDF from './Grafica4'
 const AxiosInstance = require("../utils/request").default;
  
 const UseStyles = makeStyles({
@@ -365,7 +366,7 @@ const EnrollmentReports = () => {
             ? <TableReport periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure}/>
             : null} 
             {(seeGraficas)
-            ? <GraficoTorta />
+                ? <GraficosPDF />
             : null}   
         </>
     )
