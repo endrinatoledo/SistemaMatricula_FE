@@ -7,8 +7,7 @@ import { makeStyles } from '@mui/styles';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Button from '@mui/material/Button';
 import TableReport from './TableReport';
-import GraficoTorta from './graficoTorta';
-import GraficosPDF from './Grafica4'
+
 const AxiosInstance = require("../utils/request").default;
  
 const UseStyles = makeStyles({
@@ -61,7 +60,6 @@ const EnrollmentReports = () => {
     const [dataReporte, setDataReport] = React.useState([])
     const [columns, setColumns] = React.useState([])
     const [seeTable, setSeeTable]= React.useState(false)
-    const [seeGraficas, setSeeGraficas]= React.useState(true)
     const [excelStructure, setExcelStructure]= React.useState({})
 
     console.log('reportTypeSelected', reportTypeSelected)
@@ -70,7 +68,6 @@ const EnrollmentReports = () => {
         { id: 2, title: 'Estadística' }, // grado, cantidad total de alumnos, cantidad de niñas, cant de niños
         { id: 3, title: 'Nómina de Familias' }, //Codigo de familia, noombre padres con cedulas, nombres de alumnos cedulas grado cursante
         { id: 4, title: 'Seguro Escolar' },
-        { id: 5, title: 'Gráficas' },
     ]
     const getAllPeriod = async () => {
 
@@ -220,10 +217,7 @@ const EnrollmentReports = () => {
         if(reportTypeSelected.id === 4){
             url = `/reports/schoolinsurance`
         } 
-        if (reportTypeSelected.id === 5) {
-            setSeeGraficas(true)
-            // url = `/reports/schoolinsurance`
-        }        
+     
 
         const result = (await AxiosInstance.post(url,data)).data
 
@@ -365,9 +359,7 @@ const EnrollmentReports = () => {
             {(seeTable)
             ? <TableReport periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure}/>
             : null} 
-            {(seeGraficas)
-                ? <GraficosPDF />
-            : null}   
+
         </>
     )
 }

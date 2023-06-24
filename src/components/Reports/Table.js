@@ -12,7 +12,8 @@ const styles = StyleSheet.create({
         borderStyle: "solid", 
         borderWidth: 1, 
         borderRightWidth: 0, 
-        borderBottomWidth: 0 
+        borderBottomWidth: 0,
+        marginTop: 10
       }, 
       tableRow: { 
         margin: "auto", 
@@ -31,6 +32,8 @@ const styles = StyleSheet.create({
         fontSize: 10 
       }
     });
+
+    
 
 const Table = () => (
         <View style={styles.table}> 

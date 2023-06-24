@@ -10,6 +10,8 @@ import TableReport from './TableReport';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import GraficosPDF from './Grafica4'
+
 const AxiosInstance = require("../utils/request").default;
 
 const UseStyles = makeStyles({
@@ -71,15 +73,17 @@ const CollectionReports = () => {
   const [etapaReportSelectd, setEtapaReportSelectd] = React.useState(null)
   const [labelLevelSection, setLabelLevelSection] = React.useState({level : 0, section:100})
   const [rangoFechas, setRangoFechas] = React.useState({fechaI:null, fechaF:null})
+  const [seeGraficas, setSeeGraficas] = React.useState(false)
   const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
   const mesActual = new Date().getMonth();
 
-  console.log('nombreArchivo', nombreArchivo)
+  console.log('reportTypeSelected', reportTypeSelected)
   const reportType = [
     { id: 10, title: 'Resumen de mensualidades' },
     // { id: 11, title: 'Resumen morosos' },
     { id: 12, title: 'Clasificación de pagos' },
     { id: 13, title: 'Reporte de morosos' },
+    { id: 15, title: 'Gráficas de morosos' },
   ]
   const clasificacionReporte = [
     { id: 1, title: 'Por Familias' },
@@ -122,20 +126,27 @@ const CollectionReports = () => {
 
   const nombreArchivoFunc = () =>{
     let nombre ='';
-    nombre = `${reportTypeSelected.title} ${clasifiReportSelectd.title}`
-    if (etapaReportSelectd.id == 1){
-      nombre = `${nombre} de todos los grados`
-    }else{
-      if (levelSelected === null && sectionSelected === null) {
-        nombre = `${nombre} de ${etapaReportSelectd.title}`
-      }else{
-        nombre = `${nombre} de ${levelSelected !== null ? levelSelected.level.levName : ''} ${sectionSelected !== null ? sectionSelected.section.secName : ''}`
+    if (reportTypeSelected !== null){
+      nombre = `${reportTypeSelected.title} ${clasifiReportSelectd ? clasifiReportSelectd.title : ''}`
+      if (etapaReportSelectd !== null){
+        if (etapaReportSelectd.id == 1) {
+          nombre = `${nombre} de todos los grados`
+        } else {
+          if (levelSelected === null && sectionSelected === null) {
+            nombre = `${nombre} de ${etapaReportSelectd.title}`
+          } else {
+            nombre = `${nombre} de ${levelSelected !== null ? levelSelected.level.levName : ''} ${sectionSelected !== null ? sectionSelected.section.secName : ''}`
+          }
+        }
       }
-    }  
-    const nombreFinal = nombre.replaceAll(' ','_')
-    setNombreArchivo(nombreFinal)
+      
+      const nombreFinal = nombre.replaceAll(' ', '_')
+      setNombreArchivo(nombreFinal)
+    }
+
   }
   const tableColumns = (reportTypeSelected) => {
+    if (reportTypeSelected !== null) {
     if (reportTypeSelected.id === 10 && clasifiReportSelectd.id == 2) {
 
       // setNombreArchivo(`Resumen_mensualidades_por_estudiantes_${fecha}.xlsx`)
@@ -251,6 +262,7 @@ const CollectionReports = () => {
 
     }
   }
+  }
 
   const searchReport = async () => {
     setSeeTable(false)
@@ -265,47 +277,64 @@ const CollectionReports = () => {
       clasificacion:null,
       etapa:null
     }
-    if (reportTypeSelected.id === 11) {
-      url = `/reports/morosos`
-      data.level = levelSelected.level;
-      if (sectionSelected !== null) {
-        data.section = sectionSelected.section;
+
+    if(reportTypeSelected !== null){
+      if (reportTypeSelected.id === 11) {
+        url = `/reports/morosos`
+        data.level = levelSelected.level;
+        if (sectionSelected !== null) {
+          data.section = sectionSelected.section;
+        }
+      }
+      if (reportTypeSelected.id === 10) {
+        url = `/reports/mensualidades/cobranza`
+        data.level = levelSelected != null ? levelSelected.level : null;
+        data.section = sectionSelected != null ? sectionSelected.section : null;
+        data.etapa = etapaReportSelectd != null ? etapaReportSelectd.id : null;
+        data.clasificacion = clasifiReportSelectd != null ? clasifiReportSelectd.id : null;
+      }
+      if (reportTypeSelected.id === 12) {
+
+        url = `/reports/clasificacion/pagos`
+        data.fechas = rangoFechas;
+      }
+      if (reportTypeSelected.id === 13) {
+
+        url = `/reports/morosos/filtros`
+        data.level = levelSelected != null ? levelSelected.level : null;
+        data.section = sectionSelected != null ? sectionSelected.section : null;
+        data.etapa = etapaReportSelectd != null ? etapaReportSelectd.id : null;
+        data.clasificacion = clasifiReportSelectd != null ? clasifiReportSelectd.id : null;
+
+      }
+
+      if (reportTypeSelected.id === 15) {
+        setSeeGraficas(true)
+        url = `/reports/morosos/grafica`
+        data.level = levelSelected != null ? levelSelected.level : null;
+        data.section = sectionSelected != null ? sectionSelected.section : null;
+      }
+
+      console.log('data-----------------**********************', data)
+
+      const result = (await AxiosInstance.post(url, data)).data
+
+      console.log('result', result)
+      if (result.ok === true) {
+        setDataReport(result.data)
+        if(reportTypeSelected.id === 15){
+          setSeeGraficas(true)
+        }else{
+          setSeeTable(true)
+        }
+      } else {
+        setDataReport([])
+        setMessage(result.message)
+        setAlertType('error')
+        setAlertModal(true)
       }
     }
-    if (reportTypeSelected.id === 10) {
-      url = `/reports/mensualidades/cobranza`
-      data.level = levelSelected != null ? levelSelected.level : null;
-      data.section = sectionSelected != null ? sectionSelected.section : null;
-      data.etapa = etapaReportSelectd != null ? etapaReportSelectd.id : null;
-      data.clasificacion = clasifiReportSelectd != null ? clasifiReportSelectd.id : null;
-    }
-    if (reportTypeSelected.id === 12) {
 
-      url = `/reports/clasificacion/pagos`
-      data.fechas = rangoFechas;
-    }
-    if (reportTypeSelected.id === 13) {
-
-      url = `/reports/morosos/filtros`
-      data.level = levelSelected != null ? levelSelected.level : null;
-      data.section = sectionSelected != null ? sectionSelected.section : null;
-      data.etapa = etapaReportSelectd != null ? etapaReportSelectd.id : null;
-      data.clasificacion = clasifiReportSelectd != null ? clasifiReportSelectd.id : null;
-
-    }
-
-    const result = (await AxiosInstance.post(url, data)).data
-    // console.log('resultttttttttttttttttttt', result)
-    if (result.ok === true) {
-      
-      setDataReport(result.data)
-      setSeeTable(true)
-    } else {
-      setDataReport([])
-      setMessage(result.message)
-      setAlertType('error')
-      setAlertModal(true)
-    }
 
   }
 
@@ -375,9 +404,7 @@ const CollectionReports = () => {
       setSearchButton(false)
     }
   }, [periodSelected]);
-  console.log('---levelSelected---', levelSelected )
-  console.log('**sectionSelected***', sectionSelected)
-  // console.log('+++++', reportTypeSelected)
+
 
   React.useEffect(() => {
     setLabelLevelSection({ level: labelLevelSection.level + 1, section: labelLevelSection.section + 1 })
@@ -408,6 +435,7 @@ const CollectionReports = () => {
         setSectionSelected(null)
         setEtapaReportSelectd(null)
         setClasifiReportSelectd(null)
+        setSeeGraficas(false)
         if (rangoFechas.fechaI === null || rangoFechas.fechaF === null) {
           setSearchButton(true)
         } else {
@@ -415,6 +443,7 @@ const CollectionReports = () => {
         }
       }
       if (reportTypeSelected.id == 13 || reportTypeSelected.id == 10) {
+        setSeeGraficas(false)
         setRangoFechas({ fechaI: null, fechaF: null })
         if ( etapaReportSelectd == null || clasifiReportSelectd == null ) {
           setSearchButton(true)
@@ -422,9 +451,20 @@ const CollectionReports = () => {
           setSearchButton(false)
         }
        }
+      if (reportTypeSelected.id == 15) {
+        if (periodSelected === null || levelSelected === null || sectionSelected === null) {
+          setSearchButton(true)
+        } else {
+          setSearchButton(false)
+        }
+      }
+
     }    
+
     else{ // si no hay reporte seleccionado
       // console.log('entro por reporte no seleccionado')
+      // setSearchButton(true)
+      setSeeGraficas(false)
       setRangoFechas({ fechaI: null, fechaF: null })
       setLevelSelected(null)
       setSectionSelected(null)
@@ -432,6 +472,20 @@ const CollectionReports = () => {
       setClasifiReportSelectd(null)
     }
   }, [reportTypeSelected]);
+
+  React.useEffect(() => {
+    if (reportTypeSelected !== null) {
+      if (reportTypeSelected.id == 15) {
+        if (periodSelected === null || levelSelected === null || sectionSelected === null) {
+          setSearchButton(true)
+        } else {
+          setSearchButton(false)
+        }
+      }
+    }
+  }, [levelSelected, sectionSelected]);
+
+
 
   React.useEffect(() => {
     if (reportTypeSelected !== null) {
@@ -460,25 +514,7 @@ const CollectionReports = () => {
       }
     }
 
-
   }, [etapaReportSelectd]);
-
-
-  // React.useEffect(() => {
-  //   if (reportTypeSelected !== null ){
-  //     if (reportTypeSelected.id == 10 || reportTypeSelected.id == 11) {
-  //       console.log('entro a validacion de niveles y secciones de reporte ')
-
-  //       if (levelSelected === null || sectionSelected === null) {
-  //         setSearchButton(true)
-  //       } else {
-  //         setSearchButton(false)
-  //       }
-  //     }
-  //   }
-    
-    
-  // }, [levelSelected, sectionSelected]);
 
   React.useEffect(() => {
     if (reportTypeSelected !== null && reportTypeSelected?.id == 12) { // Si existe un reporte seleccionado
@@ -673,6 +709,11 @@ const CollectionReports = () => {
               </>
               : null
             }
+            {reportTypeSelected?.id === 15
+              ? <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
+                <FiltrosNivelesSecciones />
+              </Stack>                
+              : null}
             {/* {(reportTypeSelected?.id === 10 
               // || reportTypeSelected?.id === 11
               
@@ -729,6 +770,9 @@ const CollectionReports = () => {
       {(seeTable)
         ? <TableReport nombreArchivo={nombreArchivo} periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure} mes={meses[mesActual]} clasifiReportSelectd={clasifiReportSelectd}/>
         : null}
+      {(seeGraficas)
+        ? <GraficosPDF />
+        : null}   
     </>
   )
 }

@@ -4,9 +4,15 @@ import PdfRender from './PdfRender';
 import { saveAs } from 'file-saver';
 import { pdf } from "@react-pdf/renderer";
 import ChartJsImage from 'chartjs-to-image';
+import { Stack } from '@mui/material';
+// importa el boton de material ui
+import Button from '@mui/material/Button';
+
+
 
 function GraficosPDF() {
     const [imageSrc, setImageSrc] = useState(null);
+    
 
     useEffect(() => {
         const myChart = new ChartJsImage();
@@ -35,9 +41,15 @@ function GraficosPDF() {
     }
 
     return (
-        <div className="App">
-            <button onClick={pdfGenerator}>Generar PDF</button>
-        </div>
+        <Stack 
+        justifyContent="flex-end"
+        alignItems="center"
+        direction="row" 
+        spacing={2}>
+            <Button variant="outlined" size="small"
+                onClick={pdfGenerator}
+            >Generar PDF</Button>
+        </Stack>
     );
 }
 
