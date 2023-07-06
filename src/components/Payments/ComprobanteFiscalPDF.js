@@ -21,12 +21,11 @@ const styles = StyleSheet.create({
         // width: '500',
     },
     viewer: {
-        width: '100%', //the pdf viewer will take up all of the width and height
+        width: '100%', 
         height: window.innerHeight,
     },
     membrete: {
-        width: '20%', //the pdf viewer will take up all of the width and height
-        // height: window.innerHeight,
+        width: '20%', 
     },
 })
 
@@ -189,7 +188,9 @@ const ComprobanteFiscalPDF = ({ replicaDatosPago, numFact, datosCompletos, datos
                                                 datosCompletos !== null
                                                     ? <View >
                                                         {datosCompletos.cuerpo.map(item =>
-                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}>{(item.pagoAplicadoBol).toFixed(2)}</Text>)
+                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}>{(parseFloat(item.pagoAplicadoBol)).toFixed(2)}</Text>)
+
+                                                            // <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}>{(item.pagoAplicadoBol).toFixed(2)}</Text>)
                                                             // <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {(item.pago * tasaDelDia.excAmount).toFixed(2)}  </Text>)
                                                         }
                                                     </View>

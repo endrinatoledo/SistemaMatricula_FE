@@ -746,9 +746,10 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
         let copiaReplicaDatosPago = []
         copiaReplicaDatosPago = replicaDatosPago
         replicaDatosPago.map((element,index) => {
-
-            const montoRestante = element.restante * tasaDelDia.excAmount
-            if (copiaMontoTotalAdistribuir >= montoRestante ){
+            
+            const montoRestante = (element.restante * tasaDelDia.excAmount).toFixed(2) 
+            
+            if (copiaMontoTotalAdistribuir >= montoRestante ){ 
                 copiaMontoTotalAdistribuir = copiaMontoTotalAdistribuir - montoRestante
                 copiaReplicaDatosPago[index].montoRestanteAplicadoBol = 0
                 copiaReplicaDatosPago[index].montoRestanteAplicadoDol = 0
