@@ -273,6 +273,7 @@ const EnrollmentReports = () => {
                         <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
 
                             <Autocomplete
+                                disableClearable
                                 options={listPeriods}
                                 renderInput={(params) => (
                                     <TextField {...params} variant="standard" label="Periodo" />
