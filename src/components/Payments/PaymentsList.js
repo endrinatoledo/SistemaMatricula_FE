@@ -19,11 +19,6 @@ const PaymentsList = () => {
     { title: 'Monto', field: 'families.famName' },
   ];
 
-  React.useEffect(() => {
-    // console.log('----------******------------', mesesApagar)
-  }, [0])
-
-
   return (
     <>
       <NavLink to='/registrarpago' ></NavLink>

@@ -10,6 +10,8 @@ import { makeStyles } from '@mui/styles';
 import ListRepresentative from './ListRepresentative';
 import Estudent from './Estudent';
 import Observation from './Observation';
+import { useParams } from 'react-router-dom';
+
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 const AxiosInstance = require("../utils/request").default;
 
@@ -36,7 +38,7 @@ const UseStyles = makeStyles({
 });
 
 const AddInscription = () => {
-
+  let { perid } = useParams();
   const [listOfFamilies, setListOfFamilies] = React.useState([]);
   const [listOfRepresentatives, setListOfRepresentatives] = React.useState([]);
   const [listOfStudents, setListOfStudents] = React.useState([]);
@@ -109,8 +111,9 @@ const getActivePeriod = async () => {
     const resultPeriod = (await AxiosInstance.get("/periods/onePeriod/active/")).data
     if (resultPeriod.ok === true) {
       setActivePeriod(resultPeriod.data)
-
-      setEndDate({ ...endDate, perId: resultPeriod.data.perId })
+      // perid
+      // setEndDate({ ...endDate, perId: resultPeriod.data.perId })
+      setEndDate({ ...endDate, perId: perid })
 
       const resultPLS = (await AxiosInstance.get(`/periodLevelSection/period/${resultPeriod.data.perId}`)).data
 

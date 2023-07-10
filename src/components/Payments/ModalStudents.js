@@ -42,7 +42,6 @@ const ModalStudents = ({ periodoSeleccionado, listadoPeriodo, setPeriodoSeleccio
     const classes = useStyles();
 
     const [seleccion, setSeleccion] = React.useState()
-    // console.log('llego esta data al modal', studentData)
   return (
       <Modal
           open={openModalEstudents}
@@ -51,7 +50,7 @@ const ModalStudents = ({ periodoSeleccionado, listadoPeriodo, setPeriodoSeleccio
       >
           <Box className={classes.box} >
               <Title>Coincidencias encontradas</Title>
-              <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
+              {/* <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
                   <Autocomplete
                       options={listadoPeriodo}
                       renderInput={(params) => (
@@ -65,7 +64,7 @@ const ModalStudents = ({ periodoSeleccionado, listadoPeriodo, setPeriodoSeleccio
                       sx={{ width: '20%' }}
                       id="clear-on-escape"
                   />
-              </Stack>
+              </Stack> */}
               
               <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField} >
                   <Autocomplete

@@ -1,15 +1,12 @@
 import React from 'react'
 import Divider from '@mui/material/Divider';
-import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
-import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
-import { NavLink } from 'react-router-dom'
 
 const AxiosInstance = require("../utils/request").default;
 
@@ -46,18 +43,18 @@ const UseStyles = makeStyles({
     }
 });
 
-const Search = ({ studentData, setStudentData, filtroEstudiante, studentFound, setStudentFound, setFiltroEstudiante, setPeriodoSeleccionado, setSelectedFamily, representativeFound, setRepresentativeFound, identification, setIdentification, representativeData, setRepresentativeData, setMensualidades }) => {
+const Search = ({ busquedaSeleccionada, setBusquedaSeleccionada, studentData, setStudentData, filtroEstudiante, studentFound, setStudentFound, setFiltroEstudiante, setPeriodoSeleccionado, setSelectedFamily, representativeFound, setRepresentativeFound, identification, setIdentification, representativeData, setRepresentativeData, setMensualidades }) => {
     const classes = UseStyles();
     const tipoBusqueda = [
         { id: 1, title: 'Por estudiante' },
         { id: 2, title: 'Por representante' }
     ]
-    const [busquedaSeleccionada, setBusquedaSeleccionada] = React.useState(null)
     const [searchButton, setSearchButton] = React.useState(true)
     const [alertModal, setAlertModal] = React.useState(false)
     const [message, setMessage] = React.useState()
     const [alertType, setAlertType] = React.useState('');
-
+    const [periodSelected, setPeriodSelected] = React.useState(null)
+    const [listPeriods, setListPeriods] = React.useState([])
 
     const IdentificationType = [
         {
@@ -73,6 +70,26 @@ const Search = ({ studentData, setStudentData, filtroEstudiante, studentFound, s
             label: "Pasaporte"
         }
     ]
+
+    const getAllPeriod = async () => {
+
+        try {
+            const resultPeriods = (await AxiosInstance.get(`/periods/`)).data
+
+            if (resultPeriods.ok === true && resultPeriods.data) {
+                setListPeriods(resultPeriods.data)
+            }
+            else {
+                setMessage('Error al consultar Periodos')
+                setAlertType('error')
+                setAlertModal(true)
+            }
+        } catch {
+            setMessage('Error al consultar Periodos')
+            setAlertType('error')
+            setAlertModal(true)
+        }
+    }
     const labelType = (value) => {
         if (value !== null) {
             const result = IdentificationType.filter(item => {
@@ -102,7 +119,7 @@ const Search = ({ studentData, setStudentData, filtroEstudiante, studentFound, s
             const data = (await AxiosInstance.post("/representatives/byIdentification", identification)).data
             if (data.data === 'registrado') {
                 setRepresentativeFound(true)
-                setRepresentativeData(data.result)
+                setRepresentativeData(data.result)  
             }
         } catch {
             setAlertType("error")
@@ -117,9 +134,14 @@ const Search = ({ studentData, setStudentData, filtroEstudiante, studentFound, s
                 setMessage('Debe agregar datos para consultar por estudiante')
                 setAlertModal(true)
             }else{
-                const response = (await AxiosInstance.post(`/pagoMensualidades/estudiante/datos`, filtroEstudiante)).data
+                const dataFiltroPeriodo = {
+                    ...filtroEstudiante,
+                    periodo: periodSelected
+                }
 
-                console.log('este response de estudiante'.response)
+
+                const response = (await AxiosInstance.post(`/pagoMensualidades/estudiante/datos`, dataFiltroPeriodo)).data
+                
                 if (response.data.length > 0){
                     setStudentData(response.data)
                 }else{
@@ -127,25 +149,41 @@ const Search = ({ studentData, setStudentData, filtroEstudiante, studentFound, s
                     setMessage('No se encontraron resultados')
                     setAlertModal(true)
                 }
-                console.log('esto respondio busqueda por estudiante', response)
-
             }
-
-            
-            
         } catch {
             setAlertType("error")
             setMessage('Error al datos por estudiante')
             setAlertModal(true)
         }
-
     }
+
+    React.useEffect(() => {
+        getAllPeriod()
+    }, [0]);
 
   return (
     <>
           <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
+            <Autocomplete
+              disableClearable
+              options={listPeriods}
+              renderInput={(params) => (
+                <TextField {...params} variant="standard" label="Periodo" />
+              )}
+              value={periodSelected}
+              getOptionLabel={(option) => `${option.perStartYear} - ${option.perEndYear}`}
+              onChange={(event, newValue) => {
+                setPeriodSelected(newValue)
+                  setPeriodoSeleccionado(newValue)
+              }}
+              required
+              noOptionsText={'Sin Opciones'}
+              sx={{ width: '20%' }}
+              id="clear-on-escape"
+            />
 
               <Autocomplete
+                  disableClearable
                   options={tipoBusqueda}
                   renderInput={(params) => (
                       <TextField {...params} variant="standard" label="Tipo de Búsqueda" />
@@ -162,7 +200,7 @@ const Search = ({ studentData, setStudentData, filtroEstudiante, studentFound, s
               />
 
           </Stack>
-          {(busquedaSeleccionada?.id === 1)
+          {(periodSelected && busquedaSeleccionada?.id === 1)
               ? <>
                   <Stack direction="row" alignItems="center" justifyContent="space-between" >
                       <Typography className={classes.typography} color="text.secondary" gutterBottom variant="h6" component="div">
@@ -250,7 +288,7 @@ const Search = ({ studentData, setStudentData, filtroEstudiante, studentFound, s
                       ? <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
                       : null}
               </>
-              : (busquedaSeleccionada?.id === 2)
+              : (periodSelected && busquedaSeleccionada?.id === 2)
                   ? <>
                       <Stack direction="row" alignItems="center" justifyContent="space-between" >
                           <Typography className={classes.typography} color="text.secondary" gutterBottom variant="h6" component="div">

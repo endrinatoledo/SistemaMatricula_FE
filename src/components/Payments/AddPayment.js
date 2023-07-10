@@ -26,7 +26,7 @@ const UseStyles = makeStyles({
     }
   });
 const AddPayment = () => {
-
+    const [busquedaSeleccionada, setBusquedaSeleccionada] = React.useState(null)
     const [representativeData, setRepresentativeData] = React.useState([])
     const [studentData, setStudentData] = React.useState([])
     const [identification, setIdentification] = React.useState({ repIdType: null, repIdentificationNumber: '' })
@@ -51,6 +51,7 @@ const AddPayment = () => {
     const getFamilyByRepId = async () => {
         try {
             const resultFamiles = (await AxiosInstance.get(`/representativeStudent/family/representativeId/${representativeData.repId}`)).data
+                        
             if (resultFamiles.ok === true) {
                 setFamilies(resultFamiles.data)
                 setOpenModal(true)
@@ -68,7 +69,7 @@ const AddPayment = () => {
     const getFamilyByStudentId = async () => {
         try {
             const resultFamiles = (await AxiosInstance.get(`/representativeStudent/family/studentId/${estudianteSeleccionado.idStuden}`)).data
-            
+
             if (resultFamiles.ok === true) {
                 setFamilies(resultFamiles.data)
                 // setOpenModal(true)
@@ -137,12 +138,9 @@ const AddPayment = () => {
 
       const getMensualidadesFamily = async(selectedFamily) =>{
 
-        //   console.log('esto llegoooo en la familia', selectedFamily)
           if (selectedFamily != null){
-            //   console.log('entro a la validacion', selectedFamily)
               try {
-                  const response = (await AxiosInstance.get(`/pagoMensualidades/familia/${selectedFamily.famId}`)).data
-                //   console.log('respuesta de consultar familia', response)
+                  const response = (await AxiosInstance.get(`/pagoMensualidades/familia/${selectedFamily.famId}/periodo/${periodoSeleccionado.perId}`)).data
                   if (response.ok === true && response.data.length > 0) {
                       setMensualidades(response.data)
                       setDataDetalle(response.dataDetalle)
@@ -150,6 +148,8 @@ const AddPayment = () => {
                       setAlertType("error")
                       setMessage('Sin mensualidades para mostrar')
                       setAlertModal(true)
+                      setMensualidades([])
+                      setDataDetalle([])
                   }
               } catch (error) {
                   setMessage('Error al consultar mensualidades por familia')
@@ -173,7 +173,8 @@ const AddPayment = () => {
     }, [representativeData])
     React.useEffect(() => {
         if (studentData.length === 1) {
-            getMensualidadesFamily(studentData)
+            getMensualidadesFamily(studentData[0])
+            setEstudianteSeleccionado(studentData[0])
         } else if (studentData.length > 1) {
             setOpenModalEstudents(true)
         }
@@ -184,24 +185,21 @@ const AddPayment = () => {
         latestExchangeRate()
         getPeriodos()
     }, [0])
+    console.log('entro a estudianteSeleccionado', estudianteSeleccionado)
 
     React.useEffect(() => {
         // latestExchangeRate()
         // getPeriodos()
         if (estudianteSeleccionado != null){
             getFamilyByStudentId()
-            
-            
         }
         
-    }, [estudianteSeleccionado])
-    
-    
+    }, [estudianteSeleccionado])    
 
     return (
         <>
             <Box>
-                <Search studentData={studentData} setStudentData={setStudentData} filtroEstudiante={filtroEstudiante} studentFound={studentFound} setStudentFound={setStudentFound} setFiltroEstudiante={setFiltroEstudiante} etPeriodoSeleccionado={setPeriodoSeleccionado} setSelectedFamily={setSelectedFamily} representativeFound={representativeFound}
+                <Search busquedaSeleccionada={busquedaSeleccionada} setBusquedaSeleccionada={setBusquedaSeleccionada} studentData={studentData} setStudentData={setStudentData} filtroEstudiante={filtroEstudiante} studentFound={studentFound} setStudentFound={setStudentFound} setFiltroEstudiante={setFiltroEstudiante} setPeriodoSeleccionado={setPeriodoSeleccionado} setSelectedFamily={setSelectedFamily} representativeFound={representativeFound}
                     setRepresentativeFound={setRepresentativeFound} identification={identification}
                     setIdentification={setIdentification} representativeData={representativeData}
                     setRepresentativeData={setRepresentativeData} setMensualidades={setMensualidades} />

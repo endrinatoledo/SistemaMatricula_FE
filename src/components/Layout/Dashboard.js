@@ -191,7 +191,7 @@ const Dashboard= () => {
                       <Route path="/detallefamilia/:famid"element={<SeeFamily />} ></Route>
                       <Route path="/editarfamilia/:famid"element={<EditFamily />} ></Route>
                       <Route path="/inscriptions"element={<InscriptionList />} ></Route>
-                      <Route path="/addinscription"element={<AddInscription />} ></Route>
+                      <Route path="/addinscription/:perid"element={<AddInscription />} ></Route>
                       <Route path="/verinscripcion/:insid"element={<SeeInscription />} ></Route>
                       <Route path="/editarinscripcion/:insid"element={<EditInscription />} ></Route>
                       <Route path="/plandepago/:insid"element={<PaymentScheme />} ></Route>

@@ -65,7 +65,6 @@ const InscriptionList = () => {
     const [searchButton, setSearchButton] = React.useState(true)
 
 
-  console.log(listPeriods,'listPeriods----------------------')
     const columns = [
         { title: 'Identificaciónn', aling: 'center', field: 'identification',filtering:true},
         { title: 'Nombres', field: 'names',filtering:true},
@@ -83,7 +82,7 @@ const InscriptionList = () => {
 
       if (resultPeriods.ok === true && resultPeriods.data) {
         setListPeriods(resultPeriods.data)
-      }
+            }
       else {
         setMessage('Error al consultar Periodos')
         setAlertType('error')
@@ -97,7 +96,6 @@ const InscriptionList = () => {
   }
 
       const fillTable = async () => {
-        console.log('entroooooooo')
 
         try{
           const resultInscripcion = (await AxiosInstance.post("/inscriptions/period", periodSelected)).data
@@ -105,7 +103,6 @@ const InscriptionList = () => {
             const data = resultInscripcion.data
             let result = []
 
-            // console.log('********************************************************',data)
             data.forEach( item => {
                 result.push({
                     id : item.insId,
@@ -181,6 +178,7 @@ const InscriptionList = () => {
   React.useEffect(() => {
     if (periodSelected !== null) {
       setSearchButton(false)
+      fillTable()
     }else{
       setSearchButton(true)
     }
@@ -189,6 +187,12 @@ const InscriptionList = () => {
   React.useEffect(() => {
     getAllPeriod()
   }, [0]);
+
+  React.useEffect(() => {
+    if (listPeriods.length > 0) {
+      setPeriodSelected(listPeriods[0])
+    }
+  }, [listPeriods]);
 
     React.useEffect(() => {  
       handleClose()
@@ -220,10 +224,10 @@ const InscriptionList = () => {
               id="clear-on-escape"
             />
 
-            <Button variant="outlined" size="small"
+            {/* <Button variant="outlined" size="small"
               disabled={searchButton}
               onClick={() => fillTable()}
-            >Buscar</Button>
+            >Buscar</Button> */}
 
             </Stack>
 
@@ -272,11 +276,18 @@ const InscriptionList = () => {
                       }
                     },
                     {
-                      icon: () => <NavLink to='/addinscription' ><AddBoxRoundedIcon /></NavLink>,
+
+                      icon: () => <AddBoxRoundedIcon />,
                       tooltip: 'Nueva Inscripción',
                       isFreeAction: true,
                       onClick: (event, rowData) => {
+                        window.location = `/addinscription/${periodSelected.perId}`;
                       }
+                      // icon: () => <NavLink to={`/addinscription/${periodSelected.perId}`} ><AddBoxRoundedIcon /></NavLink>,
+                      // tooltip: 'Nueva Inscripción',
+                      // isFreeAction: true,
+                      // onClick: (event, rowData) => {
+                      // }
                     },
 
                   ]}
