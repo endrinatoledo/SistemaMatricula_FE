@@ -46,13 +46,29 @@ const AddPayment = () => {
     const [periodoSeleccionado, setPeriodoSeleccionado] = React.useState(null)
     const [filtroEstudiante, setFiltroEstudiante] = React.useState({ tIdentif: null, identif: '', pNombre: '', pApellido: '', sApellido: '' })
     const [estudianteSeleccionado, setEstudianteSeleccionado] = React.useState(null)
+    const [estudianteFamilia, setEstudianteFamilia] = React.useState([])
+
+    
     const classes = UseStyles();
+
+    const mapEstudiantesFamilia = () => {
+
+        const estudiantes = mensualidades.map((item) => {
+            return {
+                stuId: item.stuId,
+                student: item.student,
+            }
+        })
+
+        setEstudianteFamilia(estudiantes)
+    }
 
     const getFamilyByRepId = async () => {
         try {
             const resultFamiles = (await AxiosInstance.get(`/representativeStudent/family/representativeId/${representativeData.repId}`)).data
                         
             if (resultFamiles.ok === true) {
+
                 setFamilies(resultFamiles.data)
                 setOpenModal(true)
             } else {
@@ -141,6 +157,10 @@ const AddPayment = () => {
           if (selectedFamily != null){
               try {
                   const response = (await AxiosInstance.get(`/pagoMensualidades/familia/${selectedFamily.famId}/periodo/${periodoSeleccionado.perId}`)).data
+                  
+                  console.log('mensualidadesssss', response.data)
+                  console.log('studentDataaaaaaa',studentData)
+                  
                   if (response.ok === true && response.data.length > 0) {
                       setMensualidades(response.data)
                       setDataDetalle(response.dataDetalle)
@@ -188,13 +208,17 @@ const AddPayment = () => {
     console.log('entro a estudianteSeleccionado', estudianteSeleccionado)
 
     React.useEffect(() => {
-        // latestExchangeRate()
-        // getPeriodos()
         if (estudianteSeleccionado != null){
             getFamilyByStudentId()
         }
         
     }, [estudianteSeleccionado])    
+
+    React.useEffect(() => {
+        if (mensualidades.length) {
+            mapEstudiantesFamilia()
+        }
+    }, [mensualidades]) 
 
     return (
         <>
@@ -224,7 +248,7 @@ const AddPayment = () => {
             {
                 (mensualidades.length > 0 && exchangeRate !== null && periodoSeleccionado !== null) 
                 ? <>
-                        <TablaMensualidades periodoSeleccionado={periodoSeleccionado} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} mensualidades={ mensualidades } dataDetalle={dataDetalle}/>
+                        <TablaMensualidades estudianteFamilia={estudianteFamilia} periodoSeleccionado={periodoSeleccionado} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} mensualidades={ mensualidades } dataDetalle={dataDetalle}/>
                   </>
                 : null
             }

@@ -22,6 +22,7 @@ import FormatoComprobante from './FormatoComprobante';
 import ComprobantePDF from './ComprobantePDF';
 import ComprobanteFiscalPDF from './ComprobanteFiscalPDF';
 import GenerarComprobanteFicalFile from './GenerarComprobanteFicalFile';
+import ModalConceptoPagos from './ModalConceptoPagos';
 
 
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default
@@ -95,7 +96,7 @@ const UseStyles = makeStyles({
     // }
 })
 
-const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, setNumLimpiarFactura, pagosRegistrados, setPagosRegistrados, datosPago, setDatosPago, datosCabecera, setDatosCabecera, selectedFamily, getMensualidadesFamily, families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades }) => {
+const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, numLimpiarFactura, setNumLimpiarFactura, pagosRegistrados, setPagosRegistrados, datosPago, setDatosPago, datosCabecera, setDatosCabecera, selectedFamily, getMensualidadesFamily, families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades }) => {
     const classes = UseStyles();
     const [layautPagos, setlayautPagos] = React.useState(false)
     const [circularProgress, setCircularProgress] = React.useState(false)
@@ -147,6 +148,10 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
     const [statusCostosArray, setStatusCostosArray] = React.useState(false)
     const [statusPagosAplicados, setStatusPagosAplicados] = React.useState(false)
     const [montoSinAsignar, setMontoSinAsignar] = React.useState(0)
+    const [modalConceptoPago, setModalConceptoPago] = React.useState(false)
+    const [conceptosAdicionales, setConceptosAdicionales] = React.useState([])
+    const [replicaConceptosAdicionales, setReplicaConceptosAdicionales] = React.useState([])
+
 
     console.log('datosPago', datosPago)
     const fechaActual = moment(new Date()).format("DD-MM-YYYY")
@@ -622,6 +627,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
         //     }
         // }
     }
+    console.log('listadoConceptosPago', listadoConceptosPago)
 
     const confirmarCancelarRegistroDePago = () => {
         setModalCancel(true)
@@ -783,6 +789,40 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
         
     }
 
+    const cancelarPagosAdicionales = () => {
+        setModalConceptoPago(false);
+        setConceptosAdicionales([]);
+    }
+
+    const abrirModalConceptoPago = () => {
+
+        // console.log('listadoConceptosPago',listadoConceptosPago)
+
+        const conceptosFormateados = listadoConceptosPago.map((item, index) => {
+            return {
+                key: index,
+                icoId: item.icoId,
+                icoName: item.icoName,
+                costoDol:0,
+                montoPagadoDol:0,
+                montoRestanteDol:'0',
+                costoBol:0,
+                montoPagadoBol:0,
+                montoRestanteBol:0,
+                montoApagarDol:0,
+                montoApagarBol:0,
+                montoApagarDol:0,
+                montoApagarBol:0,
+            }
+        })
+        // console.log('conceptosFormateados',conceptosFormateados)
+
+        setConceptosAdicionales(conceptosFormateados)
+        setReplicaConceptosAdicionales(conceptosFormateados)
+
+        setModalConceptoPago(true);
+    }
+
     React.useEffect(() => {
         if (montoTotalDolares || montoTotalBolivares){
              calcularMontoTotalAdistribuir()
@@ -860,7 +900,7 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
         if (montoGeneral !== 0) validarDiferencias()
     }, [montoGeneral])
     
-
+    console.log('replicaDatosPago******', replicaDatosPago)
     return (
         <>
             <Modal
@@ -1045,7 +1085,22 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                         <h5 className={classes.title}>Distribución de Pago</h5>
 
                                                         <>
-                                                            {/* <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                            
+
+                                                            
+                                                            <Stack className={classes.stack} direction="column"
+                                                                justifyContent="flex-end"
+                                                                alignItems="flex-end"
+                                                                spacing={2} >
+                                                                <div> Tasa del día : {tasaDelDia !== 0 ? <> {(tasaDelDia.excAmount).toFixed(2)} Bs. {moment(tasaDelDia.excDate).format("DD/MM/YYYY")} </> : ''}  </div>
+                                                                <div> Monto Restante a Pagar $: {montoTotalDolaresDis} </div>
+                                                                <div> Monto Restante a Pagar Bs: {montoTotalBolivaresDis} </div>
+                                                                <Button disabled={!botonAplicarPago} variant="contained" onClick={() => aplicarPago()}
+                                                                    color="info">Aplicar Pago</Button>
+                                                                { montoSinAsignar != 0 ? <div> <b><font COLOR="red">Monto sin distribuir : bs. {montoSinAsignar.toFixed(2)} / $ {(montoSinAsignar / tasaDelDia.excAmount).toFixed(2)}</font></b> </div> : null}
+                                                            </Stack>
+                                                            <br />
+                                                            <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                                                 <Autocomplete
                                                                     key={clearFieldDistribucion.student}
                                                                     sx={{ width: '33%' }}
@@ -1079,8 +1134,8 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                 
 
                                                                 <Button variant="contained" color="info"
-                                                                    disabled={statusBotonAgregarDistribucion} onClick={() => agregarDistribucion()}
-                                                                >Agregar</Button>
+                                                                    onClick={() => abrirModalConceptoPago()}
+                                                                >Agregar concepto adicional</Button>
                                                             </Stack>
                                                             
                                                             <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
@@ -1116,8 +1171,8 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                     }}
                                                                 />
                                                                 
-                                                            </Stack> */}
-                                                            
+                                                            </Stack>
+
                                                             {/* <MaterialTable title={'Distribución de Pagos'}
                                                                 data={datosPago}
                                                                 columns={columnsDisPago}
@@ -1159,21 +1214,6 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
                                                                 }}
 
                                                             /> */}
-                                                            <Stack className={classes.stack} direction="column"
-                                                                justifyContent="flex-end"
-                                                                alignItems="flex-end"
-                                                                spacing={2} >
-                                                                <div> Tasa del día : {tasaDelDia !== 0 ? <> {(tasaDelDia.excAmount).toFixed(2)} Bs. {moment(tasaDelDia.excDate).format("DD/MM/YYYY")} </> : ''}  </div>
-                                                                <div> Monto Restante a Pagar $: {montoTotalDolaresDis} </div>
-                                                                <div> Monto Restante a Pagar Bs: {montoTotalBolivaresDis} </div>
-                                                                <Button disabled={!botonAplicarPago} variant="contained" onClick={() => aplicarPago()}
-                                                                    color="info">Aplicar Pago</Button>
-                                                                { montoSinAsignar != 0 ? <div> <b><font COLOR="red">Monto sin distribuir : bs. {montoSinAsignar.toFixed(2)} / $ {(montoSinAsignar / tasaDelDia.excAmount).toFixed(2)}</font></b> </div> : null}
-                                                            </Stack>
-                                                            {/* <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
-                                                                
-                                                            </Stack> */}
-                                                            
                                                             {(Array.isArray(replicaDatosPago) && replicaDatosPago.length )  
                                                                 ? replicaDatosPago.map((item, index)=>(
                                                                     <>
@@ -1383,6 +1423,12 @@ const ModalPayments = ({ dataDetalle, periodoSeleccionado, numLimpiarFactura, se
             {(alertModal) ?
                 <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
                 : null}
+
+            {(modalConceptoPago) ?
+                <ModalConceptoPagos selectedFamily={selectedFamily} estudianteFamilia={estudianteFamilia} listadoConceptosPago={listadoConceptosPago} tasaDelDia={tasaDelDia} replicaConceptosAdicionales={replicaConceptosAdicionales} setReplicaConceptosAdicionales={setReplicaConceptosAdicionales} modalConceptoPago={modalConceptoPago} conceptosAdicionales={conceptosAdicionales} setConceptosAdicionales={setConceptosAdicionales} cancelarPagosAdicionales={cancelarPagosAdicionales}/>
+                : null}
+
+            {console.log('selectedFamily--------------------', selectedFamily)}
         </>
 
     )
