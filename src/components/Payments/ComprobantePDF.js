@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const ComprobantePDF = ({ replicaDatosPago, numControl, numFact, datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
+const ComprobantePDF = ({ conceptosAdicionalesArray, replicaDatosPago, numControl, numFact, datosCompletos, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
 
     console.log('stos son mis datos completos', datosCompletos)
     console.log('replicaDatosPago.................', replicaDatosPago)
@@ -78,9 +78,6 @@ const ComprobantePDF = ({ replicaDatosPago, numControl, numFact, datosCompletos,
 
         let hash = {};
         const eliminarMetodosPagoRepetidos = pagosRegistrados.filter(o => hash[o.metodoPago.payName] ? false : hash[o.metodoPago.payName] = true);
-
-
-
         const detallePagoMetodos = eliminarMetodosPagoRepetidos.map(item => {
             return {
                 metodoPago: item.metodoPago.payName,
@@ -97,6 +94,11 @@ const ComprobantePDF = ({ replicaDatosPago, numControl, numFact, datosCompletos,
         }
         )
         setMontos(detallePagoMonto)
+    }
+
+    const armarDescripcionConceptoAdicional = (concepto) => {
+        const descripcion = `${concepto.icoName ? concepto.icoName.toUpperCase() : ''} ${concepto.famName ? concepto.famName.toUpperCase() : ''} ${concepto.student ? concepto.student.toUpperCase() : ''} ${concepto.description ? concepto.description.toUpperCase() : ''}`
+        return descripcion
     }
 
     React.useEffect(() => {
@@ -176,34 +178,52 @@ const ComprobantePDF = ({ replicaDatosPago, numControl, numFact, datosCompletos,
                                         <View style={{ flex: 3 }}>
 
                                             {
-                                                datosCompletos !== null
-                                                    ? <View >
-                                                        {datosCompletos.cuerpo.map(item =>
-                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> {item.descripcion} {item.student}  </Text>)
-                                                        }
-                                                    </View>
-                                                    : null
+                                                <View >
+                                                    {
+                                                        conceptosAdicionalesArray.length > 0
+                                                            ? conceptosAdicionalesArray.map(item =>
+                                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> {armarDescripcionConceptoAdicional(item)}  </Text>)
+                                                            : null
+                                                    }
+                                                    {
+                                                        datosCompletos !== null
+                                                            ? datosCompletos.cuerpo.map(item =>
+                                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> {(item.descripcion).toUpperCase()} {(item.student).toUpperCase()}  </Text>)
+                                                            : null
+                                                    }
+                                                    
+                                                </View>
+
                                             }
                                             {/* <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> conceptos </Text> */}
 
                                         </View>
                                         <View style={{ flex: 1 }}>
                                             {
-                                                datosCompletos !== null
-                                                    ? <View >
-                                                        {datosCompletos.cuerpo.map(item =>
-                                                            <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {parseFloat(item.pagoAplicadoBol).toFixed(2)}  </Text>)
+                                                <View >
+                                                    {
+                                                        conceptosAdicionalesArray.length > 0
+                                                            ? conceptosAdicionalesArray.map(item =>
+                                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {item.montoApagarBol}  </Text>)
+                                                            : null
+                                                    }
+                                                    {
+                                                        datosCompletos !== null
+                                                            ?
+                                                            datosCompletos.cuerpo.map(item =>
+                                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {parseFloat(item.pagoAplicadoBol).toFixed(2)}  </Text>)
                                                             // <Text style={{ fontSize: tamañoLetra, textAlign: 'right', paddingRight: '6px' }}> {(item.pago * tasaDelDia.excAmount).toFixed(2)}  </Text>)
-                                                        }
-                                                    </View>
-                                                    : null
+                                                            : null
+                                                    }
+                                                </View>
+
                                             }
                                             {/* <Text style={{ fontSize: tamañoLetra, textAlign: 'right' }}> bolivares </Text> */}
                                         </View>
                                     </View>
                                     <View style={{ height: '5px' }}></View>
                                     <View style={{ display: "flex", flexDirection: 'row', border: '1', padding: '5px' }}>
-                                        <View style={{ flex: 3, borderRight: '1', margin: '1px',paddingRight:'5px' }}>
+                                        <View style={{ flex: 3, borderRight: '1', margin: '1px', paddingRight: '5px' }}>
                                             <View >
                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> Formas de pago: </Text>
                                                 {
@@ -217,7 +237,7 @@ const ComprobantePDF = ({ replicaDatosPago, numControl, numFact, datosCompletos,
                                         {/* <View style={{ display: "flex", flexDirection: 'row' }}>
                                             
                                         </View> */}
-                                        
+
                                         <View style={{ flex: 1 }}>
                                             <Text style={{ fontSize: tamañoLetra, textAlign: 'right' }}>  </Text>
                                             {

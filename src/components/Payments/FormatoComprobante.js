@@ -27,7 +27,7 @@ const ItemDerecha = styled(Paper)(({ theme }) => ({
 }));
 
 
-const FormatoComprobante = ({ replicaDatosPago, numControl, numFact, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
+const FormatoComprobante = ({ conceptosAdicionalesArray, replicaDatosPago, numControl, numFact, datosPago, tasaDelDia, datosCabecera, pagosRegistrados }) => {
 
     const [montos, setMontos] = React.useState([])
     const [total, setTotal] = React.useState(null)
@@ -88,6 +88,11 @@ const FormatoComprobante = ({ replicaDatosPago, numControl, numFact, datosPago, 
         setMontos(detallePagoMonto)
     }
 
+    const armarDescripcionConceptoAdicional = (concepto) => {
+        const descripcion = `${concepto.icoName ? concepto.icoName.toUpperCase() : ''} ${concepto.famName ? concepto.famName.toUpperCase() : ''} ${concepto.student ? concepto.student.toUpperCase() : ''} ${concepto.description ? concepto.description.toUpperCase() : ''}`
+        return descripcion
+    }
+
     React.useEffect(() => {
         ordenarMontos()
         if (replicaDatosPago.length > 0) { bancosYreferencias() }
@@ -129,8 +134,8 @@ const FormatoComprobante = ({ replicaDatosPago, numControl, numFact, datosPago, 
               <Grid item xs={8}>
                   <ItemIzquierda>
                     <br /> 
-                      <div> <strong>Nombre o Razón Social:</strong> {datosCabecera.razonSocial !== undefined ? datosCabecera.razonSocial : ''} </div>
-                      <div> <strong>Dirección:</strong> {datosCabecera.address !== undefined ? datosCabecera.address : ''} </div>
+                      <div> <strong>NOMBRE O RAZÓN SOCIAL:</strong> {datosCabecera.razonSocial !== undefined ? (datosCabecera.razonSocial).toUpperCase() : ''} </div>
+                      <div> <strong>DIRECCIÓN:</strong> {datosCabecera.address !== undefined ? (datosCabecera.address).toUpperCase() : ''} </div>
                   </ItemIzquierda>
               </Grid>
               <Grid item xs={4}>
@@ -154,7 +159,88 @@ const FormatoComprobante = ({ replicaDatosPago, numControl, numFact, datosPago, 
                     <br />
                   </Item>
               </Grid>
+
               {
+                  
+                       <>
+                          <Grid item xs={10}>
+                              <ItemIzquierda>
+                                  <br />
+                                  {
+                                  conceptosAdicionalesArray.length > 0 ?
+                                      conceptosAdicionalesArray.map(item => <>
+                                          <div> {armarDescripcionConceptoAdicional(item)} </div>
+                                      </>)
+                                      : null
+                                  }
+                              {
+                                  replicaDatosPago.length > 0 ?
+                                      replicaDatosPago.map(item => <>
+                                          <div> {(item.descripcion).toUpperCase()} {(item.student).toUpperCase()} </div>
+                                      </>)
+                                      : null
+                              }
+
+                                  <br />
+                              </ItemIzquierda>
+                          </Grid>
+                          <Grid item xs={2}>
+                              <ItemDerecha>
+                                  <br />
+                                  {
+                                  conceptosAdicionalesArray.length > 0 ?
+                                  conceptosAdicionalesArray.map(item => <>
+                                      <div> {item.montoApagarBol}  </div>
+                                  </>)
+                                      : null                                      
+                                }
+                                {
+                                    replicaDatosPago.length > 0 ?
+                                      
+                                          replicaDatosPago.map(item => <>
+                                              <div> {parseFloat(item.pagoAplicadoBol).toFixed(2)}  </div>
+                                          </>)
+                                      : null
+                                }
+                                
+
+                                  <br />
+                              </ItemDerecha>
+                          </Grid>
+                      </>
+                      
+              }
+
+              {/* {
+                  conceptosAdicionalesArray.length > 0
+                      ? <>
+                          <Grid item xs={10}>
+                              <ItemIzquierda>
+                                  <br />
+                                  {
+                                      conceptosAdicionalesArray.map(item => <>
+                                          <div> {armarDescripcionConceptoAdicional(item)} </div>
+                                      </>)
+                                  }
+
+                                  <br />
+                              </ItemIzquierda>
+                          </Grid>
+                          <Grid item xs={2}>
+                              <ItemDerecha>
+                                  <br />
+                                  {conceptosAdicionalesArray.map(item => <>
+                                      <div> {item.montoApagarBol}  </div>
+                                  </>)}
+
+                                  <br />
+                              </ItemDerecha>
+                          </Grid>
+                      </>
+                      : null
+              } */}
+
+              {/* {
                   replicaDatosPago.length > 0  
                 //   datosPago.length > 0  
                     ? <> 
@@ -182,7 +268,7 @@ const FormatoComprobante = ({ replicaDatosPago, numControl, numFact, datosPago, 
                       </Grid>
                      </>
                     : null
-              }
+              } */}
               <Grid item xs={9}>
                   <ItemIzquierda>
                       <div><strong>Formas de pago</strong>  </div>
@@ -208,7 +294,7 @@ const FormatoComprobante = ({ replicaDatosPago, numControl, numFact, datosPago, 
               <Grid item xs={12}>
                   <br />   
                   <br />   
-                  <div> Recibí conforme: ______________________________________________________________ </div>
+                  <div> RECIBÍ CONFORME: ______________________________________________________________ </div>
               </Grid>
           </Grid>
       </Box>

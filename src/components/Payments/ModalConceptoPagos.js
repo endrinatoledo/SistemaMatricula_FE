@@ -9,7 +9,12 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import IconButton from '@mui/material/IconButton';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import MaterialTable from '@material-table/core';
 import Divider from '@mui/material/Divider';
+import nextId from "react-id-generator";
+
+const AxiosInstance = require("../utils/request").default;
 
 const UseStyles = makeStyles({
     stack: {
@@ -46,15 +51,27 @@ const UseStyles = makeStyles({
         marginBottom: '3%',
     }
 })
+// conceptosAdicionales
 
-
-const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConceptosPago, tasaDelDia, replicaConceptosAdicionales, setReplicaConceptosAdicionales, modalConceptoPago, conceptosAdicionales, setConceptosAdicionales, cancelarPagosAdicionales }) => {
+const ModalConceptoPagos = ({ setAplicarConceptosAdicionales, setModalConceptoPago, conceptosAdicionalesArray, setConceptosAdicionalesArray, periodoSeleccionado, selectedFamily, estudianteFamilia, listadoConceptosPago, tasaDelDia, replicaConceptosAdicionales, setReplicaConceptosAdicionales, modalConceptoPago, conceptosAdicionales, setConceptosAdicionales, cancelarPagosAdicionales }) => {
     const classes = UseStyles();
     const [clearFieldConceptos, setClearFieldConceptos] = React.useState({ costoBol: 0, costoDol: 100, montoPagadoBol: 200, montoPagadoDol: 300, montoRestanteDol: 400, montoRestanteBol: 500, montoApagarDol: 600, montoApagarBol: 700 })
-    const [conceptosInput, setConceptosInput] = React.useState({ description: '', famId: null, famName: null, stuId: null, student: null, icoId: null, icoName: null, costoBol: 0, costoDol: 0, montoApagarBol: 0, montoApagarDol: 0 })
-    const [keyConceptosInput, setKeyConceptosInput] = React.useState({ costoInputBol: 1000, costoInputDol: 2000, montoApagarInputBol: 3000, montoApagarInputDol: 4000 })
+    const [conceptosInput, setConceptosInput] = React.useState({validado:null, description: null, famId: null, famName: null, stuId: null, student: null, icoId: null, icoName: null, costoBol: 0, costoDol: 0, montoApagarBol: 0, montoApagarDol: 0 })
+    const [keyConceptosInput, setKeyConceptosInput] = React.useState({ costoInputBol: 1000, costoInputDol: 2000, montoApagarInputBol: 3000, montoApagarInputDol: 4000, icoId:5000, famId:6000, stuId:7000, description:8000 })
+    const [conceptosAdicionalesBD, setConceptosAdicionalesBD] = React.useState([])
+    const [buttonAdd, setButtonAdd] = React.useState(true)
+    // const [conceptosAdicionalesArray, setConceptosAdicionalesArray] = React.useState([])
+    // const [columnas, setColumnas] = React.useState([])
+    const columnas = [
+        { title: 'Concepto', field: 'icoName' },
+        { title: 'Familia', field: 'famName' },
+        { title: 'Estudiante', field: 'student' },
+        { title: 'Descripción', field: 'description' },
+        { title: 'Costo $', field: 'costoDol' },
+        { title: 'Pago $', field: 'montoApagarDol' },
 
-    console.log('llegaronnnnnn conceptosInput', conceptosInput)
+    ]
+    // console.log('llegaronnnnnn conceptosInput', conceptosInput)
 
     const parseDecimal = (value) => {
         const decimalSeparator = (1.1).toLocaleString().substring(1, 2);
@@ -77,6 +94,66 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
         }));
     }
 
+    const getConceptosAdicionalesByPerIdFamId = async (perId, famId) => {
+        try {
+            const { data } = await AxiosInstance.get(`/conceptosAdicionales/periodo/${perId}/familia/${famId}`);
+            // console.log('dataaaaaa', data)
+            setConceptosAdicionalesBD(data)
+            // setReplicaConceptosAdicionales(data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const limpiarFormulario = () => {
+        setConceptosInput({ description: null, famId: null, famName: null, stuId: null, student: null, icoId: null, icoName: null, costoBol: 0, costoDol: 0, montoApagarBol: 0, montoApagarDol: 0 })
+        setKeyConceptosInput({ 
+            costoInputBol: keyConceptosInput.costoInputBol + 1,
+            costoInputDol: keyConceptosInput.costoInputDol + 1,
+            montoApagarInputBol: keyConceptosInput.montoApagarInputBol + 1,
+            montoApagarInputDol: keyConceptosInput.montoApagarInputDol + 1,
+            icoId: keyConceptosInput.icoId + 1,
+            famId: keyConceptosInput.famId + 1,
+            stuId: keyConceptosInput.stuId + 1,
+            description: keyConceptosInput.description + 1
+            });
+        
+    }
+    const addItemConceptosAdicionales = () => {
+
+        let item = { ...conceptosInput, id: nextId(), validado:'sinValidar' }
+        const array = [...conceptosAdicionalesArray, item]
+        setConceptosAdicionalesArray(array)
+        limpiarFormulario()
+        // try {
+        //     const { data } = await AxiosInstance.post(`/conceptosAdicionales`, conceptosInput);
+        //     console.log('guardooooo', data)
+        //     // getConceptosAdicionalesByPerIdFamId(periodoSeleccionado.perId, selectedFamily.famId)
+        // } catch (error) {
+        //     console.log(error)
+        // }
+    }
+
+    const guardarConceptosAdicionales = () => {
+        setAplicarConceptosAdicionales(true)
+        setModalConceptoPago(false)
+    }
+
+    //crea un useefeect para que se ejecute cuando se abra el modal
+    React.useEffect(() => {
+        if (selectedFamily) {
+            getConceptosAdicionalesByPerIdFamId(periodoSeleccionado.perId, selectedFamily.famId)
+        }
+    }, [])
+
+    React.useEffect(() => {
+        if (!conceptosInput.icoId || conceptosInput.costoBol == 0 || conceptosInput.costoDol == 0 || conceptosInput.montoApagarBol == 0 || conceptosInput.montoApagarDol == 0) {
+            setButtonAdd(true)
+        }else{
+            setButtonAdd(false)
+        }
+    }, [conceptosInput])
+
 
     return (
         <>
@@ -89,6 +166,7 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
                     <h4 className={classes.title}> Conceptos Adicionales</h4>
                     <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                         <Autocomplete
+                            key={keyConceptosInput.icoId}
                             disableClearable
                             sx={{ width: '32%' }}
                             options={listadoConceptosPago}
@@ -104,6 +182,7 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
                             id="clear-on-escape"
                         />
                         <Autocomplete
+                            key={keyConceptosInput.famId}
                             sx={{ width: '32%' }}
                             options={[selectedFamily.families]}
                             renderInput={(params) => (
@@ -122,6 +201,7 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
                             id="clear-on-escape"
                         />
                         <Autocomplete
+                        key={keyConceptosInput.stuId}
                             sx={{ width: '32%' }}
                             options={estudianteFamilia}
                             renderInput={(params) => (
@@ -130,7 +210,11 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
                             )}
                             getOptionLabel={(option) => option.student}
                             onChange={(event, newValue) => {
+                                if (newValue) {
                                 setConceptosInput({ ...conceptosInput, stuId: newValue.stuId, student: newValue.student })
+                                } else {
+                                    setConceptosInput({ ...conceptosInput, stuId: null, student: null })
+                                }
                             }}
                             required
                             id="clear-on-escape"
@@ -139,6 +223,7 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
                     </Stack>
                     <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                         <TextField
+                            key={keyConceptosInput.description}
                             sx={{ width: '50%' }}
                             id="DescripcionInput"
                             label="Descripcion"
@@ -186,14 +271,14 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
                             sx={{ width: '10%' }}
                             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', step: 'any' }}
                             type="number"
-                            value={conceptosInput.costoDol}
+                            value={conceptosInput.montoApagarDol}
                             id={`montoApagarDol`}
                             label="Monto a pagar $"
                             variant="standard"
                             onChange={(e) => {
                                 const dolares = parseDecimal(e.target.value);
                                 const bolivares = (dolares * tasaDelDia.excAmount).toFixed(2);
-                                setConceptosInput({ ...conceptosInput, costoDol: dolares, costoBol: bolivares });
+                                setConceptosInput({ ...conceptosInput, montoApagarDol: dolares, montoApagarBol: bolivares });
                                 setKeyConceptosInput({ ...keyConceptosInput, montoApagarInputDol: keyConceptosInput.montoApagarInputDol + 1, montoApagarInputBol: keyConceptosInput.montoApagarInputBol + 1 })
 
                             }}
@@ -204,7 +289,7 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
                             sx={{ width: '10%' }}
                             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', step: 'any' }}
                             type="number"
-                            value={conceptosInput.costoBol}
+                            value={conceptosInput.montoApagarBol}
                             id={`montoApagarInputBol`}
                             label="Monto a pagar Bs"
                             variant="standard"
@@ -215,15 +300,40 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
                                 setKeyConceptosInput({ ...keyConceptosInput, montoApagarInputDol: keyConceptosInput.montoApagarInputDol + 1, montoApagarInputBol: keyConceptosInput.montoApagarInputBol + 1 })
                             }}
                         />
-                        <Button variant="contained" color="info"
-                        // onClick={() => abrirModalConceptoPago()}
+                        <Button variant="contained" color="info" disabled={buttonAdd}
+                            onClick={() => addItemConceptosAdicionales()}
                         >Agregar </Button>
                     </Stack>
 
 <br />
                     <br />
 
-                    {
+                    <MaterialTable title={'Conceptos Adicionales'}
+                        data={conceptosAdicionalesArray}
+                        columns={columnas}
+                        options={{
+                            search: false,
+                            paging: false,
+                            maxBodyHeight: 190,
+                            actionsColumnIndex: -1,
+                            addRowPosition: 'first'
+                        }}
+                        actions={[
+                            {
+                                icon: () => <DeleteOutlineOutlinedIcon />,
+                                tooltip: 'Eliminar Conceptooo',
+                                onClick: (event, rowData) => {
+                                    let array = conceptosAdicionalesArray
+                                    const newArray = array.filter((item) => item.id != rowData.id)
+                                    setConceptosAdicionalesArray(newArray)
+                                }
+                            }
+                        ]}
+                    />
+{
+                        console.log('conceptosAdicionalesArray...', conceptosAdicionalesArray)
+}
+                    {/* {
                         (Array.isArray(conceptosAdicionales) && conceptosAdicionales.length)
                             ? conceptosAdicionales.map((concepto, index) => (
                                 <>
@@ -703,7 +813,7 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
                                                     [`montoPagadoBol-${index}`]: prev[`montoPagadoBol-${index}`] + 1,
                                                 }));
                                             }}
-                                        /> */}
+                                        /> 
 
                                         <IconButton color="primary" aria-label="Limpiar valores"
                                             onClick={() => limpiarValores(index)}
@@ -726,12 +836,15 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
                                         id="montoRestanteBol"
                                         label="Monto Restante Bs"
                                         variant="standard"
-                                    /> */}
+                                    /> 
                                     </Stack>
                                 </>
 
                             )) : <> </>
-                    }
+                    } */}
+
+                    
+
                     <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
 
                     </Stack>
@@ -739,6 +852,9 @@ const ModalConceptoPagos = ({ selectedFamily, estudianteFamilia, listadoConcepto
 
                         <Button variant="outlined" onClick={() => cancelarPagosAdicionales()}
                             color="error">Cancelar</Button>
+                        <Button variant="contained" color="success" disabled={conceptosAdicionalesArray.length ? false : true}
+                            onClick={() => guardarConceptosAdicionales()}
+                        >Guardar </Button>
                     </Stack>
                 </Box>
             </Modal>

@@ -23,7 +23,9 @@ import ComprobantePDF from './ComprobantePDF';
 import ComprobanteFiscalPDF from './ComprobanteFiscalPDF';
 import GenerarComprobanteFicalFile from './GenerarComprobanteFicalFile';
 import ModalConceptoPagos from './ModalConceptoPagos';
-
+import WarningOutlinedIcon from '@mui/icons-material/WarningOutlined';
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
+import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 
 const ModalAlertCancel = require('../AlertMessages/ModalAlertCancel').default
 
@@ -114,7 +116,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
     const [mensajeErrorMontoDP, setMensajeErrorMontoDP] = React.useState('')
     const [listaMonedas, setListaMonedas] = React.useState(['Dólares', 'Bolívares'])
     const [pagoPorRegistrar, setPagoPorRegistrar] = React.useState({ moneda: null, metodoPago: null, monto: null, observacion: null, banco: null, referencia: null, tarjeta: null })
-    const [distribicionPorRegistrar, setDistribicionPorRegistrar] = React.useState({ student: null, descripcion: null, costoNeto: null, pago: null, restante:null })
+    const [distribicionPorRegistrar, setDistribicionPorRegistrar] = React.useState({ student: null, descripcion: null, costoNeto: null, pago: null, restante: null })
     const [mensajeErrorCosto, setMensajeErrorCosto] = React.useState('')
     const [errorCosto, setErrorCosto] = React.useState(false)
     const [mensajeErrorPago, setMensajeErrorPago] = React.useState('')
@@ -130,8 +132,8 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
     const [tasaDelDia, setTasaDelDia] = React.useState(0)
     const [paginaCabecera, setPaginaCabecera] = React.useState(false)
     const [formatFactura, setFormatFactura] = React.useState(false)
-    const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500, tarjeta: 600})
-    const [clearFieldDistribucion, setClearFieldDistribucion] = React.useState({ student: 0, descripcion: 100, costoNeto: 200, pago: 300, restante: 400, montoRestanteAplicadoBol: 500, montoRestanteAplicadoDol: 600, pagoAplicadoDol: 700, pagoAplicadoBol:800  })
+    const [clearField, setClearField] = React.useState({ moneda: 0, metodoPago: 100, monto: 200, observacion: 300, banco: 400, referencia: 500, tarjeta: 600 })
+    const [clearFieldDistribucion, setClearFieldDistribucion] = React.useState({ student: 0, descripcion: 100, costoNeto: 200, pago: 300, restante: 400, montoRestanteAplicadoBol: 500, montoRestanteAplicadoDol: 600, pagoAplicadoDol: 700, pagoAplicadoBol: 800 })
     const [datosCompletos, setDatosCompletos] = React.useState(null)
     const [mostrarComprobante, setMostrarComprobante] = React.useState(false)
     const [voucherType, setVoucherType] = React.useState(null)
@@ -151,6 +153,13 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
     const [modalConceptoPago, setModalConceptoPago] = React.useState(false)
     const [conceptosAdicionales, setConceptosAdicionales] = React.useState([])
     const [replicaConceptosAdicionales, setReplicaConceptosAdicionales] = React.useState([])
+    const [conceptosAdicionalesArray, setConceptosAdicionalesArray] = React.useState([])
+    const [aplicarConceptosAdicionales, setAplicarConceptosAdicionales] = React.useState(false)
+    const [mostrarConceptosAdicionales, setMostrarConceptosAdicionales] = React.useState(true)
+
+
+    { console.log('conceptosAdicionalesArray--------------------', conceptosAdicionalesArray) }
+
 
 
     console.log('datosPago', datosPago)
@@ -169,7 +178,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
         { title: 'Costo', field: 'costoNeto', type: 'currency' },
         { title: 'Pago', field: 'pago', type: 'currency', validate: rowData => (rowData.pago === undefined || rowData.pago === '' || rowData.pago === null || rowData.pago === 0) ? "Requerido" : rowData.pago > rowData.restante ? 'Monto Excedido' : true },
         { title: 'Monto Restante $', field: 'restante', editable: 'never', type: 'currency' },
-        { title: 'Monto Restante Bs', editable: 'never', type: 'currency', render: rowData => (rowData.pago === undefined || rowData.pago === '' || rowData.pago === null || rowData.pago === 0) ? (parseFloat(rowData.restante) * tasaDelDia.excAmount).toFixed(2) : ''}
+        { title: 'Monto Restante Bs', editable: 'never', type: 'currency', render: rowData => (rowData.pago === undefined || rowData.pago === '' || rowData.pago === null || rowData.pago === 0) ? (parseFloat(rowData.restante) * tasaDelDia.excAmount).toFixed(2) : '' }
     ]
 
     const datosBase = () => {
@@ -184,12 +193,12 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
     }
 
     const arrayEstudiantes = () => {
-        const studentsList = mensualidades.map((item,index) =>{ return {"key": index, "stuId": item.stuId, "student": item.student} })      
+        const studentsList = mensualidades.map((item, index) => { return { "key": index, "stuId": item.stuId, "student": item.student } })
         setlistadoEstudiantes(studentsList)
     }
 
     const arrayConceptosDePago = async () => {
-        
+
         try {
             const conceptosPagoRes = (await AxiosInstance.get(`/invoiceConcepts/allInvoiceConcepts/active`)).data
             if (conceptosPagoRes.ok === true) {
@@ -224,7 +233,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
 
         if (pagoPorRegistrar.moneda === null || pagoPorRegistrar.metodoPago === null || pagoPorRegistrar.monto == 0 || pagoPorRegistrar.monto == null
             || pagoPorRegistrar.monto == '') {
-            setStatusBotonAgregar(true)  
+            setStatusBotonAgregar(true)
         } else {
             setStatusBotonAgregar(false)
         }
@@ -239,7 +248,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
     };
 
     const montosTotales = async () => {
-        if (Array.isArray(pagosRegistrados) && pagosRegistrados.length){
+        if (Array.isArray(pagosRegistrados) && pagosRegistrados.length) {
             setMontoTotalDolares(pagosRegistrados.reduce((accumulator, object) => {
                 return object.moneda === 'Dólares' ? Number(accumulator) + Number(object.monto) : Number(accumulator) + 0;
             }, 0))
@@ -247,11 +256,11 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                 return object.moneda === 'Bolívares' ? Number(accumulator) + Number(object.monto) : Number(accumulator) + 0;
             }, 0))
             setConteo(conteo + 1)
-        }else{
+        } else {
             setMontoTotalDolares(0)
             setMontoTotalBolivares(0)
             setMontoTotalAdistribuir(0)
-            setBotonAplicarPago(false) 
+            setBotonAplicarPago(false)
             setStatusPagosAplicados(false)
             setReplicaDatosPago(datosPago)
             setClearFieldDistribucion({
@@ -264,42 +273,22 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
         }
     }
 
-    const trunc = (x, posiciones = 0) => {
-        var s = x.toString()
-        var l = s.length
-        var decimalLength = s.indexOf('.') + 1
-        if (decimalLength == 0) {
-            return Number(x)
-        } else {
-            var numStr = s.substr(0, decimalLength + posiciones)
-            return Number(numStr)
-        }
-    }
-
     const calcularMontoGeneral = () => {
-        if (montoTotalBolivares !== 0){
+        if (montoTotalBolivares !== 0) {
             const division = montoTotalBolivares / tasaDelDia.excAmount
             const buscarDecimal = String(division).indexOf('.')
 
-            if (buscarDecimal !== -1){
+            if (buscarDecimal !== -1) {
                 setMontoGeneral((montoTotalBolivares / tasaDelDia.excAmount).toFixed(2) + montoTotalDolares)
-            }else{
+            } else {
                 setMontoGeneral(division + montoTotalDolares)
-            }            
-        }else{
+            }
+        } else {
             setMontoGeneral(montoTotalDolares)
         }
     }
 
     const montosDistribuidosTotales = async () => {
-        // setMontoTotalDolaresDis((datosPago.reduce((accumulator, object) => {
-        //     return Number(accumulator) + Number(object.pago);
-        // }, 0)).toFixed(2))
-
-        // setMontoTotalBolivaresDis(((datosPago.reduce((accumulator, object) => {
-        //     return Number(accumulator) + Number(object.pago);
-        // }, 0)) * tasaDelDia.excAmount).toFixed(2))
-        // setConteo(conteo + 1)
 
         setMontoTotalDolaresDis((replicaDatosPago.reduce((accumulator, object) => {
             return Number(accumulator) + Number(object.restante);
@@ -330,7 +319,6 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
             montosTotales()
             validarCostosArray()
             // validarCostosArray()
-            
         }
     };
 
@@ -338,7 +326,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
 
         const pagoConvertido = Number(distribicionPorRegistrar.pago) + 0
         const costoConvertido = Number(distribicionPorRegistrar.costoNeto) + 0
-        if (String(costoConvertido) == 'NaN' ) {
+        if (String(costoConvertido) == 'NaN') {
             setErrorCosto(true)
             setMensajeErrorCosto('Monto en números')
         } else if (String(pagoConvertido) == 'NaN') {
@@ -347,7 +335,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
             setMensajeErrorCosto('')
             setErrorPago(true)
             setMensajeErrorPago('Monto en números')
-        } 
+        }
         else {
             setErrorCosto(false)
             setMensajeErrorCosto('')
@@ -528,7 +516,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
         if (mesesApagar.length > 0) {
             const data = mesesApagar.map(item => {
 
-                console.log('itemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',item)
+                console.log('itemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm', item)
 
                 return {
                     "key": nextId(),
@@ -612,22 +600,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                 return false
             }
         }
-
-
-        //LOGICA VIEJA
-        // if (pagosRegistrados.length === 0 || datosPago.length === 0) {
-        //     return true
-
-        // } else {
-        //     const found = datosPago.find(element => element.pago === 0);
-        //     if (found !== '' && found !== null && found !== undefined) {
-        //         return true
-        //     } else {
-        //         return false
-        //     }
-        // }
     }
-    console.log('listadoConceptosPago', listadoConceptosPago)
 
     const confirmarCancelarRegistroDePago = () => {
         setModalCancel(true)
@@ -654,8 +627,8 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
 
         setCircularProgress(true)
         const data = {
-            numControl:numControlFormatoNum,
-            numFact:numFactFormatoNum,
+            numControl: numControlFormatoNum,
+            numFact: numFactFormatoNum,
             cabecera: datosCabecera,
             cuerpo: replicaDatosPago,
             // cuerpo: datosPago, //logica vieja
@@ -704,21 +677,21 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
     }
 
     const validarDiferencias = () => {
-        if(montoGeneral !== montoTotalDolaresDis){
+        if (montoGeneral !== montoTotalDolaresDis) {
             const montoDiferencia = montoGeneral - montoTotalDolaresDis
             const filtrarMensualidadesPagadas = dataDetalle.filter(item => item.mopStatus != 1)
             const filtrarDatosPago = filtrarMensualidadesPagadas.filter(item => {
                 // item.mopStatus != 1
-                if (datosPago.length > 0){
+                if (datosPago.length > 0) {
                     for (let index = 0; index < datosPago.length; index++) {
                         const element = datosPago[index];
                         if (item.mopId != element.mopId) return item
                     }
                     // datosPago.foreach(element => {
-                        
+
                     // })
                 }
-                
+
             })
             console.log('filtrarMensualidadesPagadas', filtrarMensualidadesPagadas.length)
             console.log('filtrarDatosPago', filtrarDatosPago.length)
@@ -728,54 +701,83 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
 
     const validarCostosArray = () => {
         console.log('entro a validar validarCostosArray', replicaDatosPago)
-        if (replicaDatosPago.length > 0){
+        if (replicaDatosPago.length > 0) {
             const response = replicaDatosPago.filter(item => item.costoNeto == 0);
             console.log('esta respuesta', response)
-            if (response.length > 0) { 
-                setStatusCostosArray(false) 
-                setStatusPagosAplicados(false) 
+            if (response.length > 0) {
+                setStatusCostosArray(false)
+                setStatusPagosAplicados(false)
             } else {
-                 setStatusCostosArray(true)
-                 
-                 } 
+                setStatusCostosArray(true)
+
+            }
         }
-                   
+
     }
 
-    const calcularMontoTotalAdistribuir = () => {      
+    const calcularMontoTotalAdistribuir = () => {
         setMontoTotalAdistribuir((montoTotalDolares * tasaDelDia.excAmount.toFixed(2) + montoTotalBolivares))
     }
 
-    const aplicarPago = () =>{
+    const armarDescripcionConceptoAdicional = (concepto) => {
+        const descripcion = `${concepto.icoName ? concepto.icoName.toUpperCase() : ''} ${concepto.famName ? concepto.famName.toUpperCase() : ''} ${concepto.student ? concepto.student.toUpperCase() : ''} ${concepto.description ? concepto.description.toUpperCase() : ''}`
+        return descripcion
+    }
+
+    const aplicarPago = () => {
         let copiaMontoTotalAdistribuir = 0
+        let copiaconceptosAdicionalesArray = conceptosAdicionalesArray
         copiaMontoTotalAdistribuir = montoTotalAdistribuir
+
+        if (conceptosAdicionalesArray.length > 0) {
+            conceptosAdicionalesArray.map((element, index) => {
+                console.log(element, element)
+                if (copiaMontoTotalAdistribuir > 0) { //va a distribuir el monto total
+                    copiaMontoTotalAdistribuir = copiaMontoTotalAdistribuir - parseFloat(element.montoApagarBol)
+                    if (copiaMontoTotalAdistribuir >= 0) copiaconceptosAdicionalesArray[index].validado = 'aprobado'
+                } else { // no hay dinero
+                    copiaconceptosAdicionalesArray[index].validado = 'reprobado'
+                }
+
+            })
+            setMostrarConceptosAdicionales(false)
+            setTimeout(() => {
+                setMostrarConceptosAdicionales(true)
+            }, 1000);
+            setConceptosAdicionalesArray(copiaconceptosAdicionalesArray)
+            // const montoRestante = (element.restante * tasaDelDia.excAmount).toFixed(2)
+
+        }
+
+        if (statusCostosArray && copiaMontoTotalAdistribuir> 0){
         let copiaReplicaDatosPago = []
         copiaReplicaDatosPago = replicaDatosPago
-        replicaDatosPago.map((element,index) => {
-            
-            const montoRestante = (element.restante * tasaDelDia.excAmount).toFixed(2) 
-            
-            if (copiaMontoTotalAdistribuir >= montoRestante ){ 
+        replicaDatosPago.map((element, index) => {
+
+            const montoRestante = (element.restante * tasaDelDia.excAmount).toFixed(2)
+            console.log('copiaMontoTotalAdistribuir', copiaMontoTotalAdistribuir)
+            console.log('montoRestante', montoRestante)
+            if (copiaMontoTotalAdistribuir >= montoRestante) {
                 copiaMontoTotalAdistribuir = copiaMontoTotalAdistribuir - montoRestante
                 copiaReplicaDatosPago[index].montoRestanteAplicadoBol = 0
                 copiaReplicaDatosPago[index].montoRestanteAplicadoDol = 0
                 copiaReplicaDatosPago[index].pagoAplicadoDol = element.restante
                 copiaReplicaDatosPago[index].pagoAplicadoBol = montoRestante
-                copiaReplicaDatosPago[index].descripcion = (element.descripcion).replace('Abono ','')
+                copiaReplicaDatosPago[index].descripcion = (element.descripcion).replace('Abono ', '')
 
-            }else{
-                copiaReplicaDatosPago[index].descripcion = `Abono ${(element.descripcion).replace('Abono ', '') }`
+            } else {
+                copiaReplicaDatosPago[index].descripcion = `Abono ${(element.descripcion).replace('Abono ', '')}`
                 copiaReplicaDatosPago[index].montoRestanteAplicadoBol = montoRestante - copiaMontoTotalAdistribuir
                 copiaReplicaDatosPago[index].montoRestanteAplicadoDol = (montoRestante - copiaMontoTotalAdistribuir) / tasaDelDia.excAmount
                 copiaReplicaDatosPago[index].pagoAplicadoDol = copiaMontoTotalAdistribuir / tasaDelDia.excAmount
-                copiaReplicaDatosPago[index].pagoAplicadoBol =  copiaMontoTotalAdistribuir
+                copiaReplicaDatosPago[index].pagoAplicadoBol = copiaMontoTotalAdistribuir
                 copiaMontoTotalAdistribuir = 0
 
-                return false 
-            }    
+                return false
+            }
         })
         setMontoSinAsignar(copiaMontoTotalAdistribuir)
-        
+
         setReplicaDatosPago(copiaReplicaDatosPago)
         setClearFieldDistribucion({
             ...clearFieldDistribucion,
@@ -783,36 +785,38 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
             montoRestanteAplicadoDol: (clearFieldDistribucion.montoRestanteAplicadoDol + 1),
             pagoAplicadoDol: (clearFieldDistribucion.pagoAplicadoDol + 1),
             pagoAplicadoBol: (clearFieldDistribucion.pagoAplicadoBol + 1)
-            })
-        
+        })
+
         setStatusPagosAplicados(true)
-        
+        }
+
+
+
+
     }
 
     const cancelarPagosAdicionales = () => {
         setModalConceptoPago(false);
         setConceptosAdicionales([]);
+        setAplicarConceptosAdicionales(false)
     }
 
     const abrirModalConceptoPago = () => {
-
-        // console.log('listadoConceptosPago',listadoConceptosPago)
-
         const conceptosFormateados = listadoConceptosPago.map((item, index) => {
             return {
                 key: index,
                 icoId: item.icoId,
                 icoName: item.icoName,
-                costoDol:0,
-                montoPagadoDol:0,
-                montoRestanteDol:'0',
-                costoBol:0,
-                montoPagadoBol:0,
-                montoRestanteBol:0,
-                montoApagarDol:0,
-                montoApagarBol:0,
-                montoApagarDol:0,
-                montoApagarBol:0,
+                costoDol: 0,
+                montoPagadoDol: 0,
+                montoRestanteDol: '0',
+                costoBol: 0,
+                montoPagadoBol: 0,
+                montoRestanteBol: 0,
+                montoApagarDol: 0,
+                montoApagarBol: 0,
+                montoApagarDol: 0,
+                montoApagarBol: 0,
             }
         })
         // console.log('conceptosFormateados',conceptosFormateados)
@@ -823,14 +827,47 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
         setModalConceptoPago(true);
     }
 
+    const agregarConceptosAdicionalesAdatosPago = () => {
+        // const conceptosAdicionalesFormateados = conceptosAdicionalesArray.map((item, index) => {
+        //     return {
+        //         key: index,
+        //         icoId: item.icoId,
+        //         icoName: item.icoName,
+        //         costoDol:0,
+        //         montoPagadoDol:0,
+        //         montoRestanteDol:'0',
+        //         costoBol:0,
+        //         montoPagadoBol:0,
+        //         montoRestanteBol:0,
+        //         montoApagarDol:0,
+        //         montoApagarBol:0,
+        //         montoApagarDol:0,
+        //         montoApagarBol:0,
+        //     }
+        // })
+        // console.log('conceptosAdicionalesFormateados',conceptosAdicionalesFormateados)
+        // setReplicaDatosPago([...replicaDatosPago, ...conceptosAdicionalesFormateados])
+        // setModalConceptoPago(false);
+        // setConceptosAdicionales([]);
+        // setAplicarConceptosAdicionales(false)
+    }
+
+    // crea un useEffec 
     React.useEffect(() => {
-        if (montoTotalDolares || montoTotalBolivares){
-             calcularMontoTotalAdistribuir()
-            }
-    }, [montoTotalDolares, montoTotalBolivares]);
+        if (aplicarConceptosAdicionales) {
+            agregarConceptosAdicionalesAdatosPago()
+        }
+    }, [aplicarConceptosAdicionales]);
 
     React.useEffect(() => {
-        if (montoTotalAdistribuir && statusCostosArray) { setBotonAplicarPago(true) } else { setBotonAplicarPago(false) } 
+        if (montoTotalDolares || montoTotalBolivares) {
+            calcularMontoTotalAdistribuir()
+        }
+    }, [montoTotalDolares, montoTotalBolivares]);
+
+    console.log('montoTotalAdistribuir', montoTotalAdistribuir)
+    React.useEffect(() => {
+        if (montoTotalAdistribuir && (statusCostosArray || conceptosAdicionalesArray.length)) { setBotonAplicarPago(true) } else { setBotonAplicarPago(false) }
     }, [montoTotalAdistribuir, statusCostosArray]);
 
     React.useEffect(() => {
@@ -860,14 +897,14 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
     }, [datosPago])
     React.useEffect(() => {
         setClearFieldDistribucion({
-                costoNeto: (clearFieldDistribucion.costoNeto + 1),
-                pago: (clearFieldDistribucion.pago + 1),
-                restante: (clearFieldDistribucion.restante + 1),
-                montoRestanteAplicadoBol: (clearFieldDistribucion.montoRestanteAplicadoBol + 1),
-                montoRestanteAplicadoDol: (clearFieldDistribucion.montoRestanteAplicadoDol + 1),
-                pagoAplicadoDol: (clearFieldDistribucion.pagoAplicadoDol + 1),
-                pagoAplicadoBol: (clearFieldDistribucion.pagoAplicadoBol + 1)
-            })
+            costoNeto: (clearFieldDistribucion.costoNeto + 1),
+            pago: (clearFieldDistribucion.pago + 1),
+            restante: (clearFieldDistribucion.restante + 1),
+            montoRestanteAplicadoBol: (clearFieldDistribucion.montoRestanteAplicadoBol + 1),
+            montoRestanteAplicadoDol: (clearFieldDistribucion.montoRestanteAplicadoDol + 1),
+            pagoAplicadoDol: (clearFieldDistribucion.pagoAplicadoDol + 1),
+            pagoAplicadoBol: (clearFieldDistribucion.pagoAplicadoBol + 1)
+        })
     }, [replicaDatosPago])
 
     React.useEffect(() => {
@@ -890,17 +927,15 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
     }, [pagosRegistrados])
 
     React.useEffect(() => {
-        if (paginaCabecera){
-             calcularMontoGeneral()
-            }
+        if (paginaCabecera) {
+            calcularMontoGeneral()
+        }
     }, [paginaCabecera])
 
     React.useEffect(() => {
-        // console.log('uuuuuuuuuuu', montoGeneral)
         if (montoGeneral !== 0) validarDiferencias()
     }, [montoGeneral])
-    
-    console.log('replicaDatosPago******', replicaDatosPago)
+
     return (
         <>
             <Modal
@@ -914,12 +949,12 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                         (paginaCabecera)
                             ? <InvoiceHeader setVoucherType={setVoucherType} datosBase={datosBase} setDatosCabecera={setDatosCabecera} datosCabecera={datosCabecera} Item2={Item2} pagosRegistrados={pagosRegistrados} datosPago={datosPago} />
                             : (formatFactura)
-                                ? <FormatoComprobante replicaDatosPago={replicaDatosPago} numControl={numControl} numFact={numFact} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
-                                : (mostrarComprobante) 
+                                ? <FormatoComprobante conceptosAdicionalesArray={conceptosAdicionalesArray} replicaDatosPago={replicaDatosPago} numControl={numControl} numFact={numFact} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                : (mostrarComprobante)
                                     ? (voucherType === 'COMPROBANTE')
-                                        ? <ComprobantePDF replicaDatosPago={replicaDatosPago} numControl={numControl} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                        ? <ComprobantePDF conceptosAdicionalesArray={conceptosAdicionalesArray} replicaDatosPago={replicaDatosPago} numControl={numControl} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
                                         // : <GenerarComprobanteFicalFile numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
-                                        : <ComprobanteFiscalPDF replicaDatosPago={replicaDatosPago} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
+                                        : <ComprobanteFiscalPDF conceptosAdicionalesArray={conceptosAdicionalesArray} replicaDatosPago={replicaDatosPago} numFact={numFact} datosCompletos={datosCompletos} datosPago={datosPago} tasaDelDia={tasaDelDia} datosCabecera={datosCabecera} pagosRegistrados={pagosRegistrados} />
                                     :
                                     (layautPagos) ?
                                         <div>
@@ -1085,9 +1120,9 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                         <h5 className={classes.title}>Distribución de Pago</h5>
 
                                                         <>
-                                                            
 
-                                                            
+
+
                                                             <Stack className={classes.stack} direction="column"
                                                                 justifyContent="flex-end"
                                                                 alignItems="flex-end"
@@ -1097,11 +1132,58 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                 <div> Monto Restante a Pagar Bs: {montoTotalBolivaresDis} </div>
                                                                 <Button disabled={!botonAplicarPago} variant="contained" onClick={() => aplicarPago()}
                                                                     color="info">Aplicar Pago</Button>
-                                                                { montoSinAsignar != 0 ? <div> <b><font COLOR="red">Monto sin distribuir : bs. {montoSinAsignar.toFixed(2)} / $ {(montoSinAsignar / tasaDelDia.excAmount).toFixed(2)}</font></b> </div> : null}
+                                                                {montoSinAsignar != 0 ? <div> <b><font COLOR="red">Monto sin distribuir : bs. {montoSinAsignar.toFixed(2)} / $ {(montoSinAsignar / tasaDelDia.excAmount).toFixed(2)}</font></b> </div> : null}
+                                                                <Button variant="contained" color="secondary"
+                                                                    onClick={() => abrirModalConceptoPago()}
+                                                                >Agregar concepto adicional</Button>
                                                             </Stack>
                                                             <br />
+
+                                                            {
+                                                                mostrarConceptosAdicionales && conceptosAdicionalesArray.length > 0 ?
+                                                                    <>
+                                                                        {
+                                                                            conceptosAdicionalesArray.map((item, index) => (
+                                                                                <Stack key={index} className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                                                    {item.validado == 'sinValidar'
+                                                                                        ? <WarningOutlinedIcon color="warning" style={{ marginTop: '19px' }} />
+                                                                                        : item.validado == 'aprobado'
+                                                                                            ? <CheckOutlinedIcon color='success' style={{ marginTop: '19px' }} />
+                                                                                            : <ClearOutlinedIcon color='error' style={{ marginTop: '19px' }} />
+                                                                                    }
+
+                                                                                    <TextField
+                                                                                        InputProps={{ readOnly: true }}
+                                                                                        sx={{ width: '70%' }}
+                                                                                        value={armarDescripcionConceptoAdicional(item)}
+                                                                                        id="descripcion"
+                                                                                        label="Descripcion"
+                                                                                        variant="standard"
+                                                                                    />
+                                                                                    <TextField
+                                                                                        InputProps={{ readOnly: true }}
+                                                                                        sx={{ width: '10%' }}
+                                                                                        value={item.costoDol}
+                                                                                        id="monto"
+                                                                                        label="Costo $"
+                                                                                        variant="standard"
+                                                                                    />
+                                                                                    <TextField
+                                                                                        InputProps={{ readOnly: true }}
+                                                                                        sx={{ width: '10%' }}
+                                                                                        value={item.montoApagarDol}
+                                                                                        id="monto"
+                                                                                        label="A Pagar $"
+                                                                                        variant="standard"
+                                                                                    />
+                                                                                </Stack>
+                                                                            ))
+                                                                        }
+                                                                    </>
+                                                                    : null
+                                                            }
                                                             <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
-                                                                <Autocomplete
+                                                                {/* <Autocomplete
                                                                     key={clearFieldDistribucion.student}
                                                                     sx={{ width: '33%' }}
                                                                     options={listadoEstudiantes}
@@ -1130,15 +1212,13 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                     }}
                                                                     required
                                                                     id="clear-on-escape"
-                                                                />
-                                                                
+                                                                /> */}
 
-                                                                <Button variant="contained" color="info"
-                                                                    onClick={() => abrirModalConceptoPago()}
-                                                                >Agregar concepto adicional</Button>
+
+
                                                             </Stack>
-                                                            
-                                                            <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+
+                                                            {/* <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                                                 <TextField
                                                                     error={errorCosto}
                                                                     helperText={mensajeErrorCosto}
@@ -1171,7 +1251,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                     }}
                                                                 />
                                                                 
-                                                            </Stack>
+                                                            </Stack> */}
 
                                                             {/* <MaterialTable title={'Distribución de Pagos'}
                                                                 data={datosPago}
@@ -1214,8 +1294,8 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                 }}
 
                                                             /> */}
-                                                            {(Array.isArray(replicaDatosPago) && replicaDatosPago.length )  
-                                                                ? replicaDatosPago.map((item, index)=>(
+                                                            {(Array.isArray(replicaDatosPago) && replicaDatosPago.length)
+                                                                ? replicaDatosPago.map((item, index) => (
                                                                     <>
                                                                         <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                                                             <TextField
@@ -1237,7 +1317,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                         </Stack>
                                                                         <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                                                             {console.log()}
-                                                                             {item.montoPagado != 0
+                                                                            {item.montoPagado != 0
                                                                                 ? <TextField
                                                                                     sx={{ width: '20%' }}
                                                                                     InputProps={{ readOnly: true }}
@@ -1246,7 +1326,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                                     label="Costo $"
                                                                                     variant="standard"
                                                                                 />
-                                                                                :  
+                                                                                :
                                                                                 <TextField
                                                                                     sx={{ width: '20%' }}
                                                                                     inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
@@ -1254,7 +1334,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                                     id="costo"
                                                                                     label="Costo $"
                                                                                     variant="standard"
-                                                                                onChange={e => {
+                                                                                    onChange={e => {
                                                                                         let arrayDataPago = replicaDatosPago
                                                                                         arrayDataPago[index].costoNeto = Number(e.target.value)
                                                                                         arrayDataPago[index].restante = Number(e.target.value) - item.montoPagado
@@ -1267,9 +1347,9 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                                         montosDistribuidosTotales()
                                                                                         // console.log('replicapagosssssss', replicaDatosPago)
                                                                                     }}
-                                                                                />     
-                                                                            }                                                                       
-                                                                            
+                                                                                />
+                                                                            }
+
                                                                             <TextField
                                                                                 sx={{ width: '20%' }}
                                                                                 InputProps={{ readOnly: true }}
@@ -1298,8 +1378,8 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                                     label="Monto Restante $"
                                                                                     variant="standard"
                                                                                 />
-                                                                                }
-                                                                            
+                                                                            }
+
                                                                             <TextField
                                                                                 sx={{ width: '20%' }}
                                                                                 InputProps={{ readOnly: true }}
@@ -1308,14 +1388,14 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                                 label="Monto Restante Bs"
                                                                                 variant="standard"
                                                                             />
-                                                                            
+
                                                                         </Stack>
                                                                         <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                                                             <TextField
                                                                                 key={clearFieldDistribucion.pagoAplicadoDol}
                                                                                 sx={{ width: '20%' }}
                                                                                 InputProps={{ readOnly: true }}
-                                                                                value={(item.pagoAplicadoDol ? Number(item.pagoAplicadoDol).toFixed(2): 0)}
+                                                                                value={(item.pagoAplicadoDol ? Number(item.pagoAplicadoDol).toFixed(2) : 0)}
                                                                                 id="pagoAplicadoDol"
                                                                                 label="Pago aplicado $"
                                                                                 variant="standard"
@@ -1342,7 +1422,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                                 key={clearFieldDistribucion.montoRestanteAplicadoBol}
                                                                                 sx={{ width: '20%' }}
                                                                                 InputProps={{ readOnly: true }}
-                                                                                value={(item.montoRestanteAplicadoBol ? Number(item.montoRestanteAplicadoBol).toFixed(2): 0)}
+                                                                                value={(item.montoRestanteAplicadoBol ? Number(item.montoRestanteAplicadoBol).toFixed(2) : 0)}
                                                                                 id="montoRestanteAplicadoBol"
                                                                                 label="Monto restante aplicado Bs"
                                                                                 variant="standard"
@@ -1350,10 +1430,10 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                         </Stack>
                                                                     </>
                                                                 ))
-                                                                :<></>
+                                                                : <></>
 
                                                             }
-                                                            
+
 
                                                             {/* <Stack className={classes.stack} direction="column"
                                                                 justifyContent="flex-end"
@@ -1425,10 +1505,9 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                 : null}
 
             {(modalConceptoPago) ?
-                <ModalConceptoPagos selectedFamily={selectedFamily} estudianteFamilia={estudianteFamilia} listadoConceptosPago={listadoConceptosPago} tasaDelDia={tasaDelDia} replicaConceptosAdicionales={replicaConceptosAdicionales} setReplicaConceptosAdicionales={setReplicaConceptosAdicionales} modalConceptoPago={modalConceptoPago} conceptosAdicionales={conceptosAdicionales} setConceptosAdicionales={setConceptosAdicionales} cancelarPagosAdicionales={cancelarPagosAdicionales}/>
+                <ModalConceptoPagos setAplicarConceptosAdicionales={setAplicarConceptosAdicionales} setModalConceptoPago={setModalConceptoPago} conceptosAdicionalesArray={conceptosAdicionalesArray} setConceptosAdicionalesArray={setConceptosAdicionalesArray} periodoSeleccionado={periodoSeleccionado} selectedFamily={selectedFamily} estudianteFamilia={estudianteFamilia} listadoConceptosPago={listadoConceptosPago} tasaDelDia={tasaDelDia} replicaConceptosAdicionales={replicaConceptosAdicionales} setReplicaConceptosAdicionales={setReplicaConceptosAdicionales} modalConceptoPago={modalConceptoPago} conceptosAdicionales={conceptosAdicionales} setConceptosAdicionales={setConceptosAdicionales} cancelarPagosAdicionales={cancelarPagosAdicionales} />
                 : null}
 
-            {console.log('selectedFamily--------------------', selectedFamily)}
         </>
 
     )
