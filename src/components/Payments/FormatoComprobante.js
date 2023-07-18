@@ -36,6 +36,8 @@ const FormatoComprobante = ({ conceptosAdicionalesArray, replicaDatosPago, numCo
     const bancosYreferencias = () => {
         let descripcion =''
 
+        console.log('pagosRegistrados--', pagosRegistrados)
+
         pagosRegistrados.forEach(element => {
             // console.log('element', element)
             if(element.metodoPago.payName != 'EFECTIVO'){
@@ -95,7 +97,7 @@ const FormatoComprobante = ({ conceptosAdicionalesArray, replicaDatosPago, numCo
 
     React.useEffect(() => {
         ordenarMontos()
-        if (replicaDatosPago.length > 0) { bancosYreferencias() }
+        if (replicaDatosPago.length > 0 || conceptosAdicionalesArray.length > 0) { bancosYreferencias() }
         // if (datosPago.length > 0) { bancosYreferencias ()} //logica vieja
     }, [1])
 

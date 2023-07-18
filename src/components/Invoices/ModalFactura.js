@@ -205,7 +205,7 @@ const mapearPagosRegistrados = () =>{
             {
             return {
                 "key": index,
-                "student": item.indStuNam,
+                "student": item.indStuNam ? item.indStuNam : '',
                 "descripcion": item.indDescripcion,
                 "costo": item.indcosto,
                 "pagoAplicadoBol": parseFloat(item.indMontoAgregadoBol)
@@ -539,7 +539,7 @@ const mapearPagosRegistrados = () =>{
                                         <Stack spacing={2} alignfacturaSeleccionadas="flex-end" direction="row" justifyContent="flex-start">
                                             <Stack spacing={0.5} alignfacturaSeleccionadas="flex-end" direction="column" justifyContent="flex-start">
                                                 <div><b>Conceptos de pago y montos:</b> </div>
-                                                {facturaSeleccionada.cuerpo.map((element, index) => <div> {`${element.indDescripcion} ${element.indStuName} : Bs. ${element.indMontoAgregadoBol != null ? (parseFloat(element.indMontoAgregadoBol)).toFixed(2) : 0}`}</div>)}
+                                            {facturaSeleccionada.cuerpo.map((element, index) => <div> {`${element.indDescripcion} ${element.indStuName ? element.indStuName : ''} : Bs. ${element.indMontoAgregadoBol != null ? (parseFloat(element.indMontoAgregadoBol)).toFixed(2) : 0}`}</div>)}
 
                                                 <div><b>Formas de pago:</b> </div>
                                                 {facturaSeleccionada.pago.map((element, index) => <div> {`${element.paymentMethodsPay.payName} : Bs. ${element.depCurrency === 'Dólares' ? (parseFloat(element.depAmount) * parseFloat(element.deptasa)).toFixed(2) : (element.depAmount).toFixed(2)} `}</div>)}

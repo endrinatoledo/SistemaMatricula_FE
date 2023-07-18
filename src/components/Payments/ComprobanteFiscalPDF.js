@@ -97,7 +97,7 @@ const ComprobanteFiscalPDF = ({ conceptosAdicionalesArray, replicaDatosPago, num
 
     React.useEffect(() => {
         ordenarMontos()
-        if (datosPago.length > 0) { bancosYreferencias() }
+        if (datosPago.length > 0 || conceptosAdicionalesArray.length > 0) { bancosYreferencias() }
     }, [1])
 
     React.useEffect(() => {

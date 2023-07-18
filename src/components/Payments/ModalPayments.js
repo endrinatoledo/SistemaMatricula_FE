@@ -156,7 +156,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
     const [conceptosAdicionalesArray, setConceptosAdicionalesArray] = React.useState([])
     const [aplicarConceptosAdicionales, setAplicarConceptosAdicionales] = React.useState(false)
     const [mostrarConceptosAdicionales, setMostrarConceptosAdicionales] = React.useState(true)
-
+    const [statusConceptosAdicioanles, setStatusConceptosAdicioanles] = React.useState(false)
 
     { console.log('conceptosAdicionalesArray--------------------', conceptosAdicionalesArray) }
 
@@ -586,20 +586,75 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
         setPaginaCabecera(false)
         setFormatFactura(true)
     }
-
     const validarGuardar = () => {
         //LOGICA NUEVA
-        if (pagosRegistrados.length === 0 || replicaDatosPago.length === 0 || !statusPagosAplicados) {
-            return true
+        let response 
+        let responseCA
+        let responseMen
 
-        } else {
-            const found = replicaDatosPago.find(element => element.pagoAplicadoDol === 0);
-            if (found !== '' && found !== null && found !== undefined) {
-                return true
-            } else {
-                return false
+        if (conceptosAdicionalesArray.length > 0 ) {
+            if (statusConceptosAdicioanles){
+                responseCA = 'aprobado'
+            }else{
+                responseCA = 'rechazado'
             }
+        }else{
+            responseCA = 'noAplica'
         }
+        console.log('pagosRegistrados', pagosRegistrados)
+        if (datosPago.length > 0){
+            
+            if (pagosRegistrados.length === 0 || replicaDatosPago.length === 0 || !statusPagosAplicados) {
+                
+                responseMen = 'rechazado'
+
+            } else {
+                const found = replicaDatosPago.find(element => element.pagoAplicadoDol === 0);
+                if (found !== '' && found !== null && found !== undefined) {
+                    // return true
+                    response = true
+                    responseMen = 'rechazado'
+                } else {
+                    // return false
+                    response = false
+                    responseMen = 'aprobado'
+                }
+            }
+        }else{
+            responseMen = 'noAplica'
+        }
+
+        if(responseCA === 'aprobado' && responseMen === 'aprobado'){
+            console.log('---------------1')
+            return false
+        }else if (responseCA === 'aprobado' && responseMen === 'noAplica'){
+            console.log('---------------2')
+            return false
+        }else if (responseCA === 'noAplica' && responseMen === 'aprobado'){
+            console.log('---------------3')
+            return false
+        }else if (responseCA === 'noAplica' && responseMen === 'noAplica'){
+            console.log('---------------4')
+            return true
+        }else if (responseCA === 'rechazado' && responseMen === 'aprobado'){
+            console.log('---------------5')
+            return true
+        }else if (responseCA === 'rechazado' && responseMen === 'noAplica'){
+            console.log('---------------6')
+            return true
+        }else if (responseCA === 'aprobado' && responseMen === 'rechazado'){
+            console.log('---------------7')
+            return true
+        }else if (responseCA === 'noAplica' && responseMen === 'rechazado'){
+            console.log('---------------8')
+            return true
+        }else if (responseCA === 'rechazado' && responseMen === 'rechazado'){
+            console.log('---------------9')
+            return true
+        }
+
+
+        
     }
 
     const confirmarCancelarRegistroDePago = () => {
@@ -636,6 +691,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
             detallePagos: pagosRegistrados,
             periodo: periodoSeleccionado,
             tasa: tasaDelDia,
+            conceptosAdicionales: conceptosAdicionalesArray
         }
         try {
 
@@ -734,7 +790,10 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                 console.log(element, element)
                 if (copiaMontoTotalAdistribuir > 0) { //va a distribuir el monto total
                     copiaMontoTotalAdistribuir = copiaMontoTotalAdistribuir - parseFloat(element.montoApagarBol)
-                    if (copiaMontoTotalAdistribuir >= 0) copiaconceptosAdicionalesArray[index].validado = 'aprobado'
+                    if (copiaMontoTotalAdistribuir >= 0){ copiaconceptosAdicionalesArray[index].validado = 'aprobado'
+                }else{
+                        copiaconceptosAdicionalesArray[index].validado = 'reprobado'
+                }
                 } else { // no hay dinero
                     copiaconceptosAdicionalesArray[index].validado = 'reprobado'
                 }
@@ -746,7 +805,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
             }, 1000);
             setConceptosAdicionalesArray(copiaconceptosAdicionalesArray)
             // const montoRestante = (element.restante * tasaDelDia.excAmount).toFixed(2)
-
+            validarStatusConceptosAdicionalesArray()
         }
 
         if (statusCostosArray && copiaMontoTotalAdistribuir> 0){
@@ -852,6 +911,11 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
         // setAplicarConceptosAdicionales(false)
     }
 
+    const validarStatusConceptosAdicionalesArray = () => {
+        const result = conceptosAdicionalesArray.some(obj => obj.validado !== "aprobado");
+        setStatusConceptosAdicioanles(!result)
+    }
+
     // crea un useEffec 
     React.useEffect(() => {
         if (aplicarConceptosAdicionales) {
@@ -866,8 +930,10 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
     }, [montoTotalDolares, montoTotalBolivares]);
 
     console.log('montoTotalAdistribuir', montoTotalAdistribuir)
+    console.log('statusCostosArray', statusCostosArray)
+    console.log('conceptosAdicionalesArray', conceptosAdicionalesArray)
     React.useEffect(() => {
-        if (montoTotalAdistribuir && (statusCostosArray || conceptosAdicionalesArray.length)) { setBotonAplicarPago(true) } else { setBotonAplicarPago(false) }
+        if (montoTotalAdistribuir && (statusCostosArray || conceptosAdicionalesArray.length > 0)) { setBotonAplicarPago(true) } else { setBotonAplicarPago(false) }
     }, [montoTotalAdistribuir, statusCostosArray]);
 
     React.useEffect(() => {

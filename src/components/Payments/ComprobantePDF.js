@@ -103,7 +103,7 @@ const ComprobantePDF = ({ conceptosAdicionalesArray, replicaDatosPago, numContro
 
     React.useEffect(() => {
         ordenarMontos()
-        if (datosPago.length > 0) { bancosYreferencias() }
+        if (datosPago.length > 0 || conceptosAdicionalesArray.length > 0) { bancosYreferencias() }
     }, [1])
 
     React.useEffect(() => {
@@ -177,10 +177,10 @@ const ComprobantePDF = ({ conceptosAdicionalesArray, replicaDatosPago, numContro
                                     <View style={{ display: "flex", flexDirection: 'row' }}>
                                         <View style={{ flex: 3 }}>
 
-                                            {
+                                            
                                                 <View >
-                                                    {
-                                                        conceptosAdicionalesArray.length > 0
+                                                {conceptosAdicionalesArray != undefined && Array.isArray(conceptosAdicionalesArray) && conceptosAdicionalesArray.length > 0
+                                                        // conceptosAdicionalesArray.length > 0
                                                             ? conceptosAdicionalesArray.map(item =>
                                                                 <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> {armarDescripcionConceptoAdicional(item)}  </Text>)
                                                             : null
@@ -188,13 +188,13 @@ const ComprobantePDF = ({ conceptosAdicionalesArray, replicaDatosPago, numContro
                                                     {
                                                         datosCompletos !== null
                                                             ? datosCompletos.cuerpo.map(item =>
-                                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> {(item.descripcion).toUpperCase()} {(item.student).toUpperCase()}  </Text>)
+                                                                <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> {item.descripcion? (item.descripcion).toUpperCase() : ''} {item.student?(item.student).toUpperCase():''}  </Text>)
                                                             : null
                                                     }
                                                     
                                                 </View>
 
-                                            }
+                                            
                                             {/* <Text style={{ fontSize: tamañoLetra, textAlign: 'left' }}> conceptos </Text> */}
 
                                         </View>

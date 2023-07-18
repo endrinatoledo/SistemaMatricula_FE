@@ -69,6 +69,7 @@ const InvoicesList = () => {
     { title: 'Fecha', field: 'fecha' }]
 
 
+  console.log('facturaSeleccionada',facturaSeleccionada)
   const getAllPeriod = async () => {
 
     try {
