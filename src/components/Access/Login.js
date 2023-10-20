@@ -98,7 +98,7 @@ export default function Login() {
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
-              margin="normal"
+              margin="normal" 
               required
               fullWidth
               id="email"

@@ -74,6 +74,8 @@ const CollectionReports = () => {
   const [labelLevelSection, setLabelLevelSection] = React.useState({level : 0, section:100})
   const [rangoFechas, setRangoFechas] = React.useState({fechaI:null, fechaF:null})
   const [seeGraficas, setSeeGraficas] = React.useState(false)
+  const [conceptosFactura, setConceptosFactura] = React.useState([])
+  const [conceptosFacturaSeleccionado, setConceptosFacturaSeleccionado] = React.useState(null)
   const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
   const mesActual = new Date().getMonth();
 
@@ -84,6 +86,7 @@ const CollectionReports = () => {
     { id: 12, title: 'Clasificación de pagos' },
     { id: 13, title: 'Reporte de morosos' },
     { id: 15, title: 'Gráficas de morosos' },
+    { id: 16, title: 'Conceptos de Factura' },
   ]
   const clasificacionReporte = [
     { id: 1, title: 'Por Familias' },
@@ -114,14 +117,6 @@ const CollectionReports = () => {
       setAlertType('error')
       setAlertModal(true)
     }
-  }
-
-  const fechaActual = () =>{
-
-    let hoy = new Date();
-    let hora = hoy.getHours() + '_' + hoy.getMinutes() + '_' + hoy.getSeconds();
-    let fecha = hoy.getDate() + '-' + (hoy.getMonth() + 1) + '-' + hoy.getFullYear();
-    return fecha + '_' + hora
   }
 
   const nombreArchivoFunc = () =>{
@@ -175,6 +170,63 @@ const CollectionReports = () => {
         sheetName: "Estudiantes"
       })
     }
+      if (reportTypeSelected.id === 16){
+        console.log('.....------*****', reportTypeSelected)
+
+        if (conceptosFacturaSeleccionado.icoName === 'SEGURO ESCOLAR') {
+
+        setColumns([
+          { title: 'Cédula Rep.', field: 'repIdentificationNumber' },
+          { title: 'Apellido(s)', field: 'surnamesRep' },
+          { title: 'Nombre(s)', field: 'namesRep' },
+          { title: 'Cédula Alum.', field: 'identificationNumberStu' },
+          { title: '1er Apellido', field: 'surnameStu' },
+          { title: '2do Apellido', field: 'secondSurnameStu' },
+          { title: '1er Nombre', field: 'firstNameStu' },
+          { title: '2do Nombre', field: 'secondNameStu' },
+          { title: 'Fch.Ncmto', field: 'dateOfBirthStu' },
+          { title: 'Sexo', field: 'sexStu' },
+          { title: 'Curso', field: 'levelSection' },
+        ])
+        setExcelStructure({
+          fileName: 'ReporteDeSeguroEscolar.xlsx',
+          columns: [["Cédula Rep.", "Apellido(s)", "Nombre(s)", "Cédula Alum.",
+            "1er Apellido", "2do Apellido",
+            "1er Nombre", "2do Nombre",
+            "Fch.Ncmto", "Sexo", "Curso",]],
+          sheetName: "Seguro escolar"
+        })
+
+      }else
+        if (conceptosFacturaSeleccionado.icoName === 'PRIMERA FASE DE PINTURA'){
+          setColumns([
+            { title: 'FAMILIAS QUE CANCELARON LA PRIMERA FASE DE PINTURA', field: 'familia' },
+          ])
+          setExcelStructure({
+            fileName: 'PrimeraFaseDePintura.xlsx',
+            columns: [["FAMILIAS QUE CANCELARON LA PRIMERA FASE DE PINTURA"]],
+            sheetName: "Primera fase de pintura"
+          })
+        } else
+          if (conceptosFacturaSeleccionado.icoName === 'REPARACION SUM') {
+            setColumns([
+              { title: 'FAMILIAS QUE CANCELARON LA REPARACION SUM', field: 'familia' },
+            ])
+            setExcelStructure({
+              fileName: 'ReparacionSUM.xlsx',
+              columns: [["FAMILIAS QUE CANCELARON LA REPARACION SUM"]],
+              sheetName: "Reparacion SUM"
+            })
+          }
+        
+      }
+      // setExcelStructure({
+      //   // fileName: `Resumen_mensualidad_por_estudiantes_${fecha}.xlsx`,
+      //   fileName: `Seguro escolar.xlsx`,
+      //   columns: [["FAMILIA", "NOMBRE REPRESENTANTE", "APELLIDO REPRESENTANTE", "IDENTIFICACION"
+      //   ]],
+      //   sheetName: "Seguro escolar"
+      // })
     // if (reportTypeSelected.id === 11) {
     //   setNombreArchivo(`Reporte_morosos_${nombreNivel}_${nombreSeccion}_${fecha}.xlsx`)
     //   setColumns([
@@ -275,7 +327,8 @@ const CollectionReports = () => {
       section: null,
       fechas:null,
       clasificacion:null,
-      etapa:null
+      etapa:null,
+      conceptoFacura:null
     }
 
     if(reportTypeSelected !== null){
@@ -315,11 +368,16 @@ const CollectionReports = () => {
         data.section = sectionSelected != null ? sectionSelected.section : null;
       }
 
-      console.log('data-----------------**********************', data)
+      if (reportTypeSelected.id === 16) {
+
+        if (conceptosFacturaSeleccionado.icoName === 'SEGURO ESCOLAR') url = `/reports/conceptos/factura/seguroescolar`
+        if (conceptosFacturaSeleccionado.icoName === 'PRIMERA FASE DE PINTURA') url = `/reports/conceptos/factura/pintura`
+        if (conceptosFacturaSeleccionado.icoName === 'REPARACION SUM') url = `/reports/conceptos/factura/reparacionsum`
+        
+        data.conceptoFacura = conceptosFacturaSeleccionado.icoName
+      }
 
       const result = (await AxiosInstance.post(url, data)).data
-
-      console.log('result', result)
       if (result.ok === true) {
         setDataReport(result.data)
         if(reportTypeSelected.id === 15){
@@ -384,17 +442,26 @@ const CollectionReports = () => {
 
   }
 
+  const getAllConceptsFactura = async () => {
+    try {
+      const resultInvoiceConcepts = (await AxiosInstance.get("/invoiceConcepts/")).data
+      if (resultInvoiceConcepts.ok === true) {
+        setConceptosFactura(resultInvoiceConcepts.data)
+      }
+    } catch (error) {
+      setMessage('Error al consultar conceptos de factura')
+      setAlertType('error')
+      setAlertModal(true)
+    }
+  }
+
   React.useEffect(() => {
     getAllPeriod()
+    getAllConceptsFactura()
   }, [0]);
   React.useEffect(() => {
     if (dataReporte.length > 0) { setSeeTable(true) }
   }, [dataReporte]);
-  // React.useEffect(() => {
-  //   if (periodSelected !== null) {
-  //     getPeriodLevelSectionByPerId()
-  //   }
-  // }, [periodSelected]);
 
   React.useEffect(() => {
     if (periodSelected === null) {
@@ -414,19 +481,6 @@ const CollectionReports = () => {
     setDataReport([])
     setColumns([])
     if (reportTypeSelected !== null ) { // Si existe un reporte seleccionado
-      // console.log('entro a validacion de reporte lleno')
-      // if (reportTypeSelected.id == 11 || reportTypeSelected.id == 10) {
-      //   console.log('entro a validacion de reporte 10 u 11')
-
-      //   setRangoFechas({ fechaI: null, fechaF: null })
-      //   setEtapaReportSelectd(null)
-      //   setClasifiReportSelectd(null)
-      //   if (periodSelected === null || levelSelected === null || sectionSelected === null) {
-      //     setSearchButton(true)
-      //   } else {
-      //     setSearchButton(false)
-      //   }
-      // }
 
       if (reportTypeSelected.id == 12) {
         console.log('entro a validacion de reporte 12')
@@ -456,6 +510,21 @@ const CollectionReports = () => {
           setSearchButton(true)
         } else {
           setSearchButton(false)
+        }
+      }
+      if (reportTypeSelected.id === 16) {
+        setLevelSelected(null)
+        setSectionSelected(null)
+        setEtapaReportSelectd(null)
+        setClasifiReportSelectd(null)
+        setSeeGraficas(false)
+        console.log('aquiiiiiii???????????????', conceptosFacturaSeleccionado)
+        if (conceptosFacturaSeleccionado !== null) {
+          console.log('conceptosFacturaSeleccionado???????????????', conceptosFacturaSeleccionado)
+
+          setSearchButton(false)
+        } else {
+          setSearchButton(true)
         }
       }
 
@@ -498,6 +567,9 @@ const CollectionReports = () => {
     }
   }, [etapaReportSelectd, clasifiReportSelectd]);
 
+  React.useEffect(() => {
+    if (conceptosFacturaSeleccionado && reportTypeSelected.id == 16) setSearchButton(false)
+  },[conceptosFacturaSeleccionado])
 
   React.useEffect(() => {
     if (reportTypeSelected !== null) {
@@ -573,6 +645,29 @@ const CollectionReports = () => {
         {/* </Stack> */}
       </>
     )
+  }
+
+  const FiltroConceptosFactura = () => {
+    return (<>
+      <Autocomplete
+        key={'conceptosFacturaItems'}
+        options={conceptosFactura}
+        renderInput={(params) => (
+          <TextField {...params} variant="standard" label="Seleccionar concepto" />
+        )}
+        value={conceptosFacturaSeleccionado}
+        getOptionLabel={(option) => `${option.icoName}`}
+        onChange={(event, newValue) => {
+          console.log('..........---',newValue)
+          setConceptosFacturaSeleccionado(newValue)
+
+        }}
+        required
+        noOptionsText={'Sin Opciones'}
+        sx={{ width: '30%' }}
+        id="clear-on-escape"
+      />
+    </>)
   }
 
   return (
@@ -713,6 +808,12 @@ const CollectionReports = () => {
               ? <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
                 <FiltrosNivelesSecciones />
               </Stack>                
+              : null}
+
+            {reportTypeSelected?.id === 16
+              ? <Stack direction="row" spacing={2} justifyContent="flex-start" className={classes.TextField}>
+                <FiltroConceptosFactura />
+              </Stack>
               : null}
             {/* {(reportTypeSelected?.id === 10 
               // || reportTypeSelected?.id === 11

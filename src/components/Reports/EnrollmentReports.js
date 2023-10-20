@@ -61,14 +61,15 @@ const EnrollmentReports = () => {
     const [columns, setColumns] = React.useState([])
     const [seeTable, setSeeTable]= React.useState(false)
     const [excelStructure, setExcelStructure]= React.useState({})
+    const [nameReport, setNameReport] = React.useState('')
 
     console.log('reportTypeSelected', reportTypeSelected)
     const reportType = [
         { id: 1, title: 'Listado de Alumnos por Gradro y Sección' },
         { id: 2, title: 'Estadística' }, // grado, cantidad total de alumnos, cantidad de niñas, cant de niños
         { id: 3, title: 'Nómina de Familias' }, //Codigo de familia, noombre padres con cedulas, nombres de alumnos cedulas grado cursante
-        { id: 4, title: 'Seguro Escolar' },
-    ]
+        { id: 4, title: 'Seguro Escolar' }, 
+    ] 
     const getAllPeriod = async () => {
 
         try {
@@ -115,6 +116,7 @@ const EnrollmentReports = () => {
     }
 
     const tableColumns = (reportTypeSelected) => {
+        setNameReport(reportTypeSelected.title)
 
         if(reportTypeSelected.id === 1){
             setColumns([
@@ -221,6 +223,7 @@ const EnrollmentReports = () => {
 
         const result = (await AxiosInstance.post(url,data)).data
 
+        console.log('result..................', result)
         if(result.ok === true){
             
             setDataReport(result.data)
@@ -358,7 +361,7 @@ const EnrollmentReports = () => {
                 <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
                 : null}
             {(seeTable)
-            ? <TableReport periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure}/>
+                ? <TableReport nombreArchivo={nameReport} periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure}/>
             : null} 
 
         </>

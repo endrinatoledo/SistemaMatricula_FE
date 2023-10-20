@@ -176,8 +176,8 @@ const getNonEnrolledStudents = async () => {
     if (resultStudent.ok === true) {
       setNonEnrolledStudents(resultStudent.data)
     }
-  } catch {
-    console.log('error al consutlar estudiantes inscritos en periodo actual')
+  } catch (err) {
+    console.log('error al consutlar estudiantes inscritos en periodo actual', err)
   }
 }
 

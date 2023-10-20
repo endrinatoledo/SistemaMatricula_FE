@@ -1199,8 +1199,8 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                                                                 <Button disabled={!botonAplicarPago} variant="contained" onClick={() => aplicarPago()}
                                                                     color="info">Aplicar Pago</Button>
                                                                 {montoSinAsignar != 0 ? <div> <b><font COLOR="red">Monto sin distribuir : bs. {montoSinAsignar.toFixed(2)} / $ {(montoSinAsignar / tasaDelDia.excAmount).toFixed(2)}</font></b> </div> : null}
-                                                                <Button variant="contained" color="secondary"
-                                                                    onClick={() => abrirModalConceptoPago()}
+                                                                <Button variant="contained" color="secondary"   
+                                                                    onClick={() => abrirModalConceptoPago()} 
                                                                 >Agregar concepto adicional</Button>
                                                             </Stack>
                                                             <br />
