@@ -201,20 +201,27 @@ const CollectionReports = () => {
         if (conceptosFacturaSeleccionado.icoName === 'PRIMERA FASE DE PINTURA'){
           setColumns([
             { title: 'FAMILIAS QUE CANCELARON LA PRIMERA FASE DE PINTURA', field: 'familia' },
+            { title: 'FECHA', field: 'fecha' },
+            { title: 'COSTO $', field: 'costo' },
+            { title: 'MONTO PAGADO $', field: 'montoPagado' },
           ])
           setExcelStructure({
             fileName: 'PrimeraFaseDePintura.xlsx',
-            columns: [["FAMILIAS QUE CANCELARON LA PRIMERA FASE DE PINTURA"]],
+            columns: [["FAMILIAS QUE CANCELARON LA PRIMERA FASE DE PINTURA", "FECHA", "COSTO", "MONTO PAGADO"]],
             sheetName: "Primera fase de pintura"
           })
         } else
           if (conceptosFacturaSeleccionado.icoName === 'REPARACION SUM') {
             setColumns([
               { title: 'FAMILIAS QUE CANCELARON LA REPARACION SUM', field: 'familia' },
+              { title: 'FECHA', field: 'fecha' },
+              { title: 'COSTO $', field: 'costo' },
+              { title: 'MONTO PAGADO $', field: 'montoPagado' },
+
             ])
             setExcelStructure({
               fileName: 'ReparacionSUM.xlsx',
-              columns: [["FAMILIAS QUE CANCELARON LA REPARACION SUM"]],
+              columns: [["FAMILIAS QUE CANCELARON LA REPARACION SUM", "FECHA", "COSTO", "MONTO PAGADO"]],
               sheetName: "Reparacion SUM"
             })
           }
