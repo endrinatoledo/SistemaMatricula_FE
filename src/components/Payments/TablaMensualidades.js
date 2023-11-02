@@ -10,7 +10,7 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import ModalExoneracionMeses from './ModalExoneracionMeses';
 
 
-const TablaMensualidades = ({ estudianteFamilia, periodoSeleccionado, selectedFamily, getMensualidadesFamily, families, mensualidades, dataDetalle }) => {
+const TablaMensualidades = ({ estudianteSeleccionado, estudianteFamilia, periodoSeleccionado, selectedFamily, getMensualidadesFamily, families, mensualidades, dataDetalle }) => {
 
     const [pagoModal, setPagoModal] = React.useState(false) 
     const [numLimpiarFactura, setNumLimpiarFactura] = React.useState(0) 
@@ -38,6 +38,8 @@ const TablaMensualidades = ({ estudianteFamilia, periodoSeleccionado, selectedFa
     ];
 
     const buscarDetalleDePago = (mopId) =>{
+        console.log('dataDetalle*-*-*-*-*-*-*-*-*', dataDetalle)
+
         const itemDetalle = dataDetalle.find( element => element.mopId === mopId)
         return itemDetalle
     }
@@ -142,7 +144,7 @@ const TablaMensualidades = ({ estudianteFamilia, periodoSeleccionado, selectedFa
                 ]}
             />
             {(pagoModal)
-                ? <ModalPayments estudianteFamilia={estudianteFamilia} dataDetalle={dataDetalle} periodoSeleccionado={periodoSeleccionado} numLimpiarFactura={numLimpiarFactura} setNumLimpiarFactura={setNumLimpiarFactura} pagosRegistrados={pagosRegistrados} setPagosRegistrados={setPagosRegistrados} datosPago={datosPago} setDatosPago = { setDatosPago } datosCabecera={datosCabecera} setDatosCabecera={setDatosCabecera} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
+                ? <ModalPayments estudianteSeleccionado={estudianteSeleccionado} estudianteFamilia={estudianteFamilia} dataDetalle={dataDetalle} periodoSeleccionado={periodoSeleccionado} numLimpiarFactura={numLimpiarFactura} setNumLimpiarFactura={setNumLimpiarFactura} pagosRegistrados={pagosRegistrados} setPagosRegistrados={setPagosRegistrados} datosPago={datosPago} setDatosPago = { setDatosPago } datosCabecera={datosCabecera} setDatosCabecera={setDatosCabecera} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
             :null
             }
             {(statusModalVerPagos) ?

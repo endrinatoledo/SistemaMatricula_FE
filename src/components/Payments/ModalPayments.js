@@ -98,7 +98,7 @@ const UseStyles = makeStyles({
     // }
 })
 
-const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, numLimpiarFactura, setNumLimpiarFactura, pagosRegistrados, setPagosRegistrados, datosPago, setDatosPago, datosCabecera, setDatosCabecera, selectedFamily, getMensualidadesFamily, families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades }) => {
+const ModalPayments = ({ estudianteSeleccionado, estudianteFamilia, dataDetalle, periodoSeleccionado, numLimpiarFactura, setNumLimpiarFactura, pagosRegistrados, setPagosRegistrados, datosPago, setDatosPago, datosCabecera, setDatosCabecera, selectedFamily, getMensualidadesFamily, families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades }) => {
     const classes = UseStyles();
     const [layautPagos, setlayautPagos] = React.useState(false)
     const [circularProgress, setCircularProgress] = React.useState(false)
@@ -158,7 +158,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
     const [mostrarConceptosAdicionales, setMostrarConceptosAdicionales] = React.useState(true)
     const [statusConceptosAdicioanles, setStatusConceptosAdicioanles] = React.useState(false)
 
-    { console.log('conceptosAdicionalesArray--------------------', conceptosAdicionalesArray) }
+    { console.log('cdatosPago******--------------------', datosPago) }
 
 
 
@@ -522,7 +522,7 @@ const ModalPayments = ({ estudianteFamilia, dataDetalle, periodoSeleccionado, nu
                     "key": nextId(),
                     "mopId": item.mopId,
                     "mes": item.mes,
-                    "student": `${item.student} -> ${item.detallePago.level.levName} `,
+                    "student": `${estudianteSeleccionado.nombre} -> ${estudianteSeleccionado.nivel} `,
                     "descripcion": `Mensualidad ${item.nombreMes}`,
                     // "nivel": item.detallePago.level.levName,
                     "costo": item.detallePago.mopAmountPaid != 0 ? item.detallePago.mopAmount : 0,

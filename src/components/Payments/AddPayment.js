@@ -157,9 +157,7 @@ const AddPayment = () => {
           if (selectedFamily != null){
               try {
                   const response = (await AxiosInstance.get(`/pagoMensualidades/familia/${selectedFamily.famId}/periodo/${periodoSeleccionado.perId}`)).data
-                  
-                  console.log('mensualidadesssss', response.data)
-                  console.log('studentDataaaaaaa',studentData)
+                  console.log('listado encontrados por filtro',studentData)
                   
                   if (response.ok === true && response.data.length > 0) {
                       setMensualidades(response.data)
@@ -248,7 +246,7 @@ const AddPayment = () => {
             {
                 (mensualidades.length > 0 && exchangeRate !== null && periodoSeleccionado !== null) 
                 ? <>
-                        <TablaMensualidades estudianteFamilia={estudianteFamilia} periodoSeleccionado={periodoSeleccionado} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} mensualidades={ mensualidades } dataDetalle={dataDetalle}/>
+                        <TablaMensualidades estudianteSeleccionado={estudianteSeleccionado} estudianteFamilia={estudianteFamilia} periodoSeleccionado={periodoSeleccionado} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} mensualidades={ mensualidades } dataDetalle={dataDetalle}/>
                   </>
                 : null
             }
