@@ -10,17 +10,17 @@ import Button from '@mui/material/Button';
 
 
 
-function GraficosPDF() {
+function GraficosPDF({ dataReporte }) {
     const [imageSrc, setImageSrc] = useState(null);
     
-
     useEffect(() => {
         const myChart = new ChartJsImage();
         myChart.setConfig({
             type: 'pie',
             data: {
                 labels: ['Hello world', 'Foo bar'],
-                datasets: [{ label: 'Foo', data: [1, 2] }]
+                datasets: [{
+                    label: 'Foo', data: dataReporte[0].arrayDataGrafica }]
             },
         });
         convertToURL(myChart);
@@ -34,10 +34,10 @@ function GraficosPDF() {
 
     const pdfGenerator = async () => {
         const blob = await pdf((
-            <PdfRender image={imageSrc} />
+            <PdfRender image={imageSrc} dataReporte={dataReporte} />
         )).toBlob();
 
-        saveAs(blob, 'TestPDF');
+        saveAs(blob, dataReporte[0].nombreReporte);
     }
 
     return (

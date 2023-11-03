@@ -36,83 +36,33 @@ const PdfRenderRespando = ({ image }) => {
 
 const Colors = ['#1792a4', '#44b4c4', '#4dd0e1', '#80c9c6', '#a3d5d1', '#c8e5e3']
 
-const PdfRender = ({image}) => {
-    const nombres = ['Maria', 'Jose', 'Pedro', 'Juan'];
+
+
+const PdfRender = ({ dataReporte }) => {
+
     const [arreglo, setArreglo] = useState([
         {
             grado: '1ero', seccion: 'A', dataGrafica: {
-                labels: ['Solventes', '1-Mes Moroso', '+1 Mes Morosos'],
-                datasets: [{ label: 'Foo', data: [1, 2, 3] }],
-                backgroundColor: [
-                    "rgba(75,192,192,0.5)",
-                    "rgba(255,205,86,0.5)",
-                    "rgba(255,99,132,0.5)",
-                    "rgba(255,159,64,0.5)",                 
-                    "rgba(54,162,235,0.5)"
-                ],
-            },
-            dataTabla: [
-                { descripcion: 'Solventes', numero: '1', porcentaje: '20%' },
-                { descripcion: '1 Mes Moroso', numero: '2', porcentaje: '30%' },
-                { descripcion: '+1 Mes Morosos', numero: '3', porcentaje: '50$' }
-            ],
-        },
-        {
-            grado: '1ero', seccion: 'B', dataGrafica: {
                 labels: ['Solventes', '1 Mes Moroso', '+1 Mes Morosos'],
-                datasets: [{ label: 'Foo', data: [1, 2, 3] }],
-                backgroundColor: [
-                    "rgba(75,192,192,0.5)",
-                    "rgba(255,205,86,0.5)",
-                    "rgba(255,99,132,0.5)",
-                    "rgba(255,159,64,0.5)",
-                    "rgba(54,162,235,0.5)"
-                ],
+                datasets: [{ label: 'Foo', data: dataReporte[0].arrayDataGrafica, backgroundColor: ["rgba(59, 245, 39, 0.68)", "rgba(235, 245, 39, 0.8)", "rgba(245, 39, 39, 0.81)"] }],
+                options:{
+                    
+                }
             },
-            dataTabla: [
-                { descripcion: 'Solventes', numero: '1', porcentaje: '20%' },
-                { descripcion: '1 Mes Moroso', numero: '2', porcentaje: '30%' },
-                { descripcion: '+1 Mes Morosos', numero: '3', porcentaje: '50$' }
-            ],
-        },
-        {
-            grado: '2ero', seccion: 'A', dataGrafica: {
-                labels: ['Solventes', '1 Mes Moroso', '+1 Mes Morosos'],
-                datasets: [{ label: 'Foo', data: [1, 2, 3] }],
-                backgroundColor: [
-                    "rgba(75,192,192,0.5)",
-                    "rgba(255,205,86,0.5)",
-                    "rgba(255,99,132,0.5)",
-                    "rgba(255,159,64,0.5)",
-                    "rgba(54,162,235,0.5)"
-                ],
-            },
-            dataTabla: [
-                { descripcion: 'Solventes', numero: '1', porcentaje: '20%' },
-                { descripcion: '1 Mes Moroso', numero: '2', porcentaje: '30%' },
-                { descripcion: '+1 Mes Morosos', numero: '3', porcentaje: '50$' }
-            ],
-        },
-        {
-            grado: '2ero', seccion: 'B', dataGrafica: {
-                labels: ['Solventes', '1 Mes Moroso', '+1 Mes Morosos'],
-                datasets: [{ label: 'Foo', data: [1, 2, 3] }],
-                backgroundColor: [
-                    "rgba(75,192,192,0.5)",
-                    "rgba(255,205,86,0.5)",
-                    "rgba(255,99,132,0.5)",
-                    "rgba(255,159,64,0.5)",
-                    "rgba(54,162,235,0.5)"
-                ],
-            },
-            dataTabla: [
-                { descripcion: 'Solventes', numero: '1', porcentaje: '20%' },
-                { descripcion: '1 Mes Moroso', numero: '2', porcentaje: '30%' },
-                { descripcion: '+1 Mes Morosos', numero: '3', porcentaje: '50$' }
-            ],
-        },
-
+            // dataTabla: [
+            //     { descripcion: 'Solventes', numero: '1', porcentaje: '20%' },
+            //     { descripcion: '1 Mes Moroso', numero: '2', porcentaje: '30%' },
+            //     { descripcion: '+1 Mes Morosos', numero: '3', porcentaje: '50$' }
+            // ],
+        }
     ]);
+
+    const tableStyles = StyleSheet.create({
+        table: { width: '90%', borderWidth: 1, borderColor: '#000000',marginLeft: 'auto', marginRight: 'auto', marginTop:10 },
+        tableRow: { flexDirection: 'row', borderBottomColor: '#000000', borderBottomWidth: 1, alignItems: 'center' },
+        tableCell: { flex: 1, padding: 3 },
+        tableHeader: { backgroundColor: '#f2f2f2' },
+    });
         
     const styles2 = {
         container: {
@@ -145,39 +95,72 @@ const PdfRender = ({image}) => {
             padding: 10,
         },
         title:{
-            fontSize: 15,
+            fontSize: 13,
             textAlign: 'center',}
     };
 
-    const filas = [];
-    for (let i = 0; i < arreglo.length; i += 2) {
-        filas.push(
-            <View key={i} style={styles2.row}>
-                <View key={i} style={styles2.cell}>
-                    <Text >{`${arreglo[i].grado} ${arreglo[i].seccion}`} </Text>
-                    <PieChart dataGrafica={arreglo[i].dataGrafica}  />
-                </View>
-                <View key={i} style={styles2.cell}>
-                    {arreglo[i + 1] && (
-                        <View >
-                            <Text >{`${arreglo[i + 1].grado} ${arreglo[i + 1].seccion}`}</Text>
-                            <PieChart dataGrafica={arreglo[i].dataGrafica} />
-                        </View>
-                    )}
-                </View>
-            </View>
-        );
-    }
+    // const filas = [];
+    // for (let i = 0; i < arreglo.length; i += 2) {
+    //     filas.push(
+    //         <View key={i} style={styles2.row}>
+    //             <View key={i} style={styles2.cell}>
+    //                 <Text >{`${arreglo[i].grado} ${arreglo[i].seccion}`} </Text>
+    //                 <PieChart dataGrafica={arreglo[i].dataGrafica}  />
+    //             </View>
+    //             <View key={i} style={styles2.cell}>
+    //                 {arreglo[i + 1] && (
+    //                     <View >
+    //                         <Text >{`${arreglo[i + 1].grado} ${arreglo[i + 1].seccion}`}</Text>
+    //                         <PieChart dataGrafica={arreglo[i].dataGrafica} />
+    //                     </View>
+    //                 )}
+    //             </View>
+    //         </View>
+    //     );
+    // }
 
     return (
+        // <Document>
+        //     <Page>
+        //         <View style={styles2.viewTitle}>
+        //             <Text style={styles2.title}>{dataReporte[0].nombreReporte} </Text> 
+        //          </View>
+        //         {filas.length > 0 && (
+        //             <View style={styles2.container}>{filas}</View>)
+        //         }            
+        //     </Page>
+        // </Document>
         <Document>
             <Page>
                 <View style={styles2.viewTitle}>
-                     <Text style={styles2.title}>Reporte de gráficas del mes de - del periodo - </Text> 
-                 </View>
-                {filas.length > 0 && (
-                    <View style={styles2.container}>{filas}</View>)
-                }            
+                    <Text style={styles2.title}>{dataReporte[0].nombreReporte} </Text>
+                </View>
+                <View >
+                    <PieChart dataGrafica={arreglo[0].dataGrafica} />
+                </View>
+                <View style={tableStyles.table}>
+                    {/* Encabezado de la tabla */}
+                    <View style={tableStyles.tableRow}>
+                        <View style={[tableStyles.tableCell, tableStyles.tableHeader]}>
+                            <Text style={{ fontSize: 10, fontWeight: 'bold' }}>Estudiante</Text>
+                        </View>
+                        <View style={[tableStyles.tableCell, tableStyles.tableHeader]}>
+                            <Text style={{ fontSize: 10, fontWeight: 'bold' }}>Estatus</Text>
+                        </View>
+                    </View>
+
+                    {/* Contenido de la tabla */}
+                    {dataReporte[0].arrayEstudiantesEstatusPago.map((fila, index) => (
+                        <View style={tableStyles.tableRow} key={index}>
+                            <View style={tableStyles.tableCell}>
+                                <Text style={{ fontSize: 10 }}>{fila.nombre}</Text>
+                            </View>
+                            <View style={tableStyles.tableCell}>
+                                <Text style={{ fontSize: 10 }}>{fila.estatus}</Text>
+                            </View>
+                        </View>
+                    ))}
+                </View>
             </Page>
         </Document>
     );

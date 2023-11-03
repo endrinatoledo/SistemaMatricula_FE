@@ -369,7 +369,7 @@ const CollectionReports = () => {
       }
 
       if (reportTypeSelected.id === 15) {
-        setSeeGraficas(true)
+        // setSeeGraficas(true)
         url = `/reports/morosos/grafica`
         data.level = levelSelected != null ? levelSelected.level : null;
         data.section = sectionSelected != null ? sectionSelected.section : null;
@@ -385,6 +385,7 @@ const CollectionReports = () => {
       }
 
       const result = (await AxiosInstance.post(url, data)).data
+      console.log('result------------------', result)
       if (result.ok === true) {
         setDataReport(result.data)
         if(reportTypeSelected.id === 15){
@@ -875,12 +876,14 @@ const CollectionReports = () => {
       {(alertModal) ?
         <ModalAlertMessage alertModal={alertModal} setAlertModal={setAlertModal} message={message} alertType={alertType} />
         : null}
+      {(seeGraficas)
+        ?
+          <GraficosPDF dataReporte={dataReporte} />        
+        : null} 
       {(seeTable)
         ? <TableReport nombreArchivo={nombreArchivo} periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure} mes={meses[mesActual]} clasifiReportSelectd={clasifiReportSelectd}/>
         : null}
-      {(seeGraficas)
-        ? <GraficosPDF />
-        : null}   
+        
     </>
   )
 }

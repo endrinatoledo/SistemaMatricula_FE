@@ -5,11 +5,13 @@ import { ExportPdf } from '@material-table/exporters';
 const DownloadExcel = require('../commonComponents/DownloadExcel').default 
 
 const TableReport = ({ nombreArchivo, periodSelected, reportTypeSelected, columns, dataReporte, excelStructure, mes, clasifiReportSelectd }) => {
-  console.log('dataReporte', dataReporte)
-  console.log('nombreArchivo', nombreArchivo)
 
   const nameTable = nombreArchivo.replaceAll('_', ' ')
+  const columnsTable = [
+    { title: 'Nombre', field: 'nombre'},
+    { title: 'Estatus', field: 'estatus' },
 
+  ]
   React.useEffect(() => {
 }, [0]);
 
@@ -17,9 +19,8 @@ const TableReport = ({ nombreArchivo, periodSelected, reportTypeSelected, column
     <>
       <MaterialTable 
       title={nameTable}
-    
-    data={dataReporte} 
-    columns={columns}
+        data={dataReporte[0].arrayEstudiantesEstatusPago} 
+        columns={columnsTable}
     options={{ 
       search: false,
       paging: false,
@@ -31,15 +32,6 @@ const TableReport = ({ nombreArchivo, periodSelected, reportTypeSelected, column
          fontWeight:'normal',
          fontSize:18,
        },
-       exportMenu: [{
-         label: 'Exportar PDF',
-         exportFunc: (cols, datas) => ExportPdf(cols, datas, nameTable)
-      }, 
-       {
-         label: 'Exportar EXCEL',
-         exportFunc: (cols, datas) => DownloadExcel(cols, datas,excelStructure)
-       }
-     ],
         actionsColumnIndex:-1,
         addRowPosition:'first'
     }}
