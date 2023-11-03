@@ -98,7 +98,7 @@ const UseStyles = makeStyles({
     // }
 })
 
-const ModalPayments = ({ estudianteSeleccionado, estudianteFamilia, dataDetalle, periodoSeleccionado, numLimpiarFactura, setNumLimpiarFactura, pagosRegistrados, setPagosRegistrados, datosPago, setDatosPago, datosCabecera, setDatosCabecera, selectedFamily, getMensualidadesFamily, families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades }) => {
+const ModalPayments = ({ estudiantesDescripcion, estudianteSeleccionado, estudianteFamilia, dataDetalle, periodoSeleccionado, numLimpiarFactura, setNumLimpiarFactura, pagosRegistrados, setPagosRegistrados, datosPago, setDatosPago, datosCabecera, setDatosCabecera, selectedFamily, getMensualidadesFamily, families, setMesesApagar, mesesApagar, pagoModal, setPagoModal, mensualidades }) => {
     const classes = UseStyles();
     const [layautPagos, setlayautPagos] = React.useState(false)
     const [circularProgress, setCircularProgress] = React.useState(false)
@@ -510,11 +510,14 @@ const ModalPayments = ({ estudianteSeleccionado, estudianteFamilia, dataDetalle,
             setAlertModal(true)
         }
     }
-
     const ordenarDatosPago = () => {
 
         if (mesesApagar.length > 0) {
             const data = mesesApagar.map(item => {
+                // estudiantesDescripcion     detallePago.insId
+
+                const descripcionEstudent = estudiantesDescripcion.find(item2 => item2.insId === item.detallePago.insId);
+                
 
                 console.log('itemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm', item)
 
@@ -522,7 +525,7 @@ const ModalPayments = ({ estudianteSeleccionado, estudianteFamilia, dataDetalle,
                     "key": nextId(),
                     "mopId": item.mopId,
                     "mes": item.mes,
-                    "student": `${estudianteSeleccionado.nombre} -> ${estudianteSeleccionado.nivel} `,
+                    "student": `${descripcionEstudent.nombre} -> ${descripcionEstudent.grado} `,
                     "descripcion": `Mensualidad ${item.nombreMes}`,
                     // "nivel": item.detallePago.level.levName,
                     "costo": item.detallePago.mopAmountPaid != 0 ? item.detallePago.mopAmount : 0,

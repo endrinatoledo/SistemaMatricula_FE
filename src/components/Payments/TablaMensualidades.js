@@ -8,7 +8,7 @@ import ModalPayments from './ModalPayments';
 import ModalVerPagos from './ModalVerPagos';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import ModalExoneracionMeses from './ModalExoneracionMeses';
-
+const AxiosInstance = require("../utils/request").default;
 
 const TablaMensualidades = ({ estudianteSeleccionado, estudianteFamilia, periodoSeleccionado, selectedFamily, getMensualidadesFamily, families, mensualidades, dataDetalle }) => {
 
@@ -20,6 +20,10 @@ const TablaMensualidades = ({ estudianteSeleccionado, estudianteFamilia, periodo
     const [pagosRegistrados, setPagosRegistrados] = React.useState([])
     const [statusModalVerPagos, setStatusModalVerPagos] = React.useState(false)
     const [modalExoneracion, setModalExoneracion] = React.useState(false)
+    const [estudiantesDescripcion, setEstudiantesDescripcion] = React.useState([])
+    const [alertModal, setAlertModal] = React.useState(false)
+    const [message, setMessage] = React.useState()
+    const [alertType, setAlertType] = React.useState('');
 
     const columns = [
         { title: 'Estudiante', field: 'student' },
@@ -36,6 +40,8 @@ const TablaMensualidades = ({ estudianteSeleccionado, estudianteFamilia, periodo
         { title: 'Julio', field: 'jul', render: (rows) => meses(rows.jul, 'jul', 'Julio', rows) },
         { title: 'Agosto', field: 'ago', render: (rows) => meses(rows.ago, 'ago', 'Agosto', rows) },
     ];
+
+    console.log('periodoSeleccionado---------------------', periodoSeleccionado)
 
     const buscarDetalleDePago = (mopId) =>{
         console.log('dataDetalle*-*-*-*-*-*-*-*-*', dataDetalle)
@@ -87,6 +93,35 @@ const TablaMensualidades = ({ estudianteSeleccionado, estudianteFamilia, periodo
     }
 }
 
+const extraerIdEstudiantes = async (mensualidades) => {
+    const insIds = mensualidades.map(item => item.insId);
+console.log('insIds', insIds)
+    const data = {
+        insIds,
+        perId: periodoSeleccionado.perId
+    }
+
+    try {
+        const response = await AxiosInstance.post(`/inscriptions/datosActuales`, data)
+        console.log('response&&&&&&&&&&&&&&&&&&  ', response)
+
+        if (response.data.ok === true) {
+            setEstudiantesDescripcion(response.data.data)
+        } else {
+            setMessage(response.message)
+            setAlertType("error")
+            setAlertModal(true)
+        }
+
+    } catch (error) {
+        setMessage('Error al consultar los datos de estudiante')
+        setAlertType("error")
+        setAlertModal(true)
+    }
+
+    // setIdStudents(insIds)
+}
+
     React.useEffect(() => {
         console.log('----------******------------', mesesApagar)
     }, [mesesApagar])
@@ -95,7 +130,12 @@ const TablaMensualidades = ({ estudianteSeleccionado, estudianteFamilia, periodo
         if (numLimpiarFactura > 0) limpiarFormularioFactura()
     }, [numLimpiarFactura])
 
-    
+    React.useEffect(() => {
+        extraerIdEstudiantes(mensualidades)
+    }, [mensualidades])
+
+    console.log('mensualidades*********************************', mensualidades)
+
 
     return (
         <>
@@ -144,7 +184,7 @@ const TablaMensualidades = ({ estudianteSeleccionado, estudianteFamilia, periodo
                 ]}
             />
             {(pagoModal)
-                ? <ModalPayments estudianteSeleccionado={estudianteSeleccionado} estudianteFamilia={estudianteFamilia} dataDetalle={dataDetalle} periodoSeleccionado={periodoSeleccionado} numLimpiarFactura={numLimpiarFactura} setNumLimpiarFactura={setNumLimpiarFactura} pagosRegistrados={pagosRegistrados} setPagosRegistrados={setPagosRegistrados} datosPago={datosPago} setDatosPago = { setDatosPago } datosCabecera={datosCabecera} setDatosCabecera={setDatosCabecera} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
+                ? <ModalPayments estudiantesDescripcion={estudiantesDescripcion} estudianteSeleccionado={estudianteSeleccionado} estudianteFamilia={estudianteFamilia} dataDetalle={dataDetalle} periodoSeleccionado={periodoSeleccionado} numLimpiarFactura={numLimpiarFactura} setNumLimpiarFactura={setNumLimpiarFactura} pagosRegistrados={pagosRegistrados} setPagosRegistrados={setPagosRegistrados} datosPago={datosPago} setDatosPago = { setDatosPago } datosCabecera={datosCabecera} setDatosCabecera={setDatosCabecera} selectedFamily={selectedFamily} getMensualidadesFamily={getMensualidadesFamily} families={families} setMesesApagar={setMesesApagar} mesesApagar={mesesApagar} pagoModal={pagoModal} setPagoModal={setPagoModal} mensualidades={mensualidades} />
             :null
             }
             {(statusModalVerPagos) ?
