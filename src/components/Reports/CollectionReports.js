@@ -313,6 +313,7 @@ const CollectionReports = () => {
         { title: 'Nivel', field: 'level' },
         { title: 'Sección', field: 'section' },
         { title: 'Familia', field: 'familia' },
+        { title: 'Estatus', field: 'estatus' },
       ])
       setExcelStructure({
         // fileName: `Reporte_Morosos_por_estudiantes_${fecha}.xlsx`,
