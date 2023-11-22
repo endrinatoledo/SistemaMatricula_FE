@@ -158,7 +158,7 @@ const ModalPayments = ({ estudiantesDescripcion, estudianteSeleccionado, estudia
     const [mostrarConceptosAdicionales, setMostrarConceptosAdicionales] = React.useState(true)
     const [statusConceptosAdicioanles, setStatusConceptosAdicioanles] = React.useState(false)
 
-    { console.log('cdatosPago******--------------------', datosPago) }
+    // { console.log('cdatosPago******--------------------', datosPago) }
 
 
 
@@ -779,6 +779,9 @@ const ModalPayments = ({ estudiantesDescripcion, estudianteSeleccionado, estudia
     }
 
     const armarDescripcionConceptoAdicional = (concepto) => {
+
+        console.log('%%%%%%%%%%%%%%%%%%', concepto)
+
         const descripcion = `${concepto.icoName ? concepto.icoName.toUpperCase() : ''} ${concepto.famName ? concepto.famName.toUpperCase() : ''} ${concepto.student ? concepto.student.toUpperCase() : ''} ${concepto.description ? concepto.description.toUpperCase() : ''}`
         return descripcion
     }
@@ -1213,39 +1216,43 @@ const ModalPayments = ({ estudiantesDescripcion, estudianteSeleccionado, estudia
                                                                     <>
                                                                         {
                                                                             conceptosAdicionalesArray.map((item, index) => (
-                                                                                <Stack key={index} className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
-                                                                                    {item.validado == 'sinValidar'
-                                                                                        ? <WarningOutlinedIcon color="warning" style={{ marginTop: '19px' }} />
-                                                                                        : item.validado == 'aprobado'
-                                                                                            ? <CheckOutlinedIcon color='success' style={{ marginTop: '19px' }} />
-                                                                                            : <ClearOutlinedIcon color='error' style={{ marginTop: '19px' }} />
-                                                                                    }
+                                                                                <>
 
-                                                                                    <TextField
-                                                                                        InputProps={{ readOnly: true }}
-                                                                                        sx={{ width: '70%' }}
-                                                                                        value={armarDescripcionConceptoAdicional(item)}
-                                                                                        id="descripcion"
-                                                                                        label="Descripcion"
-                                                                                        variant="standard"
-                                                                                    />
-                                                                                    <TextField
-                                                                                        InputProps={{ readOnly: true }}
-                                                                                        sx={{ width: '10%' }}
-                                                                                        value={item.costoDol}
-                                                                                        id="monto"
-                                                                                        label="Costo $"
-                                                                                        variant="standard"
-                                                                                    />
-                                                                                    <TextField
-                                                                                        InputProps={{ readOnly: true }}
-                                                                                        sx={{ width: '10%' }}
-                                                                                        value={item.montoApagarDol}
-                                                                                        id="monto"
-                                                                                        label="A Pagar $"
-                                                                                        variant="standard"
-                                                                                    />
-                                                                                </Stack>
+                                                                                    <Stack key={index} className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
+                                                                                        {item.validado == 'sinValidar'
+                                                                                            ? <WarningOutlinedIcon color="warning" style={{ marginTop: '19px' }} />
+                                                                                            : item.validado == 'aprobado'
+                                                                                                ? <CheckOutlinedIcon color='success' style={{ marginTop: '19px' }} />
+                                                                                                : <ClearOutlinedIcon color='error' style={{ marginTop: '19px' }} />
+                                                                                        }
+                                                                                        <TextField
+                                                                                            InputProps={{ readOnly: true }}
+                                                                                            sx={{ width: '70%' }}
+                                                                                            value={armarDescripcionConceptoAdicional(item)}
+                                                                                            id="descripcion"
+                                                                                            label="Descripcion"
+                                                                                            variant="standard"
+                                                                                            
+                                                                                        />
+                                                                                        <TextField
+                                                                                            InputProps={{ readOnly: true }}
+                                                                                            sx={{ width: '10%' }}
+                                                                                            value={item.costoDol}
+                                                                                            id="monto"
+                                                                                            label="Costo $"
+                                                                                            variant="standard"
+                                                                                        />
+                                                                                        <TextField
+                                                                                            InputProps={{ readOnly: true }}
+                                                                                            sx={{ width: '10%' }}
+                                                                                            value={item.montoApagarDol}
+                                                                                            id="monto"
+                                                                                            label="A Pagar $"
+                                                                                            variant="standard"
+                                                                                        />
+                                                                                    </Stack>
+                                                                                </>
+                                                                                
                                                                             ))
                                                                         }
                                                                     </>
@@ -1366,6 +1373,10 @@ const ModalPayments = ({ estudiantesDescripcion, estudianteSeleccionado, estudia
                                                             {(Array.isArray(replicaDatosPago) && replicaDatosPago.length)
                                                                 ? replicaDatosPago.map((item, index) => (
                                                                     <>
+                                                                        {console.log('item==========', item)
+                                                                        
+                                                                        }
+                                                                        {console.log('index==========', index)}
                                                                         <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
                                                                             <TextField
                                                                                 sx={{ width: '50%' }}
@@ -1377,7 +1388,7 @@ const ModalPayments = ({ estudiantesDescripcion, estudianteSeleccionado, estudia
                                                                             />
                                                                             <TextField
                                                                                 sx={{ width: '40%' }}
-                                                                                //InputProps={{ readOnly: true }}
+                                                                                // InputProps={{ readOnly: true }}
                                                                                 value={item.descripcion}
                                                                                 id="description"
                                                                                 label="Descripcion"

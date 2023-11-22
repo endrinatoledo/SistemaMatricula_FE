@@ -11,6 +11,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import GraficosPDF from './Grafica4'
+import TableReportNoGrafica from './TableReportNoGrafica';
 
 const AxiosInstance = require("../utils/request").default;
 
@@ -294,6 +295,7 @@ const CollectionReports = () => {
         { title: 'Tipo Ident.', field: 'typeInd' },
         { title: 'Identificación', field: 'identificacion' },
         { title: 'Familia', field: 'familia'},
+        { title: 'Estatus', field: 'estatus' },
       ])
       setExcelStructure({
         // fileName: `Reporte_Morosos_por_estudiantes_${fecha}.xlsx`,
@@ -311,6 +313,7 @@ const CollectionReports = () => {
         { title: 'Nivel', field: 'level' },
         { title: 'Sección', field: 'section' },
         { title: 'Familia', field: 'familia' },
+        { title: 'Estatus', field: 'estatus' },
       ])
       setExcelStructure({
         // fileName: `Reporte_Morosos_por_estudiantes_${fecha}.xlsx`,
@@ -881,7 +884,13 @@ const CollectionReports = () => {
           <GraficosPDF dataReporte={dataReporte} />        
         : null} 
       {(seeTable)
-        ? <TableReport nombreArchivo={nombreArchivo} periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure} mes={meses[mesActual]} clasifiReportSelectd={clasifiReportSelectd}/>
+        ? <>
+          {(reportTypeSelected.id == 15)
+            ? <TableReport nombreArchivo={nombreArchivo} periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure} mes={meses[mesActual]} clasifiReportSelectd={clasifiReportSelectd} />
+            : <TableReportNoGrafica nombreArchivo={nombreArchivo} periodSelected={periodSelected} reportTypeSelected={reportTypeSelected} columns={columns} dataReporte={dataReporte} excelStructure={excelStructure} mes={meses[mesActual]} clasifiReportSelectd={clasifiReportSelectd} />
+        }
+
+        </>
         : null}
         
     </>

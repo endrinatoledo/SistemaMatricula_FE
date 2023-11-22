@@ -6,6 +6,9 @@ const DownloadExcel = require('../commonComponents/DownloadExcel').default
 
 const TableReport = ({ nombreArchivo, periodSelected, reportTypeSelected, columns, dataReporte, excelStructure, mes, clasifiReportSelectd }) => {
 
+console.log('dataReporte',dataReporte)
+  console.log('nombreArchivo', nombreArchivo)
+
   const nameTable = nombreArchivo.replaceAll('_', ' ')
   const columnsTable = [
     { title: 'Nombre', field: 'nombre'},
