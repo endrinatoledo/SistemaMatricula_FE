@@ -1377,11 +1377,25 @@ const ModalPayments = ({ estudiantesDescripcion, estudianteSeleccionado, estudia
                                                                             />
                                                                             <TextField
                                                                                 sx={{ width: '40%' }}
-                                                                                InputProps={{ readOnly: true }}
+                                                                                //InputProps={{ readOnly: true }}
                                                                                 value={item.descripcion}
                                                                                 id="description"
                                                                                 label="Descripcion"
                                                                                 variant="standard"
+                                                                                onChange={e => {
+                                                                                    console.log('e.target.value', e.target.value)
+                                                                                    let cambioArray = replicaDatosPago
+                                                                                    cambioArray[index] = {
+                                                                                        ...item,
+                                                                                        descripcion: e.target.value
+                                                                                    }
+                                                                                    setReplicaDatosPago(cambioArray)
+                                                                                    setClearFieldDistribucion({
+                                                                                        ...clearFieldDistribucion,
+                                                                                        descripcion:clearFieldDistribucion.descripcion + 1
+                                                                                    })
+                                                                                }
+                                                                                }
                                                                             />
                                                                         </Stack>
                                                                         <Stack className={classes.TextField} spacing={2} justifyContent="flex-start" alignItems="center" direction="row" >
