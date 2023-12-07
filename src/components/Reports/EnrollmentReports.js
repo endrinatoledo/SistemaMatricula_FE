@@ -6,7 +6,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { makeStyles } from '@mui/styles';
 import ModalAlertMessage from '../AlertMessages/ModalAlertMessage';
 import Button from '@mui/material/Button';
-import TableReport from './TableReport';
+// import TableReport from './TableReport';
+import TableReport from './TableReportNoGrafica';
 
 const AxiosInstance = require("../utils/request").default;
  
